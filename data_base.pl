@@ -95,6 +95,20 @@ record(6625, 12345, 4).
 
 
 
+% Calcular o valor faturado por um cliente num determinado dia
+
+
+
+q4(date(D,M,Y), Value) :-
+
+                findall(V, package(_,_,_,_,V,_,date(D,M,Y)), Aux),
+                sum_list(Aux, Value).
+
+
+
+
+
+
 % falta -> tempo-limite
 
 

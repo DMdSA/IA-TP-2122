@@ -137,3 +137,54 @@ query2(Client, [H | T], [E1 | E2]) :-
 who_delivered(ClientID, PackageID, (EstafetaID, PackageID)) :-
                 
                 record(PackageID, ClientID, EstafetaID), !.
+
+
+
+
+
+/*
+---------------------
+Query3, Identificar os clientes servidos por um determinado estafeta
+query3 : Estafeta, Clients -> {V,F}
+
+exemplos:
+query3(1, A), write_q3(1,A).
+
+---------------------
+*/
+
+query3(Estafeta, A) :-
+                            
+                            findall(X, record(_, X, Estafeta), L),
+                            sort(L, A).
+
+
+write_q3(Estafeta, [H]):-
+            write("Client: "), write(H), write(" "),
+            client(H,X), write(X),nl,
+            write("Estafeta: "), write(Estafeta),nl,!.
+
+write_q3(E, [H|T]) :-
+            
+            write("Client: "), write(H), write(" "),
+            client(H,X), write(X), nl,
+            write_q3(E,T).
+
+
+
+
+/*
+---------------------
+Query4, Calcular o valor faturado num determinado dia
+query4 : Date, Value -> {V,F}
+
+exemplos:
+q4(date(3,10,2021), X).
+
+---------------------
+*/
+
+q4(date(D,M,Y), Value) :-
+
+                findall(V, package(_,_,_,_,V,_,date(D,M,Y)), Aux),
+                sum_list(Aux, Value).
