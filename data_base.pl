@@ -15,11 +15,11 @@ may change during execution (using assert/1 and/or retract/1).
 :- dynamic bicycle/3 .
 :- dynamic motorcycle/3 .
 :- dynamic car/3 .
+:- dynamic road/2 .
 
 :- discontiguous package/7 .
-:- discontiguous record/3 .
+:- discontiguous record/4 .
 
-:- dynamic road/2 .
 
 
 /*
@@ -32,9 +32,6 @@ should occur.
 'x' -> the precedence of the argument must be strictly lower.
 
 */   
-
-
-
 
 
 
@@ -81,33 +78,21 @@ record : PackageID, ClientID, EstafetaID -> {V,F}
 
 
 package(344053, "IPhone20", 0.988, 20, 876, road("Rua Conego Manuel Faria", "Sé"), date(17,11,2021)). 
-record(344053, 2215, 1).
+record(344053, 2215, 1, 4).
 
 package(11234, "MSIPC-2021", 13, 102, 2.099, road("Rua wow", "Gualtar"), date(11,11,2021)).
-record(11234, 12345, 1).
+record(11234, 12345, 1, 5).
 
-package(88341, "Sushi-20peças", 2.112, 122, 44.59, road("Rua 3", "Sé"), date(03, 10, 2021)).
-record(88341, 12345, 1).
+package(88341, "Sushi-20peças", 2.112, 122, 44.59, road("Rua 2", "Sé"), date(03, 10, 2021)).
+record(88341, 12345, 1, 2).
 
 
 package(6625, "Armário", 88, 122, 443, road("Rua 2", "Sé"), date(03, 10, 2021)).
-record(6625, 12345, 4).
+record(6625, 12345, 4, 3).
 
 
 
 % Calcular o valor faturado por um cliente num determinado dia
-
-
-
-q4(date(D,M,Y), Value) :-
-
-                findall(V, package(_,_,_,_,V,_,date(D,M,Y)), Aux),
-                sum_list(Aux, Value).
-
-
-
-
-
 
 % falta -> tempo-limite
 
