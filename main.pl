@@ -282,7 +282,6 @@ write_q3(E, [H|T]) :-
 /*
 ---------------------
 Query4, Calcular o valor faturado num determinado dia
-query4 : Date, Value -> {V,F}
 ---------------------
 */
 
@@ -296,12 +295,12 @@ query4 : Date, Value -> {V,F}
 q4(date(D,M,Y), Value) :-
                 
                 date(D,M,Y),
-                findall(V, package(_,_,_,_,V,_,date(D,M,Y)), Aux),
+                findall(V, package(_,_,_,V,_,date(D,M,Y)), Aux),
                 sum_list(Aux, Value).
 
 
 % ------------------------------------
-% q4 : Month, Year, Value -> {V,F}
+% q4 : Month, Year, Value -> {V,F}    |
 % ------------------------------------
 % Dados um mês e ano, devolve o valor ganho nessa data
 
@@ -310,12 +309,12 @@ q4(M, Y, Value) :-
                 
                 member(M, [1,2,3,4,5,6,7,8,9,10,11,12]),
                 Y > 0,
-                findall(V, package(_,_,_,_,V,_,date(_,M,Y)), Aux),
+                findall(V, package(_,_,_,V,_,date(_,M,Y)), Aux),
                 sum_list(Aux, Value), !.
 
 
 % ------------------------------------
-% q4 : Year, Value -> {V,F}
+% q4 : Year, Value -> {V,F}           |
 % ------------------------------------
 % Dado um ano, calcula o valor ganho nesse ano
 
@@ -323,7 +322,7 @@ q4(M, Y, Value) :-
 q4(Y, Value) :- 
 
                 Y > 0,
-                findall(V, package(_,_,_,_,V,_,date(_,_,Y)), Aux),
+                findall(V, package(_,_,_,V,_,date(_,_,Y)), Aux),
                 sum_list(Aux, Value), !.
 % ------------------------------------
 
@@ -334,39 +333,24 @@ q4(Y, Value) :-
 ---------------------
 Query5, Identificar as zonas (rua, freguesia) com maior volume de entregas
 por parte do Green Distribution
-
-
 ---------------------
 */
 
-
-q5(road(Rua,_), Volume) :- 
-            
-            road(Rua,_),
-            findall(1, package(_,_,_,_,_,road(Rua,_),_), List),
-            sum_list(List, Volume), !.
-
-q5(road(_, Freguesia), Volume) :- 
-            
-            road(_,Freguesia),
-            findall(1, package(_,_,_,_,_,road(_,Freguesia),_), List),
-            sum_list(List, Volume), !.
+% ------------------------------------
+% q5 : Road, NumberOfDeliveries -> {V,F}
+% ------------------------------------
+% Recebendo uma rua, freguesia, ou ambos, devolve o nº de entregas realizadas nessa localização
 
 q5(road(Rua, Freguesia), Volume) :-
 
-            road(Rua,Freguesia),
-            findall(1, package(_,_,_,_,_,road(Rua,Freguesia),_), List),
-            sum_list(List, Volume), !.
+            findall(1, package(_,_,_,_,road(Rua,Freguesia),_), List),
+            sum_list(List, Volume),
+            road(Rua,Freguesia),!.
 
-
-% q5_rua(X).    nao faz sentido pois n?
-
-
-
-
-
-
-
+% "here"
+% Realizar a query só para uma "rua" não fará muito sentido....
+% Não há maneira de corrigir esse pormenor?
+% "here"
 
 
 
@@ -374,49 +358,53 @@ q5(road(Rua, Freguesia), Volume) :-
 
 /*
 ---------------------
-Query6, Calcular o rating de dado estafeta
-query6 : Estafeta, Value -> {V,F}
-
-exemplos:
-
+Query6 - Calcular a classificação média de satisfação de cliente para
+um determinado estafeta
 
 ---------------------
 */
 
 % ---------------------------------------------------
-
+% Average of list
+% average : List, Average -> {V,F}
 % ---------------------------------------------------
+
 average( List, Average) :-
     sum_list(List, Sum),
     length( List, Length),
     Length > 0,
     Average is Sum/Length.
- 
 
+% "here", podia-se fazer if not, avisa que o cliente nao deu nota nenhuma
 % ---------------------------------------------------
 
 % ---------------------------------------------------
+% q6 : Estafeta, Value -> {V,F}
+% ---------------------------------------------------
+% Dado um estafeta, calcula a média geral que os clientes lhe dão
+
 q6(Estafeta, Value) :-
             
             % estafeta(Estafeta, _, _),
             findall(X, record(_,_,Estafeta,X), L),
             average(L,Value).
-
-
 % ---------------------------------------------------
 
 % ---------------------------------------------------
+% q6 : Client, Estafeta, Value -> {V,F}
+% ---------------------------------------------------
+% Dado um cliente e um estafeta, calcula a média que esse cliente atribuiu ao estafeta
+
 q6(Client, Estafeta, Value) :-
                 
                 verify_client(Client),
                 clientID(Client, ID),
                 findall(X, record(_, ID, Estafeta, X), L),
                 average(L, Value).
-
+% ---------------------------------------------------
 
 
 /*
----------------------------------------------------
 Query7, Calcular o n de entregas com bicicleta, n moto e n carro num intervalo de tempo
 query7 : Data, Data -> {V,F}
 
@@ -424,38 +412,4 @@ exemplos:
 
 ---------------------------------------------------
 */
-
-dateInBetween(date(D,M,Y), date(D1,M1,Y1), date(D2,M2,Y2)) :-
-    (D >= D1, D =< D2),
-    (M >= M1, M =< M2),
-    (Y >= Y1, Y =< Y2).
-
-
-
-q8(Date1,Date2, EstDate) :-
-            isAfter(Date1,Date2),
-            filter_by_date(Date1, Date2, Encomendas),
-    findall((Est), (member(Enc, Encomendas), record(Enc, _, Est, _)), EstDate).
-
-
-% ate aq agrupa os estafetas, falta contar qts cada fez
-% "AQUI"
-
-
-
-agrupa([], []).
-agrupa([X], [(X, 1)]).
-agrupa([H | T], [(H, NTimes) | Resto]) :- 
-                
-                findall(1, member(H, T), L),
-                sum_list(L, NTimes),
-                sort([H|T], A),
-                agrupa(A, Resto).
-
-
-
-filter_by_date(Date1, Date2, Package) :-
-                    findall(C, (package(C,_,_,_,_,_,DATE),
-                    dateInBetween(DATE, Date1, Date2)), Package).
-
 

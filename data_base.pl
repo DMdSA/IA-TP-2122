@@ -17,7 +17,7 @@ may change during execution (using assert/1 and/or retract/1).
 :- dynamic car/3 .
 :- dynamic road/2 .
 
-:- discontiguous package/7 .
+:- discontiguous package/6 .
 :- discontiguous record/4 .
 
 
@@ -69,25 +69,25 @@ car(32, 25,2).
 
 /*---------------------
 Package
-package : Codigo, Nome, Peso, Volume, Valor, Morada -> {V,F}
+package : Codigo, Peso, Volume, Valor, Morada, DataCriacao -> {V,F}
 
 Record
-record : PackageID, ClientID, EstafetaID -> {V,F}
+record : PackageID, ClientID, EstafetaID, Nota -> {V,F}
 ---------------------
 */
 
 
-package(344053, "IPhone20", 0.988, 20, 876, road("Rua Conego Manuel Faria", "Sé"), date(17,11,2021)). 
+package(344053, 0.988, 20, 876, road("Rua Conego Manuel Faria", "Sé"), date(17,11,2021)). 
 record(344053, 2215, 1, 4).
 
-package(11234, "MSIPC-2021", 13, 102, 2.099, road("Rua wow", "Gualtar"), date(11,11,2021)).
+package(11234, 13, 102, 2.099, road("Rua wow", "Gualtar"), date(11,11,2021)).
 record(11234, 12345, 1, 5).
 
-package(88341, "Sushi-20peças", 2.112, 122, 44.59, road("Rua 2", "Sé"), date(03, 10, 2021)).
+package(88341, 2.112, 122, 44.59, road("Rua 2", "Sé"), date(03, 10, 2021)).
 record(88341, 12345, 1, 2).
 
 
-package(6625, "Armário", 88, 122, 443, road("Rua 2", "Sé"), date(03, 10, 2021)).
+package(6625, 88, 122, 443, road("Rua 2", "Sé"), date(03, 10, 2021)).
 record(6625, 12345, 4, 3).
 
 
