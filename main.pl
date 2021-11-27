@@ -154,7 +154,7 @@ query2(Client, [H | T], [E1 | E2]) :-
 
 who_delivered(ClientID, PackageID, (EstafetaID, PackageID)) :-
                 
-                record(PackageID, ClientID, EstafetaID, _), !.
+                record(PackageID, ClientID, EstafetaID, _, _), !.
 
 --------------------------------------------------------------------------outdated----
 */
@@ -189,7 +189,7 @@ q2(Client, List) :-
         
         verify_client(Client),
         clientID(Client, Aux),
-        findall((Enc,Est), record(Enc, Aux, Est,_), List), !.
+        findall((Enc,Est), record(Enc, Aux, Est,_,_), List), !.
 % ------------------------------------------------
 
 
@@ -203,7 +203,7 @@ q2(Client, Estafeta, Encomendas) :-
         verify_client(Client),
         estafeta(Estafeta, _, _),
         clientID(Client, Aux),
-        findall(Enc, record(Enc, Aux, Estafeta,_), Encomendas), !.
+        findall(Enc, record(Enc, Aux, Estafeta,_,_), Encomendas), !.
 % -------------------------------------------------------
 
 % ------------------------------------------------------------
@@ -216,7 +216,7 @@ q2(Client, Encomendas, List) :-
         
         verify_client(Client),
         clientID(Client, Aux),
-        findall((Enc,Est), (record(Enc, Aux, Est,_), member(Enc, Encomendas)), List), !.
+        findall((Enc,Est), (record(Enc, Aux, Est,_,_), member(Enc, Encomendas)), List), !.
 % -------------------------------------------------------
 
 
@@ -240,7 +240,7 @@ query3 : Estafeta, Clients -> {V,F}
 % "rule here"
 query3(Estafeta, A) :-
                             
-                            findall(X, record(_, X, Estafeta,_), L),
+                            findall(X, record(_, X, Estafeta,_,_), L),
                             sort(L, A),
                             write_q3(Estafeta, A), !.
 % --------------------------------------
@@ -255,7 +255,7 @@ query3(Client, Estafetas) :-
             
             verify_client(Client),
             clientID(Client, Aux),
-            findall(Est, record(_, Aux, Est,_), Estafetas),!.
+            findall(Est, record(_, Aux, Est,_,_), Estafetas),!.
 % --------------------------------------
 
 
@@ -386,7 +386,7 @@ average( List, Average) :-
 q6(Estafeta, Value) :-
             
             % estafeta(Estafeta, _, _),
-            findall(X, record(_,_,Estafeta,X), L),
+            findall(X, record(_,_,Estafeta,_, X), L),
             average(L,Value).
 % ---------------------------------------------------
 
@@ -399,7 +399,7 @@ q6(Client, Estafeta, Value) :-
                 
                 verify_client(Client),
                 clientID(Client, ID),
-                findall(X, record(_, ID, Estafeta, X), L),
+                findall(X, record(_, ID, Estafeta, _, X), L),
                 average(L, Value).
 % ---------------------------------------------------
 
@@ -413,3 +413,49 @@ exemplos:
 ---------------------------------------------------
 */
 
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+---------------------
+Q10 - Calcular o PESO TOTAL transportado por UM estafeta NUM determinado dia
+
+q10: Estafeta, Data, Weight -> {V,F}
+Exemplo: q10(1, date(18,11,2021), P).
+---------------------
+*/ 
+
+
+% ---------------------------------------------------
+% q10 : EstafetaID, Date, Peso -> {V,F}
+% ---------------------------------------------------
+% 
+q10(EstafetaID, Date, Peso) :-
+        
+                Date,
+                estafeta(EstafetaID,_,_),
+                findall(ID, record(ID,_,EstafetaID,Date,_), ListaPackage),
+                findall(P,(member(ID, ListaPackage), package(ID, P,_,_,_,_)), ListaPeso),
+                sum_list(ListaPeso, Peso),!.
+
+/*
+% Calcular o PESO TOTAL transportado para CADA estafeta NUM determinado dia.
+*/
+
+
+% "CORRIGIR, REFAZER"
+q10(Date, Answer) :-
+        
+                Date,
+                findall(E, estafeta(E,_,_), Lestafetas),sort(Lestafetas, ES),
+                findall((EstafetaID, ID), (member(EstafetaID, ES), record(ID,_,EstafetaID,Date,_)), ListaPackageID),
+                findall((Es, P), (member((Es, ID), ListaPackageID), package(ID, P,_,_,_,_)), Answer). 
