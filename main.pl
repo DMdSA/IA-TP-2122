@@ -8,10 +8,11 @@ cls :- write('\e[H\e[2J').
 
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
-:- consult('data_base.pl').
-
-
+:- include('data_base.pl').
+:- include('texts.pl').
 :- discontiguous q4/2 .
+
+:- write("#> \"queries()\" to know what queries are available ..."),nl,nl.
 
 
 /*
@@ -62,18 +63,6 @@ isAfter(date(D,M,Y), date(D1,M,Y)) :-
 
 
 
-
-
-
-%---------------------
-% Generate a package price
-%---------------------
-
-
-
-
-
-
 /*
 ---------------------
 Query1,  Estafeta que realizou (+) vezes um meio de transporte (+) ecológico
@@ -86,15 +75,9 @@ query1(E, car(_,_,_), C)
 ---------------------
 */
 
-query1(Estafeta, Meio, Count) :-
+q1(Estafeta, Meio, Count) :-
                     agrupa_encomendas(Meio, List),
-                    mymax((Estafeta, Count), List),
-                    !.
-
-
-
-% Agrupa todos os estafetas que utilizam determinado meio, com o respetivo número de encomendas
-% registadas na sua lista de entregas
+                    mymax((Estafeta, Count), List).
 
 
 
@@ -133,9 +116,6 @@ agrupa_n_encomendas( [(A,B) | Resto], [(A,C) | Wow]) :-
 Query2,  Identificar que estafetas entregaram determinada(s) encomenda(s) a um determinado cliente
 query2 : Client, Packages, Estafetas -> {V,F}
 
-exemplos:
-query2(12345,[11234, 88341, 6625],E).
-
 ---------------------
 */  
 
@@ -154,7 +134,7 @@ query2(Client, [H | T], [E1 | E2]) :-
 
 who_delivered(ClientID, PackageID, (EstafetaID, PackageID)) :-
                 
-                record(PackageID, ClientID, EstafetaID, _, _), !.
+                record(PackageID, ClientID, EstafetaID, _, _, _), !.
 
 --------------------------------------------------------------------------outdated----
 */
@@ -189,7 +169,7 @@ q2(Client, List) :-
         
         verify_client(Client),
         clientID(Client, Aux),
-        findall((Enc,Est), record(Enc, Aux, Est,_,_), List), !.
+        findall((Enc,Est), record(Enc, Aux, Est,_,_,_), List), !.
 % ------------------------------------------------
 
 
@@ -203,7 +183,7 @@ q2(Client, Estafeta, Encomendas) :-
         verify_client(Client),
         estafeta(Estafeta, _, _),
         clientID(Client, Aux),
-        findall(Enc, record(Enc, Aux, Estafeta,_,_), Encomendas), !.
+        findall(Enc, record(Enc, Aux, Estafeta,_,_,_), Encomendas), !.
 % -------------------------------------------------------
 
 % ------------------------------------------------------------
@@ -216,7 +196,7 @@ q2(Client, Encomendas, List) :-
         
         verify_client(Client),
         clientID(Client, Aux),
-        findall((Enc,Est), (record(Enc, Aux, Est,_,_), member(Enc, Encomendas)), List), !.
+        findall((Enc,Est), (record(Enc, Aux, Est,_,_,_), member(Enc, Encomendas)), List), !.
 % -------------------------------------------------------
 
 
@@ -226,37 +206,39 @@ q2(Client, Encomendas, List) :-
 /*
 ---------------------
 Query3, Identificar os clientes servidos por um determinado estafeta
-query3 : Estafeta, Clients -> {V,F}
-
 ---------------------
 */
 
 % ------------------------------------
 % ------------------------------------
-% query3 : Estafeta, [Clients] -> {V,F} |
+% q3 : Estafeta, [Clients] -> {V,F} |
 % ------------------------------------
 % Dado um estafeta, devolve que clientes receberam encomendas desse mesmo estafeta
 
 % "rule here"
-query3(Estafeta, A) :-
+q3(Estafeta, A) :-
                             
-                            findall(X, record(_, X, Estafeta,_,_), L),
+                            findall(X, record(_, X, Estafeta,_,_,_), L),
                             sort(L, A),
                             write_q3(Estafeta, A), !.
 % --------------------------------------
 
 % --------------------------------------
-% query3 : Client, [Estafetas] -> {V,F} |
+% q3 : Client, [Estafetas] -> {V,F} |
 % --------------------------------------
 % Dado um cliente, devolve a lista de estafetas que lhe fizeram entregas
 
+
 % "rule here"
-query3(Client, Estafetas) :-
+q3(Client, Answer) :-
             
             verify_client(Client),
             clientID(Client, Aux),
-            findall(Est, record(_, Aux, Est,_,_), Estafetas),!.
+            findall(Est, record(_, Aux, Est,_,_,_), Estafetas),
+            sort(Estafetas, Answer),!.
 % --------------------------------------
+
+% "Experimentar Client == Estafeta, como distinguir? se aparecerem os 2, se houvesse texto podia-se perceber"
 
 
 
@@ -264,7 +246,7 @@ query3(Client, Estafetas) :-
 write_q3(Estafeta, [H]):-
             estafeta(Estafeta, _,_),
             write("Client: "), write(H), write(" "),
-            client(H,X), write(X),nl,
+            client(H,X), write(X),nl,nl,
             write("Estafeta: "), write(Estafeta),nl,!.
 
 write_q3(E, [H|T]) :-
@@ -294,7 +276,7 @@ Query4, Calcular o valor faturado num determinado dia
 % "code here"
 q4(date(D,M,Y), Value) :-
                 
-                date(D,M,Y),
+                date(D,M,Y), !,
                 findall(V, package(_,_,_,V,_,date(D,M,Y)), Aux),
                 sum_list(Aux, Value).
 
@@ -310,7 +292,7 @@ q4(M, Y, Value) :-
                 member(M, [1,2,3,4,5,6,7,8,9,10,11,12]),
                 Y > 0,
                 findall(V, package(_,_,_,V,_,date(_,M,Y)), Aux),
-                sum_list(Aux, Value), !.
+                sum_list(Aux, Value).
 
 
 % ------------------------------------
@@ -323,7 +305,7 @@ q4(Y, Value) :-
 
                 Y > 0,
                 findall(V, package(_,_,_,V,_,date(_,_,Y)), Aux),
-                sum_list(Aux, Value), !.
+                sum_list(Aux, Value).
 % ------------------------------------
 
 
@@ -360,7 +342,6 @@ q5(road(Rua, Freguesia), Volume) :-
 ---------------------
 Query6 - Calcular a classificação média de satisfação de cliente para
 um determinado estafeta
-
 ---------------------
 */
 
@@ -385,8 +366,8 @@ average( List, Average) :-
 
 q6(Estafeta, Value) :-
             
-            % estafeta(Estafeta, _, _),
-            findall(X, record(_,_,Estafeta,_, X), L),
+            estafeta(Estafeta, _, _),
+            findall(X, record(_,_,Estafeta,_, _,X), L),!,
             average(L,Value).
 % ---------------------------------------------------
 
@@ -399,16 +380,17 @@ q6(Client, Estafeta, Value) :-
                 
                 verify_client(Client),
                 clientID(Client, ID),
-                findall(X, record(_, ID, Estafeta, _, X), L),
+                findall(X, record(_, ID, Estafeta, _, _,X), L),
                 average(L, Value).
 % ---------------------------------------------------
 
 
-/*
-Query7, Calcular o n de entregas com bicicleta, n moto e n carro num intervalo de tempo
-query7 : Data, Data -> {V,F}
 
-exemplos:
+
+/*
+---------------------------------------------------
+Query7, Calcular o nº de entregas pelos diferentes meios de transporte, num intervalo de tempo.
+query7 : Data, Data -> {V,F}
 
 ---------------------------------------------------
 */
@@ -416,46 +398,116 @@ exemplos:
 
 
 
+q7(Date, Answer) :-
+        
+        Date,
+        findall(ID, record(ID,_,_,Date,_,_), ListaPackage),
+        findall(X, (member(P, ListaPackage), record(P,_,_,_,X,_)), List),
+        agrupa(List, Answer),!,
+        writeq7(Answer).
+
+q7(Date1,Date2,Answer) :-
+
+    (Date1, Date2),
+    isAfter(Date1,Date2),
+    filter_by_date_Packages(Date1, Date2, IDEncomendas),
+    findall(X, (member(P, IDEncomendas), record(P,_,_,_,X,_)), List),
+    agrupa(List, Answer),!, writeq7(Answer).
+
+
+writeq7([]) :- nl.
+writeq7([(H,NTimes) | Resto]) :-
+        
+        transport(X, H), write(" ["),
+        write(NTimes), write("] package(s) was delivered by "), write(X), nl,
+        writeq7(Resto).
 
 
 
+/*
+---------------------------------------------------
+Query8, Calcular o n de entregas por estafeta, num intervalo de tempo
+query8 : Data, Data -> {V,F}
+---------------------------------------------------
+*/ 
+
+q8(Date1,Date2, Answer) :-
+            (Date1, Date2),
+            isAfter(Date1,Date2),
+            filter_by_date_Packages(Date1, Date2, Encomendas),
+            findall((Est), (member(Enc, Encomendas), record(Enc, _, Est, _, _, _)), EstDateAux),
+            agrupa(EstDateAux,Answer),!,
+            writeq8(Answer).
 
 
+writeq8([]) :- nl.
+writeq8([(H,NTimes) | Resto]) :-
+    write("Courier ["), write(H), write("] delivered ["), write(NTimes), write("] packages."), nl,
+     writeq8(Resto).
 
+
+remover( _, [], []).
+remover( R, [R|T], T2) :- remover( R, T, T2).
+remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
+
+agrupa([], []).
+agrupa([X], [(X, 1)]).
+agrupa([H | T], [(H, NTimes) | Resto]) :-
+                findall(H, member(H, T), L),
+                length(L, NTimesAux),
+                NTimes is NTimesAux + 1,
+                remover(H,T,T2),
+                agrupa(T2, Resto).
+
+
+filter_by_date_Packages(Date1, Date2, Package) :-
+                    findall(C, (record(C,_,_,DATE,_,_),
+                    dateInBetween(DATE, Date1, Date2)), Package).
+
+
+dateInBetween(date(D,M,Y), date(D1,M1,Y1), date(D2,M2,Y2)) :-
+        \+isAfter(date(D,M,Y),date(D1,M1,Y1)),
+          isAfter(date(D,M,Y),date(D2,M2,Y2)).
 
 
 
 /*
 ---------------------
 Q10 - Calcular o PESO TOTAL transportado por UM estafeta NUM determinado dia
-
 q10: Estafeta, Data, Weight -> {V,F}
 Exemplo: q10(1, date(18,11,2021), P).
 ---------------------
 */ 
 
-
 % ---------------------------------------------------
 % q10 : EstafetaID, Date, Peso -> {V,F}
 % ---------------------------------------------------
 % 
+
 q10(EstafetaID, Date, Peso) :-
         
                 Date,
                 estafeta(EstafetaID,_,_),
-                findall(ID, record(ID,_,EstafetaID,Date,_), ListaPackage),
+                findall(ID, record(ID,_,EstafetaID,Date,_,_), ListaPackage),
                 findall(P,(member(ID, ListaPackage), package(ID, P,_,_,_,_)), ListaPeso),
                 sum_list(ListaPeso, Peso),!.
 
-/*
-% Calcular o PESO TOTAL transportado para CADA estafeta NUM determinado dia.
-*/
 
 
-% "CORRIGIR, REFAZER"
-q10(Date, Answer) :-
+% ---------------------------------------------------
+
+% ---------------------------------------------------
+q10(Date, Answer) :- 
+
+        findall(E, estafeta(E,_,_), X), sort(X,A),
+        q10aux(Date, A, Answer).
+
+
+% ---------------------------------------------------
+
+% ---------------------------------------------------
+q10aux(_, [], []).
+q10aux(Date, [H|T], [(H,P) | R]) :-
         
-                Date,
-                findall(E, estafeta(E,_,_), Lestafetas),sort(Lestafetas, ES),
-                findall((EstafetaID, ID), (member(EstafetaID, ES), record(ID,_,EstafetaID,Date,_)), ListaPackageID),
-                findall((Es, P), (member((Es, ID), ListaPackageID), package(ID, P,_,_,_,_)), Answer). 
+        q10(H, Date, P),
+        q10aux(Date, T, R).

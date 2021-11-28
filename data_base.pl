@@ -18,7 +18,7 @@ may change during execution (using assert/1 and/or retract/1).
 :- dynamic road/2 .
 
 :- discontiguous package/6 .
-:- discontiguous record/5 .
+:- discontiguous record/6 .
 
 
 
@@ -34,7 +34,9 @@ should occur.
 */   
 
 
-
+transport("Bicycle", 1).
+transport("Motorcycle", 2).
+transport("Car", 3).
 
 /*
 ---------------------
@@ -72,28 +74,27 @@ Package
 package : Codigo, Peso, Volume, Valor, Morada, DataCriacao -> {V,F}
 
 Record
-record : PackageID, ClientID, EstafetaID, DeliverDate, DeliverRate -> {V,F}
+record : PackageID, ClientID, EstafetaID, DeliverDate, TransportID, DeliverRate -> {V,F}
 ---------------------
 */
 
 
 package(344053, 0.988, 20, 876, road("Rua Conego Manuel Faria", "Sé"), date(17,11,2021)). 
-record(344053, 2215, 1, date(18, 11, 2021), 4).
+record(344053, 2215, 1, date(18, 11, 2021),2, 4).
 
 package(11234, 13, 102, 2.099, road("Rua wow", "Gualtar"), date(11,11,2021)).
-record(11234, 12345, 1, date(18, 11, 2021), 5).
+record(11234, 12345, 1, date(18, 11, 2021), 1, 5).
 
 package(88341, 2.112, 122, 44.59, road("Rua 2", "Sé"), date(03, 10, 2021)).
-record(88341, 12345, 1, date(03, 10, 2021), 2).
-
+record(88341, 12345, 1, date(03, 10, 2021), 1, 2).
 
 package(6625, 88, 122, 443, road("Rua 2", "Sé"), date(03, 10, 2021)).
-record(6625, 12345, 4, date(04, 10, 2021), 3).
+record(6625, 12345, 4, date(04, 10, 2021), 3, 3).
 
 
+package(5344, 88, 122, 200, road("Rua wow", "Gualtar"), date(03, 10, 2021)).
+record(5344, 2223, 4, date(18, 11, 2021), 3, 3).
 
-% Calcular o valor faturado por um cliente num determinado dia
-% falta -> tempo-limite
 
 
 /*
@@ -158,9 +159,6 @@ client(02223, "Mateus Coelho").
 client(2215, "Diogo Rebelo").
 
 
-
-
-
 /*
 ---------------------
 Road
@@ -168,8 +166,8 @@ road : Rua, Freguesia -> {V,F}
 ---------------------
 */
 
+
 road("Rua Conego Manuel Faria", "Sé").
 road("Rua 2", "Sé").
 road("Rua 3", "Sé").
 road("Rua wow", "Gualtar").
-
