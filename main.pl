@@ -8,10 +8,12 @@ cls :- write('\e[H\e[2J').
 
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
-:- include('data_base.pl').
-:- include('texts.pl').
-:- discontiguous q4/2 .
+:- consult('data_base.pl').
+:- consult('texts.pl').
+:- consult('Invariants.pl').
 
+
+:- discontiguous q4/2 .
 :- write("#> \"queries()\" to know what queries are available ..."),nl,nl.
 
 
@@ -35,13 +37,13 @@ cls :- write('\e[H\e[2J').
 ---------------------
 */
 
-validate(bicycle(W,10,0)) :- 
+validate_transp(bicycle(W,10,0)) :- 
 			(W > 0 , W =< 5).
 
-validate(car(W, 25, 1)) :- 
+validate_transp(car(W, 25, 2)) :- 
 			(W > 0, W =< 100).
 
-validate(motorcycle(W,35, 2)) :- 
+validate_transp(motorcycle(W,35, 1)) :- 
 			(W > 0, W =< 20).
 
 
@@ -319,15 +321,15 @@ por parte do Green Distribution
 */
 
 % ------------------------------------
-% q5 : Road, NumberOfDeliveries -> {V,F}
+% q5 : Address, NumberOfDeliveries -> {V,F}
 % ------------------------------------
 % Recebendo uma rua, freguesia, ou ambos, devolve o nº de entregas realizadas nessa localização
 
-q5(road(Rua, Freguesia), Volume) :-
+q5(address(Rua, Freguesia), Volume) :-
 
-            findall(1, package(_,_,_,_,road(Rua,Freguesia),_), List),
+            findall(1, package(_,_,_,_,address(Rua,Freguesia),_), List),
             sum_list(List, Volume),
-            road(Rua,Freguesia),!.
+            address(Rua,Freguesia),!.
 
 % "here"
 % Realizar a query só para uma "rua" não fará muito sentido....
