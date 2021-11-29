@@ -23,18 +23,11 @@ may change during execution (using assert/1 and/or retract/1).
 :- discontiguous record/6 .
 
 
-
 /*
-    | op(Precedence, Type, Name)
-
-Declare "name" to be an operator. Precedence is an integer [0,1200]. Precedence = 0 removes the
-declaration.
-'y' -> on this position a term with precedence lower or equal to the precedence of the functor 
-should occur.
-'x' -> the precedence of the argument must be strictly lower.
-
-*/   
-
+---------------------
+transport : Name, ID
+---------------------
+*/
 
 transport('Bicycle', 1).
 transport('Motorcycle', 2).
@@ -42,32 +35,33 @@ transport('Car', 3).
 
 /*
 ---------------------
- bicycle
- bicycle : Weight , Average_speed, Ecological_value -> {V,F}
+---------------------
+ Ecological aspect
+        0-1-2
+ 0 -> bicycle
+ 1 -> car
+ 2 -> motorcycle
+---------------------
 
- motorcycle
- motorcycle : Weight , Average_speed, Ecological_value -> {V,F}
+bicycle
+bicycle : Weight , Average_speed, Ecological_value -> {V,F}
 
- car
- car : Weight, Average_speed, Ecological_value -> {V,F}
+motorcycle
+motorcycle : Weight , Average_speed, Ecological_value -> {V,F}
+
+car
+car : Weight, Average_speed, Ecological_value -> {V,F}
 ---------------------
 */
 
-
 bicycle(5, 10, 0).
 bicycle(3,10,0).
-
-% Aqui digo que há 2 bicicletas, mas o objetivo não é dizer quantas, mas quais...
-% 30 estafetas, 2 tipos bicicletas
-
 
 motorcycle(20, 35, 1).
 motorcycle(12, 35, 1).
 
 car(100, 25,2).
 car(32, 25,2).
-
-
 
 
 
@@ -112,17 +106,12 @@ package(1000009, 88, 122, 200, address('Rua da Gregossa', 'Crespos'), date(03, 1
 record(1000009, 10008, 4, date(18, 11, 2021), 3, 3).
 
 
-
 /*
 ---------------------
 Estafeta
-estafeta : ID, Meio, [h | t], Nota-media (varia consoante penalizacoes)
-
-[h|t] -> lista de package´s ID´s
-confirmar a existencia do packet por packet(_,_,...) ou por record ?
+estafeta : ID, MeioTransporte, [Encomendas]
 ---------------------
 */
-
 
 estafeta(1, bicycle(5,10,0), [1000000, 1000001, 1000002, 1000006]).
 estafeta(1, motorcycle(12,35,1), [1000003, 1000007]).
@@ -130,7 +119,8 @@ estafeta(3, car(32, 25,2), [1000004, 1000005]).
 estafeta(4, car(100, 25,2), [1000008, 1000009]).
 
 
-%- Todos os package id existem na BD
+%--------------------- AUXILIAR
+%- Verificar se todos os package ID, presentes numa lista, existem na base de dados
 
 validate_pkg_unicity([]).
 validate_pkg_unicity([H | T]) :- 
@@ -138,7 +128,8 @@ validate_pkg_unicity([H | T]) :-
                 package(H,_,_,_,_,_),
                 validate_pkg_unicity(T).
 
-%- Todos os package id estao POR entregar
+%--------------------- AUXILIAR
+%- Verificar se todos os package ID, presentes numa lista, estão por entregar, i.e., não há um record sobre eles
 
 validate_to_deliver([]).
 validate_to_deliver([H | T]) :- 
@@ -146,10 +137,6 @@ validate_to_deliver([H | T]) :-
                 \+record(H,_,_,_,_,_),
                 validate_to_deliver(T).
             
-
-
-
-
 
 /*---------------------
 Date
@@ -170,13 +157,16 @@ date(D,2,A) :- D >= 1, D =< 28,
 date(D,2,A) :- D >= 1, D =< 28,
                 A mod 4 =\= 0.
 
-validate_date(date(D,M,Y)) :- date(D,M,Y).
+%--------------------- AUXILIAR
+% Verifica se uma data é válida
 
+validate_date(date(D,M,Y)) :- 
+                date(D,M,Y).
 
 /*
 ---------------------
 Client
-client : NIF, Nome -> {V,F}
+client : ID, Nome -> {V,F}
 ---------------------
 */
 
@@ -273,5 +263,7 @@ address('Rua de Espanha', 'São Vicente').
 address('Rua da Tomada', 'Sequeira').
 address('Rua da Venda', 'Sequeira').
 
+%--------------------- AUXILIAR
+% Verifica se uma rua é valida e existe
 validate_address(address(R, F)) :-
     atom(R), atom(F), address(R,F).

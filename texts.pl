@@ -10,9 +10,10 @@ query( 9, "Calcular o número de encomendas entregues e não entregues pela Gree
 query( 10, "Calcular o peso total transportado por estafeta num determinado dia").
 
 query_help(0, "#> write \"query_help('number')\" to know more(...)").
+
 query_help(1) :-
 		write("#> q1(IDestafeta, Meio, Nvezes)"),nl,
-		write("#> ex: q1(1, car(_,_,_), X)."),nl,nl.
+		write("#> ex: q1(E, car(_,_,_), X)."),nl,nl.
 
 query_help(2) :-
 		write("#> q2(Client, [(Encomenda, Estafeta)])"), nl,
@@ -46,19 +47,26 @@ query_help(6) :-
 		write("#> ex: q6(1, X)."),nl,
 		write("#> ex: q6(client(12345,_),1,X)."),nl,nl.
 
+query_help(7) :-
+        write("#> q7(Date, Value)"),nl,
+        write("#> q7(Date, Date, Value)"),nl,
+        write("#> ex: q7(date(3,10,2021),X)."),nl,
+        write("#> ex: q7(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
+
+query_help(8) :-
+        write("#> q8(Date, Value)"),nl,
+        write("#> q8(Date, Date, Value)"),nl,
+        write("#> ex: q8(date(3,10,2021),X)."),nl,
+        write("#> ex: q8(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
 
 
-query_help(7).
-query_help(8).
 query_help(9).
+
 query_help(10) :-
 		write("#> q10 (Estafeta, Data, Weight"),nl,
 		write("#> q10 (Date, Answer)"),nl,
-		write("#> ex: q10,(1, date(18,11,2021),P)"),nl,
-		write("#> ex: q10(Date, X) "),nl,nl.
-
-
-
+		write("#> ex: q10,(1, date(18,11,2021), P)."),nl,
+		write("#> ex: q10(Date, X)."), nl,nl.
 
 
 
@@ -76,8 +84,3 @@ print_query([(N,Text) | R]) :-
 			
 			write("Query["), write(N), write("] - "), write(Text)
 			,nl, print_query(R).
-
-
-
-
-
