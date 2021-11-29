@@ -51,7 +51,12 @@ query_help(6) :-
 query_help(7).
 query_help(8).
 query_help(9).
-query_help(10).
+query_help(10) :-
+		write("#> q10 (Estafeta, Data, Weight"),nl,
+		write("#> q10 (Date, Answer)"),nl,
+		write("#> ex: q10,(1, date(18,11,2021),P)"),nl,
+		write("#> ex: q10(Date, X) "),nl,nl.
+
 
 
 
