@@ -95,23 +95,21 @@ record(1000003, 10002, 1, date(13, 11, 2021), 2, 1).
 package(1000004, 1, 5, 10, adress('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021)).
 record(1000004, 10003, 3, date(15, 11, 2021), 3, 3).
 
+package(1000005, 0.988, 20, 876, address('Rua dos Regos', 'Cabreiros'), date(17,11,2021)). 
+record(1000005, 10004, 3, date(18, 11, 2021),3, 4).
+
+package(1000006, 13, 102, 2.099, address('Rua da Mamoa', 'Lamas'), date(11,11,2021)).
+record(1000006, 10005, 1, date(18, 11, 2021), 1, 5).
+
+package(1000007, 2.112, 122, 44.59, address('Rua da Sacota', 'Cabreiros'), date(03, 10, 2021)).
+record(1000007, 10006, 1, date(03, 10, 2021), 2, 2).
+
+package(1000008, 88, 122, 443, address('Rua da Escola', 'Crespos'), date(03, 10, 2021)).
+record(1000008, 10007, 4, date(04, 10, 2021), 3, 3).
 
 
-package(344053, 0.988, 20, 876, address('Rua Conego Manuel Faria', 'Sé'), date(17,11,2021)). 
-record(344053, 2215, 1, date(18, 11, 2021),2, 4).
-
-package(11234, 13, 102, 2.099, address('Rua wow', 'Gualtar'), date(11,11,2021)).
-record(11234, 12345, 1, date(18, 11, 2021), 1, 5).
-
-package(88341, 2.112, 122, 44.59, address('Rua ', 'Sé'), date(03, 10, 2021)).
-record(88341, 12345, 1, date(03, 10, 2021), 1, 2).
-
-package(6625, 88, 122, 443, address('Rua 2', 'Sé'), date(03, 10, 2021)).
-record(6625, 12345, 4, date(04, 10, 2021), 3, 3).
-
-
-package(5344, 88, 122, 200, address('Rua wow', 'Gualtar'), date(03, 10, 2021)).
-record(5344, 2223, 4, date(18, 11, 2021), 3, 3).
+package(1000009, 88, 122, 200, address('Rua da Gregossa', 'Crespos'), date(03, 10, 2021)).
+record(1000009, 10008, 4, date(18, 11, 2021), 3, 3).
 
 
 
@@ -126,10 +124,10 @@ confirmar a existencia do packet por packet(_,_,...) ou por record ?
 */
 
 
-estafeta(1, bicycle(5,10,0), [1000000, 1000001, 1000002]).
-estafeta(1, motorcycle(12,35,1), [1000003]).
-estafeta(3, car(32, 25,2), []).
-estafeta(4, car(100, 25,2), [6625, 5344]).
+estafeta(1, bicycle(5,10,0), [1000000, 1000001, 1000002, 1000006]).
+estafeta(1, motorcycle(12,35,1), [1000003, 1000007]).
+estafeta(3, car(32, 25,2), [1000004, 1000005]).
+estafeta(4, car(100, 25,2), [1000008, 1000009]).
 
 
 %- Todos os package id existem na BD
@@ -220,11 +218,6 @@ address : Rua, Freguesia -> {V,F}
 ---------------------
 */
 
-
-address('Rua Conego Manuel Faria', 'Sé').
-address('Rua 2', 'Sé').
-address('Rua 3', 'Sé').
-address('Rua wow', 'Gualtar').
 address('Rua Balbeira', 'Adaúfe').
 address('Rua Ortigueira', 'Adaúfe').
 address('Rua Aida Gonçalves', 'Arentim').
