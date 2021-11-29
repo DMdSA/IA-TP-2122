@@ -50,7 +50,22 @@ testI([H | T]) :- H, testI(T).
 ).
 %----------------------------------------
 
++client(ID, Name) ::(
+	integer(ID),
+	atom(Name)
+).
 
++client(ID, Name) :: (
+	
+	solucoes(ID, client(ID,_), client_list),
+	length(client_list, c_l),
+	(c_l, 1)
+).
+
++adress(Rua, Fregsia) :: (
+	atom(Rua),
+	atom(Fregsia)
+).
 
 
 %----------------------------------------
