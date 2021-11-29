@@ -80,6 +80,22 @@ record : PackageID, ClientID, EstafetaID, DeliverDate, TransportID, DeliverRate 
 ---------------------
 */
 
+package(1000000, 2.5, 25 , 30 , address('Rua Baldeira','Adaúfe'), date(11, 11, 2021)).
+record(1000000, 10000, 1, date(11, 11, 2021), 1, 5).
+
+package(1000001, 3.3, 27, 32, address('Rua Ortigueira', 'Adaúfe'), date(11, 11, 2021)).
+record(1000001, 10001, 1, date(11, 11, 2021), 1, 4). 
+
+package(1000002, 3.4, 20, 33, address('Rua Aida Gonçalves', 'Arentim'), date(11, 11, 2021)).
+record(1000001, 10002, 1, date(11, 11, 2021), 1, 3). 
+
+package(1000003, 5, 10, 15, address('Rua Aida Gonçalves', 'Arentim'), date(12, 11, 2021)).
+record(1000003, 10002, 1, date(13, 11, 2021), 2, 1). 
+
+package(1000004, 1, 5, 10, adress('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021)).
+record(1000004, 10003, 3, date(15, 11, 2021), 3, 3).
+
+
 
 package(344053, 0.988, 20, 876, address('Rua Conego Manuel Faria', 'Sé'), date(17,11,2021)). 
 record(344053, 2215, 1, date(18, 11, 2021),2, 4).
@@ -110,9 +126,8 @@ confirmar a existencia do packet por packet(_,_,...) ou por record ?
 */
 
 
-
-estafeta(1, bicycle(5,10,0), [11234, 88341]).
-estafeta(1, motorcycle(12,35,1), [344053]).
+estafeta(1, bicycle(5,10,0), [1000000, 1000001, 1000002]).
+estafeta(1, motorcycle(12,35,1), [1000003]).
 estafeta(3, car(32, 25,2), []).
 estafeta(4, car(100, 25,2), [6625, 5344]).
 
@@ -167,10 +182,35 @@ client : NIF, Nome -> {V,F}
 ---------------------
 */
 
-client(12345, 'Diogo Araújo').
-client(88321, 'Joel Araújo').
-client(02223, 'Mateus Coelho').
-client(2215, 'Diogo Rebelo').
+client(10000, 'Diogo Araújo').
+client(10001, 'Joel Araújo').
+client(10002, 'Mateus Coelho').
+client(10003, 'Diogo Rebelo').
+client(10004, 'Miguel Silva').
+client(10005, 'Afonso Faria').
+client(10006, 'André Nunes').
+client(10007, 'Duarte Mendes').
+client(10008, 'Fábio Silva').
+client(10009, 'Fernando Lopes').
+client(10010, 'Filipe Oliveira').
+client(10011, 'Gonçalo Afonso').
+client(10012, 'Gonçalo Carvalaho').
+client(10013, 'Gonçalo Pereira').
+client(10014, 'Henrique Ribeiro').
+client(10015, 'Isabel Perez').
+client(10016, 'Jéssica Fernandes').
+client(10017, 'José Duarte').
+client(10018, 'José Peixoto').
+client(10019, 'Maria Gomes').
+client(10020, 'Mariem Khammassi').
+client(10021, 'Miguel Martins').
+client(10022, 'Nuno Oliveira').
+client(10023, 'Pedro Alves').
+client(10024, 'Raúl Parente').
+client(10025, 'Rui Morais').
+client(10026, 'Sara Silva').
+client(10027, 'Simão Cunha').
+client(10028, 'Tiago Silva').
 
 
 /*
@@ -185,6 +225,60 @@ address('Rua Conego Manuel Faria', 'Sé').
 address('Rua 2', 'Sé').
 address('Rua 3', 'Sé').
 address('Rua wow', 'Gualtar').
+address('Rua Balbeira', 'Adaúfe').
+address('Rua Ortigueira', 'Adaúfe').
+address('Rua Aida Gonçalves', 'Arentim').
+address('Rua da Barroca', 'Arentim').
+address('Rua da Sacota', 'Cabreiros').
+address('Rua dos Regos', 'Cabreiros').
+address('Rua da Portagem', 'Celeiros').
+address('Rua da Quinta', 'Celeiros').
+address('Rua da Escola', 'Crespos').
+address('Rua da Gregossa', 'Crespos').
+address('Rua da Encosta', 'Escudeiros').
+address('Rua da Formiga', 'Escudeiros').
+address('Rua das Carvalheiras', 'Espinho').
+address('Rua das Fontaínhas', 'Espinho').
+address('Rua das Vinhas', 'Esporões').
+address('Rua do Carvalhal', 'Esporões').
+address('Rua Cruz do Outeiro', 'São Mamede').
+address('Rua da Batoca', 'São Pedro').
+address('Rua da Esperança', 'Ferreiros').
+address('Rua da Figueira', 'Ferreiros').
+address('Rua das Mimosas', 'Figueiredo').
+address('Rua de Coruche', 'Figueiredo').
+address('Rua Monte de Baixo', 'Gualtar').
+address('Rua da Pedreira', 'Gualtar').
+address('Rua da Igreja Velha', 'Guisande').
+address('Rua da Lage', 'Guisande').
+address('Rua da Cabraínha', 'Lamas').
+address('Rua da Mamoa', 'Lamas').
+address('Rua da Varziela', 'Lomar').
+address('Rua da Quinta das Mouras', 'Lomar').
+address('Rua da Estação', 'Maximinos').
+address('Rua das Portas', 'Maximinos').
+address('Rua das Lavandeiras', 'Tibães').
+address('Rua do Sobrado', 'Tibães').
+address('Rua de Almoinha', 'Morreira').
+address('Rua do Monte', 'Morreira').
+address('Rua da Senra', 'Nogueira').
+address('Rua das Flores', 'Nogueira').
+address('Rua da Mina', 'Palmeira').
+address('Rua da Paz', 'Palmeira').
+address('Rua do Rio', 'Pedralva').
+address('Rua do Souto', 'Pedralva').
+address('Rua da Casa Nova', 'Priscos').
+address('Rua do Castro', 'Priscos').
+address('Rua da Cachada', 'Semelhe').
+address('Rua da Escola', 'Semelhe').
+address('Rua do Eiteiro', 'Ruilhe').
+address('Rua do Ferreiro', 'Ruilhe').
+address('Rua da Arcela', 'São Vitor').
+address('Rua da Chamadeira', 'São Vitor').
+address('Rua das Pochinhas', 'São Vicente').
+address('Rua de Espanha', 'São Vicente').
+address('Rua da Tomada', 'Sequeira').
+address('Rua da Venda', 'Sequeira').
 
 validate_address(address(R, F)) :-
     atom(R), atom(F), address(R,F).
