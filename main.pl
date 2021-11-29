@@ -471,6 +471,21 @@ dateInBetween(date(D,M,Y), date(D1,M1,Y1), date(D2,M2,Y2)) :-
         \+isAfter(date(D,M,Y),date(D1,M1,Y1)),
           isAfter(date(D,M,Y),date(D2,M2,Y2)).
 
+/*
+---------------------------------------------------
+Query9, calcular o número de encomendas entregues e não entregues pela Green Distribution, num determinado período de tempo
+query9 : Data, Data -> {V,F}
+---------------------------------------------------
+*/ 
+
+
+
+
+
+
+
+
+
 
 
 /*
