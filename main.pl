@@ -144,10 +144,10 @@ Query4, Calcular o valor faturado num determinado dia
 % Dada uma data, devolve o total de dinheiro que a empresa fez nesse dia
 
 % "code here"
-q4(date(D,M,Y), Value) :-
+q4(date(D,M,Y,_), Value) :-
                 
-                date(D,M,Y), !,
-                findall(V, package(_,_,_,V,_,date(D,M,Y),_), Aux),
+                date(D,M,Y,_), !,
+                findall(V, package(_,_,_,V,_,date(D,M,Y,_),_), Aux),
                 sum_list(Aux, Value).
 
 
@@ -161,7 +161,7 @@ q4(M, Y, Value) :-
                 
                 member(M, [1,2,3,4,5,6,7,8,9,10,11,12]),
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,M,Y),_), Aux),
+                findall(V, package(_,_,_,V,_,date(_,M,Y,_),_), Aux),
                 sum_list(Aux, Value).
 
 
@@ -174,7 +174,7 @@ q4(M, Y, Value) :-
 q4(Y, Value) :- 
 
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,_,Y),_), Aux),
+                findall(V, package(_,_,_,V,_,date(_,_,Y,_),_), Aux),
                 sum_list(Aux, Value).
 
 
@@ -324,9 +324,9 @@ filter_by_date_estafetas(Date1, Date2, Package) :-
                     dateInBetween(DATE, Date1, Date2)), Package).
 
 
-dateInBetween(date(D,M,Y), date(D1,M1,Y1), date(D2,M2,Y2)) :-
-        \+isAfter(date(D,M,Y),date(D1,M1,Y1)),
-          isAfter(date(D,M,Y),date(D2,M2,Y2)).
+dateInBetween(date(D,M,Y,H), date(D1,M1,Y1,H1), date(D2,M2,Y2,H2)) :-
+        \+isAfter(date(D,M,Y,H),date(D1,M1,Y1,H1)),
+          isAfter(date(D,M,Y,H1),date(D2,M2,Y2,H2)).
 
 
 /*
