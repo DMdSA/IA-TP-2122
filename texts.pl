@@ -19,15 +19,15 @@ query_help(2) :-
 		write("#> q2(Client, [(Encomenda, Estafeta)])"), nl,
 		write("#> q2(Client, Estafeta, [Encomendas])"), nl,
 		write("#> q2(Client, [Encomendas], [(Encomenda,Estafeta)])"),nl,
-		write("#> ex: q2(\"Diogo Araújo\",X)."),nl,
-		write("#> ex: q2(02223, 1, X)."),nl,
-		write("#> ex: q2(2215,[344053],X)."),nl,nl.
+		write("#> ex: q2(\'Diogo Araújo\',X)."),nl,
+		write("#> ex: q2(10000, 1, X)."),nl,
+		write("#> ex: q2(10000,[1000000],X)."),nl,nl.
 
 query_help(3) :-
 		write("#> q3(Estafeta, [Clients])"),nl,
 		write("#> q3(Client, [Estafetas])"),nl,
 		write("#> ex: q3(1,X)."),nl,
-		write("#> ex: q3(12345, X)."),nl,nl.
+		write("#> ex: q3(10003, X)."),nl,nl.
 
 query_help(4) :-
 		write("#> q4(Date, Value)"),nl,
@@ -37,15 +37,15 @@ query_help(4) :-
 		write("#> ex: q4(11, 2021, V)."),nl,nl.
 
 query_help(5) :-
-		write("#> q5(Road, Ndeliveries"),nl,
-		write("#> ex: q5(road(\"Rua wow\",_),X)."),nl,
-		write("#> ex: q5(road(\"Rua 2\",\"Sé\"),X)."),nl,nl.
+		write("#> q5(Address, Ndeliveries"),nl,
+		write("#> ex: q5(address(\'Rua Aida Gonçalves\',_),X)."),nl,
+		write("#> ex: q5(address(\'Rua da Escola\',\'Crespos\'),X)."),nl,nl.
 
 query_help(6) :-
 		write("#> q6(Estafeta, Value)"),nl,
 		write("#> q6(Client, Estafeta, Value)"),nl,
 		write("#> ex: q6(1, X)."),nl,
-		write("#> ex: q6(client(12345,_),1,X)."),nl,nl.
+		write("#> ex: q6(client('Joel Araújo',_),1,X)."),nl,nl.
 
 query_help(7) :-
         	write("#> q7(Date, Value)"),nl,
