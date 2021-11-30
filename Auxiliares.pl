@@ -4,7 +4,7 @@
 :- dynamic max_couple/2 .
 :- dynamic verify_client/1 .
 :- dynamic clientID/2 .
-
+:- dynamic verify_possible_weight/2 .
 
 
 /*
@@ -15,13 +15,13 @@
 ---------------------
 */
 
-validate_transp(bicycle(W,10,0)) :- 
+validate_transp(transport('Bicycle',W,10,0)) :- 
 			(W > 0 , W =< 5).
 
-validate_transp(car(W, 25, 2)) :- 
+validate_transp(transport('Car',W, 25, 2)) :- 
 			(W > 0, W =< 100).
 
-validate_transp(motorcycle(W,35, 1)) :- 
+validate_transp(transport('Motorcycle',W,35, 1)) :- 
 			(W > 0, W =< 20).
 
 
@@ -50,11 +50,11 @@ isAfter(date(_,_,_,H),date(_,_,_,H1)) :-
 ---------------------
 */
 
-total_price(package(C,P,W,V,_,_), X) :-
+total_price(package(C,P,W,V,_,_,_), X) :-
                 
-                
-                record(C,_,_,_,T,_),
-                X is 2.75 + P + 0.2*W + 0.15*V + 2*T.
+                record(C,_,_,_,TName,_),
+                transport(TName,_,_,ECO),!,
+                X is 2.75 + P + 0.2*W + 0.15*V + 2*ECO.
 
                 
 /*
@@ -144,3 +144,15 @@ dateInBetween(date(D,M,Y,H), date(D1,M1,Y1,H1), date(D2,M2,Y2,H2)) :-
 filter_by_date_Transport(Date1, Date2, Transport) :-
                     findall(C, (record(_,_,_,DATE,C,_),
                     dateInBetween(DATE, Date1, Date2)), Transport).
+
+
+
+
+% "AUXILIAR HERE"
+%---- verify_possible_weight : [PackageWeight], TransportCapacity -> {V,F}
+
+verify_possible_weight([PkgW], W) :- PkgW =< W.
+verify_possible_weight([H|T], W) :-
+                                                        
+                                H =< W,
+                                verify_possible_weight(T,W).

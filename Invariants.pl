@@ -25,8 +25,7 @@ testI([]).
 testI([H | T]) :- H, testI(T).
 %----------------------------------------
 
-
-
+ 
 %----------------------------------------
 % Invariantes Estruturais e Referenciais |
 %----------------------------------------
@@ -36,129 +35,33 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 %---- Tipo do facto
 
-+transport(Name, ID) :: (
++transport(Name, Weight, Speed, Eco) :: (
 
 	atom(Name),
-	integer(ID)
+	integer(Weight),
+	integer(Speed),
+	integer(Eco)
 ).
 
-%---- Unicidade do facto
+%---- Unicidade e validadedo facto
 
-+transport(Name, ID) :: (
++transport(N,W,S,E) :: (
 
-	solucoes(ID, transport(_,ID), ID_list),
-	solucoes(Name, transport(Name,_), Name_list),
-	length(ID_list, ID_l),
-	length(Name_list, N_l),
-	(ID_l = 1, N_l = 1)
+	solucoes((N,W), transport(N,W,_,_),List),
+	length(List,1),
+	validate_transp(transport(N,W,S,E))
 ).
 
 %---- Só posso eliminar se não houver nenhum record que o utilize
-% 'só há este caso?...'
+%---- O seu ID é como se fosse Nome+Weight, visto serem as únicas variáveis
 
--transport(_, ID) :: (
+-transport(N,W,_,_) :: (
 
-	solucoes(ID, record(_,_,_,_,ID,_), N),
-	length(N,0)
-).
-
-%----------------------------------------
-
-
-
-%----------------------------------------
-% BICYCLE
-%----------------------------------------
-%---- Tipo do facto
-
-+bicycle( W, AS, EV) :: (
-
-	integer(W),
-	integer(AS),
-	integer(EV)
-).
-
-%---- Unicidade e validade do facto
-
-+bicycle(W,AS,EV) :: (
-
-	solucoes(W, bicycle(W,_,_), W_list),
-	length(W_list, 1),
-	validate_transp(bicycle(W,AS,EV))
-).
-
-
-%---- Posso apagar uma bicycle apenas quando nenhum estafeta a usar
-
--bicycle(W,AS,EV) :: (
-
-	solucoes((W,AS,EV), estafeta(_,bicycle(W,AS,EV),_), N),
-	length(N,0)
+	solucoes((N,W), estafeta(_,transport(N,W,_,_),_), List),
+	length(List,0) 
 ).
 %----------------------------------------
 
-
-%----------------------------------------
-% MOTORCYCLE
-%----------------------------------------
-%---- Tipo do facto
-
-+motorcycle( W, AS, EV) :: (
-
-	integer(W),
-	integer(AS),
-	integer(EV)
-).
-
-%---- Unicidade e validade do facto
-
-+motorcycle(W,AS,EV) :: (
-
-	solucoes(W, motorcycle(W,_,_), W_list),
-	length(W_list, 1),
-	validate_transp(motorcycle(W,AS,EV))
-).
-
-%---- Posso apagar um motorcycle apenas quando nenhum estafeta a usar
-
--motorcycle(W,AS,EV) :: (
-
-	solucoes((W,AS,EV), estafeta(_,motorcycle(W,AS,EV),_), N),
-	length(N,0)
-).
-%----------------------------------------
-
-
-%----------------------------------------
-% CAR
-%----------------------------------------
-%---- Tipo do facto
-
-+car( W, AS, EV) :: (
-
-	integer(W),
-	integer(AS),
-	integer(EV)
-).
-
-%---- Unicidade e validade do facto
-
-+car(W,AS,EV) :: (
-
-	solucoes(W, car(W,_,_), W_list),
-	length(W_list, 1),
-	validate_transp(car(W,AS,EV))
-).
-
-
-%---- Posso apagar um car apenas quando nenhum estafeta a usar
-
--car(W,AS,EV) :: (
-
-	solucoes((W,AS,EV), estafeta(_,car(W,AS,EV),_), N),
-	length(N,0)
-).
-%----------------------------------------
 
 %----------------------------------------
 % PACKAGE
@@ -292,6 +195,15 @@ testI([H | T]) :- H, testI(T).
 	validate_pkg_unicity(Ps),			%% verificar que existem, pelo menos
 	validate_to_deliver(Ps)				%% confirmar que todos estão por entregar
 ).
+
+%---- Só pode adicionar uma lista de encomendas se o peso de cada uma delas for suportado pelo transporte associado
+
++estafeta(_, transport(_,W,_,_), Pkgs) :: (
+
+	solucoes(Weight, (member(ID, Pkgs), package(ID, Weight,_,_,_,_,_)), List),
+	verify_possible_weight(List, W)
+).
+
 
 %---- Posso remover um estafeta se não houver nenhum record sobre ele
 

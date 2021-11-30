@@ -12,10 +12,7 @@ may change during execution (using assert/1 and/or retract/1).
 */
 
 
-:- dynamic transport/2 .
-:- dynamic bicycle/3 .
-:- dynamic motorcycle/3 .
-:- dynamic car/3 .
+:- dynamic transport/4 .
 :- dynamic address/2 .
 :- dynamic client/2 .
 :- dynamic date/3 .
@@ -26,43 +23,18 @@ may change during execution (using assert/1 and/or retract/1).
 
 /*
 ---------------------
-transport : Name, ID
+transport : Name, Weight, Speed, EcoValue
 ---------------------
 */
 
-transport('Bicycle', 1).
-transport('Motorcycle', 2).
-transport('Car', 3).
+transport('Bicycle', 5, 10, 0).
+transport('Bicycle', 3, 10, 0).
 
-/*
----------------------
----------------------
- Ecological aspect
-        0-1-2
- 0 -> bicycle
- 1 -> car
- 2 -> motorcycle
----------------------
+transport('Motorcycle', 20, 35, 1).
+transport('Motorcycle', 12, 35, 1).
 
-bicycle
-bicycle : Weight , Average_speed, Ecological_value -> {V,F}
-
-motorcycle
-motorcycle : Weight , Average_speed, Ecological_value -> {V,F}
-
-car
-car : Weight, Average_speed, Ecological_value -> {V,F}
----------------------
-*/
-
-bicycle(5, 10, 0).
-bicycle(3,10,0).
-
-motorcycle(20, 35, 1).
-motorcycle(12, 35, 1).
-
-car(100, 25,2).
-car(32, 25,2).
+transport('Car', 100,25, 2).
+transport('Car', 32,25, 2).
 
 
 
@@ -71,63 +43,63 @@ Package
 package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, **TempoEspera (em horas) * -> {V,F}
 
 Record
-record : PackageID, ClientID, EstafetaID, DeliverDate, TransportID, DeliverRate -> {V,F}
+record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F}
 ---------------------
 */
 
 package(1000000, 2.5, 25 , 30 , address('Rua Baldeira','Adaúfe'), date(11, 11, 2021, 12), 6).
-record(1000000, 10000, 1, date(11, 11, 2021, 16), 1, 5).
+record(1000000, 10000, 1, date(11, 11, 2021, 16), 'Bicycle', 5).
 
 package(1000001, 3.3, 27, 32, address('Rua Ortigueira', 'Adaúfe'), date(11, 11, 2021, 8), 12).
-record(1000001, 10001, 1, date(11, 11, 2021, 20), 1, 4). 
+record(1000001, 10001, 1, date(11, 11, 2021, 20), 'Bicycle', 4). 
 
 package(1000002, 3.4, 20, 33, address('Rua Aida Gonçalves', 'Arentim'), date(11, 11, 2021, 17), 0).
-record(1000001, 10002, 1, date(11, 11, 2021, 18), 1, 3). 
+record(1000002, 10002, 1, date(11, 11, 2021, 18), 'Bicycle', 3). 
 
 package(1000003, 5, 10, 15, address('Rua Aida Gonçalves', 'Arentim'), date(12, 11, 2021, 11), 2).
-record(1000003, 10002, 1, date(13, 11, 2021, 11), 2, 1). 
+record(1000003, 10002, 1, date(13, 11, 2021, 11), 'Motorcycle', 1). 
 
-package(1000004, 1, 5, 10, adress('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021, 20), 24).
-record(1000004, 10003, 3, date(15, 11, 2021, 10), 3, 3).
+package(1000004, 1, 5, 10, address('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021, 20), 24).
+record(1000004, 10003, 3, date(15, 11, 2021, 10), 'Car', 3).
 
 package(1000005, 0.988, 20, 876, address('Rua dos Regos', 'Cabreiros'), date(17,11,2021, 12), 72). 
-record(1000005, 10004, 3, date(18, 11, 2021, 19),3, 4).
+record(1000005, 10004, 3, date(18, 11, 2021, 19),'Car', 4).
 
 package(1000006, 13, 102, 2.099, address('Rua da Mamoa', 'Lamas'), date(11,11,2021, 9), 12).
-record(1000006, 10005, 1, date(11, 11, 2021, 15), 1, 5).
+record(1000006, 10005, 1, date(11, 11, 2021, 15), 'Bicycle', 5).
 
 package(1000007, 2.112, 122, 44.59, address('Rua da Sacota', 'Cabreiros'), date(03, 10, 2021, 8), 6).
-record(1000007, 10006, 1, date(03, 10, 2021, 20), 2, 2).
+record(1000007, 10006, 1, date(03, 10, 2021, 20), 'Motorcycle', 2).
 
 package(1000008, 88, 122, 443, address('Rua da Escola', 'Crespos'), date(03, 10, 2021, 20), 2).
-record(1000008, 10007, 4, date(04, 10, 2021, 8), 3, 3).
+record(1000008, 10007, 4, date(04, 10, 2021, 8), 'Car', 3).
 
 package(1000009, 88, 122, 200, address('Rua da Gregossa', 'Crespos'), date(03, 10, 2021, 21), 48).
-record(1000009, 10008, 4, date(18, 10, 2021, 12), 3, 1).
+record(1000009, 10008, 4, date(18, 10, 2021, 12), 'Car', 1).
 
-package(1000010, 28, 2, 67, address('Rua do Sobrado', 'Tibães'), date(23, 12, 2021, 15), 24).
-record(10000010, 10020, 2, date(24, 12, 2021, 17), 1, 5).
+package(10000010, 28, 2, 67, address('Rua do Sobrado', 'Tibães'), date(23, 12, 2021, 15), 24).
+record(10000010, 10020, 2, date(24, 12, 2021, 17), 'Bicycle', 5).
 
 package(1000011, 2300, 150, 120 , address('Rua da Encosta', 'Escudeiros'), date(13, 12, 2021, 15), 12).
-record(1000011, 10018, 4, date(16, 12, 2021, 17), 3, 2).
+record(1000011, 10018, 4, date(16, 12, 2021, 17), 'Car', 2).
 
 package(1000012, 70, 0.2 , 0.4 , address('Rua das Portas', 'Maximinos'), date(3, 9, 2021, 15), 12).
-record(1000012, 10003, 3, date(3, 9, 2021, 17), 1, 5).
+record(1000012, 10003, 3, date(3, 9, 2021, 17), 'Bicycle', 5).
 
 package(1000013, 5.6, 1, 2, address('Rua do Rio','Pedralva'), date(2, 7, 2021, 15), 12).
-record(1000013, 10016, 1, date(2,7,2021, 17), 2, 4).
+record(1000013, 10016, 1, date(2,7,2021, 17), 'Motorcycle', 4).
 
 package(1000014, 56, 10, 3, address('Rua da Mina','Palmeira'), date(23, 7, 2021, 15), 48).
-record(1000014, 10002, 4, date(24,7,2021, 17), 3, 2).
+record(1000014, 10002, 4, date(24,7,2021, 17), 'Car', 2).
 
 package(1000015, 2000, 0.2, 0.1, address('Rua da Arcela','São Vitor'), date(30, 9, 2021, 15), 12).
-record(1000015, 10003, 2, date(1,10,2021, 17), 1, 5).
+record(1000015, 10003, 2, date(1,10,2021, 17), 'Bicycle', 5).
 
 package(1000016, 45, 2, 3, address('Rua da Formiga','Escudeiros'), date(10, 3, 2021, 15), 6).
-record(1000016, 10012, 2, date(19,3,2021, 17), 3, 1).
+record(1000016, 10012, 2, date(19,3,2021, 17), 'Car', 1).
 
 package(1000017, 5, 6, 3.2, address('Rua das Vinhas','Esporões'), date(17, 7, 2021, 15), 0).
-record(1000017, 10014, 4, date(18,7,2021, 17), 2, 1).
+record(1000017, 10014, 4, date(18,7,2021, 17),'Motorcycle', 1).
 
 /*
 ---------------------
@@ -135,17 +107,17 @@ Estafeta
 estafeta : ID, MeioTransporte, [Encomendas]
 ---------------------
 */
-estafeta(1, bicycle(5,10,0), [1000000, 1000001, 1000006]).
-estafeta(1, motorcycle(12,35,1), [1000003, 1000007, 1000013]).
+estafeta(1, transport('Bicycle',5,10,0), [1000000, 1000001, 1000006]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000003, 1000007, 1000013]).
 
-estafeta(2, bicycle(3,10,0), [10000010, 1000002, 1000015]).
-estafeta(2, car(100,25,2), [1000016]).
+estafeta(2, transport('Bicycle',3,10,0), [10000010, 1000002, 1000015]).
+estafeta(2, transport('Car',100,25,2), [1000016]).
 
-estafeta(3, car(32, 25,2), [1000004, 1000005]).
-estafeta(3, bicycle(5,10,0),[1000012]).
+estafeta(3, transport('Car',32, 25,2), [1000004, 1000005]).
+estafeta(3, transport('Bicycle',5,10,0),[1000012]).
 
-estafeta(4, car(100, 25,2), [1000008, 1000011, 1000014]).
-estafeta(4, motorcycle(20,35,1),[1000009,1000017]).
+estafeta(4, transport('Car',100, 25,2), [1000008, 1000011, 1000014]).
+estafeta(4, transport('Motorcycle',20,35,1),[1000009,1000017]).
 
 
 %--------------------- AUXILIAR

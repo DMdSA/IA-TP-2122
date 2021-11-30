@@ -14,6 +14,7 @@ cls :- write('\e[H\e[2J').
 :- consult('texts.pl').
 
 :- discontiguous q4/2 .
+:- discontiguous q5/3 .
 
 :- write("#> \"queries()\" to know what queries are available ..."),nl,nl.
 
@@ -23,18 +24,26 @@ cls :- write('\e[H\e[2J').
 /*
 ---------------------
 Query1,  Estafeta que realizou (+) vezes um meio de transporte (+) ecológico
-q1 : Estafeta, Meio, Count -> {V,F}
-
-exemplos: 
+q1 : EstafetaID, Meio, Count -> {V,F}
 ---------------------
 */
 
+% q1 : EstafetaID, Transport(_,_,_,_), Count -> {V,F}
 q1(ID, Meio, Answer) :- 
         
         findall((ID,N), (estafeta(ID,Meio,Pkgs), length(Pkgs,N)),X),
         max_couple(X, Answer), writeq1(Answer).
 
-writeq1((ID,N)) :-
+
+% q1 : EstafetaID, 'Name', Count -> {V,}
+q1(ID, M, A) :-
+        
+        transport(M,_,_,_),!,
+        findall((ID,N), (estafeta(ID,transport(M,_,_,_),Pkgs), length(Pkgs,N)), X),
+        max_couple(X, A), writeq1(A).
+
+
+writeq1((ID,N)) :- nl,
     write("Estafeta ["), write(ID), write("] usou "), write(N), write(" vezes"),nl.
 
 
@@ -90,11 +99,11 @@ writeq2([(H,E)]) :-
     write("Encomenda "), write(H), write(", Estafeta ["), write(E), write("]"),nl,nl.
 
 
-writeq2([(H,E) | T]) :-
+writeq2([(H,E) | T]) :- nl,
     write("Encomenda "), write(H), write(", Estafeta ["), write(E), write("]"),nl,
     writeq2(T).
 
-writeq2_1([H | T]) :-
+writeq2_1([H | T]) :- nl,
     write("Encomenda "), write(H),nl,
     writeq2_1(T).
 
@@ -146,6 +155,7 @@ write_q3(Estafeta, [H]):-
             write("Estafeta: "), write(Estafeta),nl,!.
 
 write_q3(E, [H|T]) :-
+                nl,
             estafeta(E,_,_),
             write("Client: "), write(H), write(" "),
             client(H,X), write(X), nl,
@@ -156,6 +166,7 @@ write_q3_1(Client, [H]):-
             write("Client: "), write(Client),nl,nl,!.
 
 write_q3_1(C, [H|T]) :-
+                nl,
             write("Estafeta: "), write(H), write(" "),nl,
             write_q3_1(C,T).
 
@@ -173,9 +184,25 @@ Query4, Calcular o valor faturado num determinado dia
 % "code here"
 q4(date(D,M,Y,_), Value) :-
                 
-                date(D,M,Y,0),
+                date(D,M,Y,0),!,
                 findall(ID, record(ID,_,_,date(D,M,Y,_),_,_), IDS),
-                total_price(IDS, Value).
+                custo(IDS, Value), writeq4(Value).
+
+
+custo([ID], V) :-
+        
+        package(ID,A,B,C,_,_,_),
+        total_price(package(ID,A,B,C,_,_,_), V).
+
+custo([H|T], V) :-
+        
+        package(H,A,B,C,_,_,_), 
+        total_price(package(H,A,B,C,_,_,_), V1),
+        custo(T,V2),
+        V is V1+V2.
+
+
+
 
 % ------------------------------------
 % q4 : Month, Year, Value -> {V,F}    |
@@ -187,8 +214,8 @@ q4(M, Y, Value) :-
                 
                 member(M, [1,2,3,4,5,6,7,8,9,10,11,12]),
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,M,Y,_),_), Aux),
-                sum_list(Aux, Value).
+                findall(ID, record(ID,_,_,date(_,M,Y,_),_,_), IDS),
+                custo(IDS, Value), writeq4(Value).
 
 
 % ------------------------------------
@@ -200,13 +227,14 @@ q4(M, Y, Value) :-
 q4(Y, Value) :- 
 
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,_,Y,_),_), Aux),
-                sum_list(Aux, Value).
+                findall(ID, record(ID,_,_,date(_,_,Y,_),_,_), IDS),
+                custo(IDS, Value), writeq4(Value).
 
 % "AUXILIAR TEXT HERE"
 
 writeq4(Value) :-
-    write("Value gained: "),write(Value),nl,nl.
+        nl,
+        write("Value gained: "),write(Value),nl,nl.
 
 /*
 ---------------------
@@ -216,15 +244,47 @@ por parte do Green Distribution
 */
 
 % ------------------------------------
-% q5 : Address, NumberOfDeliveries -> {V,F}
+% q5 : Address, NumberOfDeliveries, ListOfPackages -> {V,F}
 % ------------------------------------
-% Recebendo uma rua, freguesia, ou ambos, devolve o nº de entregas realizadas nessa localização
+% Recebendo uma freguesia, devolve o nº de entregas realizadas nessa localização
 
-q5(address(Rua, Freguesia), Volume) :-
+q5(Freguesia, Volume, Delivered) :- 
 
-            findall(1, package(_,_,_,_,address(Rua,Freguesia),_,_), List),
-            sum_list(List, Volume),
-            address(Rua,Freguesia),!.
+        address(_,Freguesia),!,
+        findall(PID, package(PID, _,_,_, address(_, Freguesia), _,_), List),
+        findall(Id, (member(Id, List), record(Id,_,_,_,_,_)), Delivered),
+        length(Delivered, Volume),
+        writeq5_01(Freguesia, Volume, Delivered).
+
+% ------------------------------------
+% q5 : Address, NumberOfDeliveries, ListOfPackages -> {V,F}
+% ------------------------------------
+% Recebendo um address completo, devolve o nº de entregas realizadas nessa localização
+
+q5(address(R,F), Volume, Delivered) :-
+        
+        atom(R), atom(F),
+        address(R,F),
+        findall(PID, package(PID, _,_,_, address(R, F), _,_), List),
+        findall(Id, (member(Id, List), record(Id,_,_,_,_,_)), Delivered),
+        length(Delivered, Volume),
+        writeq5_02(R,F,Volume,Delivered).
+
+
+writeq5_01(F,V,D) :- 
+        
+        nl,
+        write("Freguesia: "), write(F),nl,
+        write("Numero entregas: "), write(V),nl,
+        write("Encomendas: "), write(D),nl,nl,!.
+
+writeq5_02(R,F,V,D) :-
+        
+        nl,
+        write("Rua: "), write(R),nl,
+        write("Freguesia: "), write(F),nl,
+        write("Numero entregas: "), write(V),nl,
+        write("Encomendas: "), write(D),nl,nl,!.
 
 % "here"
 % Realizar a query só para uma "rua" não fará muito sentido....
@@ -295,8 +355,8 @@ q7(Date1,Date2,Answer) :-
 % "AUXILIAR TEXT HERE"
 writeq7([]) :- nl.
 writeq7([(H,NTimes) | Resto]) :-
-        transport(X, H), write(" ["),
-        write(NTimes), write("] package(s) was delivered by "), write(X), nl,
+        write(" ["),
+        write(NTimes), write("] package(s) was delivered by "), write(H), nl,
         writeq7(Resto).
 
 
