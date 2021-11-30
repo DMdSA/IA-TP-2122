@@ -32,19 +32,14 @@ IsAfter, confirms if a date is after another one
 ---------------------
 */
 
-
-isAfter(date(_,_,Y,_),date(_,_,Y1,_)) :-
+isAfter(date(_,_,Y),date(_,_,Y1)) :-
             (Y < Y1) , !.
 
-isAfter(date(_,M,Y,_),date(_,M1,Y1,_)) :-
+isAfter(date(_,M,Y),date(_,M1,Y)) :-
             (M < M1) , !.
 
-isAfter(date(D,M,Y,_), date(D1,M1,Y1,_)) :-
-            (D < D1) , !.
-
-isAfter(date(D,M,Y,H),date(D1,M1,Y1,H1)) :-
-            (H =< H1).
-
+isAfter(date(D,M,Y), date(D1,M,Y)) :-
+            (D =< D1).
 
 
 /*

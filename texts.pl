@@ -48,21 +48,20 @@ query_help(6) :-
 		write("#> ex: q6(client(12345,_),1,X)."),nl,nl.
 
 query_help(7) :-
-        write("#> q7(Date, Value)"),nl,
-        write("#> q7(Date, Date, Value)"),nl,
-        write("#> ex: q7(date(3,10,2021),X)."),nl,
-        write("#> ex: q7(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
+        	write("#> q7(Date, Value)"),nl,
+        	write("#> q7(Date, Date, Value)"),nl,
+        	write("#> ex: q7(date(3,10,2021),X)."),nl,
+        	write("#> ex: q7(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
 
 query_help(8) :-
-        write("#> q8(Date, Value)"),nl,
-        write("#> q8(Date, Date, Value)"),nl,
-        write("#> ex: q8(date(3,10,2021),X)."),nl,
-        write("#> ex: q8(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
-
+        	write("#> q8(Date, Value)"),nl,
+        	write("#> q8(Date, Date, Value)"),nl,
+        	write("#> ex: q8(date(3,10,2021),X)."),nl,
+        	write("#> ex: q8(date(3,10,2021),date(17,11,2021),X)."),nl,nl.
 
 query_help(9) :-
-        write("#> q9(Date, Value)"),nl,
-        write("#> ex: q7(date(3,10,2021),date(17,11,2021))."),nl.
+        	write("#> q9(Date, Value)"),nl,
+        	write("#> ex: q7(date(3,10,2021),date(17,11,2021))."),nl.
 
 query_help(10) :-
 		write("#> q10 (Estafeta, Data, Weight"),nl,
@@ -70,16 +69,12 @@ query_help(10) :-
 		write("#> ex: q10,(1, date(18,11,2021), P)."),nl,
 		write("#> ex: q10(Date, X)."), nl,nl.
 
-
-
 queries() :- 
 	nl,
 	findall((N,T), query(N,T), List), !,
 	print_query(List), nl, 
 	query_help(0, X),
 	write(X), nl.
-
-
 
 print_query([]).
 print_query([(N,Text) | R]) :- 

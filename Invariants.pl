@@ -185,6 +185,14 @@ testI([H | T]) :- H, testI(T).
 	length(IDs, 1)
 ).
 
+%---- Para verificar que o tempoEspera está dentro das opções.
+
++package(_,_,_,_,_,_,T) :: (
+
+	T=0; T=2; T=6; T=12; T=24; T=48; T=72; T=96; T=120
+	).
+
+
 %---- Para apagar um package, nenhum estafeta o pode estar a entregar
 
 -package(ID,_,_,_,_,_,_) :: (
@@ -199,13 +207,6 @@ testI([H | T]) :- H, testI(T).
 
 	solucoes(ID, record(ID,_,_,_,_,_), N),
 	length(N,0)
-	).
-
-%---- Para verificar que o tempoEspera está dentro das opções.
-
-+package(_,_,_,_,_,_,T) :: (
-
-	T=0; T=2; T=6; T=12; T=24; T=48; T=72; T=96; T=120
 	).
 %---------------------------------------
 
@@ -362,7 +363,7 @@ testI([H | T]) :- H, testI(T).
 
 -address(R,F) :: (
 
-	solucoes(ID, package(ID,_,_,_,address(R,F),_),N,_),
+	solucoes(ID, package(ID,_,_,_,address(R,F),_,_),N),
 	length(N,0)
 ).
 %----------------------------------------

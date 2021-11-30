@@ -18,10 +18,11 @@ may change during execution (using assert/1 and/or retract/1).
 :- dynamic car/3 .
 :- dynamic address/2 .
 :- dynamic client/2 .
+:- dynamic date/3 .
 
 :- discontiguous package/7 .
 :- discontiguous record/6 .
-
+ 
 
 /*
 ---------------------
@@ -67,7 +68,8 @@ car(32, 25,2).
 
 /*---------------------
 Package
-package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}
+package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, **TempoEspera (em horas) * -> {V,F}
+
 Record
 record : PackageID, ClientID, EstafetaID, DeliverDate, TransportID, DeliverRate -> {V,F}
 ---------------------
@@ -139,7 +141,7 @@ validate_to_deliver([H | T]) :-
 
 /*---------------------
 Date
-date : Day, Month, Year -> {V,F}
+date : Day, Month, Year, Hour -> {V,F}
 ---------------------
 */
 
