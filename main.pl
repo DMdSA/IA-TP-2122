@@ -144,10 +144,10 @@ Query4, Calcular o valor faturado num determinado dia
 % Dada uma data, devolve o total de dinheiro que a empresa fez nesse dia
 
 % "code here"
-q4(date(D,M,Y), Value) :-
+q4(date(D,M,Y,_), Value) :-
                 
-                date(D,M,Y), !,
-                findall(V, package(_,_,_,V,_,date(D,M,Y)), Aux),
+                date(D,M,Y,_), !,
+                findall(V, package(_,_,_,V,_,date(D,M,Y,_)), Aux,_),
                 sum_list(Aux, Value).
 
 
@@ -161,7 +161,7 @@ q4(M, Y, Value) :-
                 
                 member(M, [1,2,3,4,5,6,7,8,9,10,11,12]),
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,M,Y)), Aux),
+                findall(V, package(_,_,_,V,_,date(_,M,Y,_)), Aux,_),
                 sum_list(Aux, Value).
 
 
@@ -174,7 +174,7 @@ q4(M, Y, Value) :-
 q4(Y, Value) :- 
 
                 Y > 0,
-                findall(V, package(_,_,_,V,_,date(_,_,Y)), Aux),
+                findall(V, package(_,_,_,V,_,date(_,_,Y,_)), Aux,_),
                 sum_list(Aux, Value).
 
 
@@ -193,7 +193,7 @@ por parte do Green Distribution
 
 q5(address(Rua, Freguesia), Volume) :-
 
-            findall(1, package(_,_,_,_,address(Rua,Freguesia),_), List),
+            findall(1, package(_,_,_,_,address(Rua,Freguesia),_), List,_),
             sum_list(List, Volume),
             address(Rua,Freguesia),!.
 
@@ -324,9 +324,66 @@ filter_by_date_estafetas(Date1, Date2, Package) :-
                     dateInBetween(DATE, Date1, Date2)), Package).
 
 
-dateInBetween(date(D,M,Y), date(D1,M1,Y1), date(D2,M2,Y2)) :-
-        \+isAfter(date(D,M,Y),date(D1,M1,Y1)),
-          isAfter(date(D,M,Y),date(D2,M2,Y2)).
+dateInBetween(date(D,M,Y,H), date(D1,M1,Y1,H1), date(D2,M2,Y2,H2)) :-
+        \+isAfter(date(D,M,Y,H),date(D1,M1,Y1,H1)),
+          isAfter(date(D,M,Y,H1),date(D2,M2,Y2,H2)).
+
+/*
+---------------------------------------------------
+Query9, calcular o número de encomendas entregues e não entregues pela Green Distribution, num determinado período de tempo
+query9 : Data, Data -> {V,F}
+---------------------------------------------------
+*/ 
+
+q9(Date1, Date2, Total, Entregues, NEntregues):- 
+        (Date1, Date2),
+        isAfter(Date1,Date2),
+        filter_by_date_encomendas(Date1, Date2, Encomendas),
+        length(Encomendas,Total),
+        findall(E, 
+                        (
+                        member(E, Encomendas),
+                        record(_,_,_,DE,_,_),
+                        data_esperada(E,DP),
+                        isAfter(DP,DE)
+                        )
+                ),
+                EncomendasConcluidas),
+        length(EncomendasConcluidas, Entregues),
+        NEntregues = Total - Entregues.
+
+
+
+
+filter_by_date_encomendas(Date1, Date2, Package) :-
+        findall(E, ( package(E,_,_,_,_,_,_), data_esperada(E,DATE), dateInBetween(DATE, Date1, Date2) ), Package).
+
+
+
+data_esperada(IdE, Date):-
+        package(IdE,_,_,_,_,date(D1,M1,A1,H1),T),
+        repara_date(date(D1,M1,A1,(H1+T)),Date).
+
+
+
+repara_date(date(DI,MI,AI,HI),_):-
+        HI>24, HI=HI-24, DI=DI+1,
+        repara_date(date(DI,MI,AI,HI),_).
+
+repara_date(date(DI,MI,AI,HI),_):-
+        (
+                (member(MI, [2,4,6,9,11]), DI>30, DI=DI-30, MI=MI+1);
+                (member(M, [1,3,5,7,8,10,12]), DI>31, DI=DI-31, MI=MI+1)
+        ),
+        repara_date(date(DI,MI,AI,HI),_).
+
+repara_date(date(DI,MI,AI,HI),_):-
+        MI>12, MI=MI-12, AI=AI+1,
+        repara_date(date(DI,MI,AI,HI),_).
+
+repara_date(DateI,Date):-
+        Date = DateI.
+
 
 
 /*
@@ -347,7 +404,7 @@ q10(EstafetaID, Date, Peso) :-
                 Date,
                 estafeta(EstafetaID,_,_),
                 findall(ID, record(ID,_,EstafetaID,Date,_,_), ListaPackage),
-                findall(P,(member(ID, ListaPackage), package(ID, P,_,_,_,_)), ListaPeso),
+                findall(P,(member(ID, ListaPackage), package(ID, P,_,_,_,_,_)), ListaPeso),
                 sum_list(ListaPeso, Peso),!.
 
 

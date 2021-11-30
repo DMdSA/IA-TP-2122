@@ -165,28 +165,29 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 %---- Tipo do facto
 
-+package(ID,P,V,Value,A,D) :: (
++package(ID,P,V,Value,A,D,T) :: (
 
 	integer(ID),
 	float(P),
 	integer(V),
 	float(Value),
 	validate_address(A),
-	validate_date(D)
+	validate_date(D),
+	integer(T)
 ).
 
 
 %---- Unicidade do facto
 
-+package(ID,_,_,_,_,_) :: (
++package(ID,_,_,_,_,_,_) :: (
 
-	solucoes(ID, package(ID,_,_,_,_,_), IDs),
+	solucoes(ID, package(ID,_,_,_,_,_,_), IDs),
 	length(IDs, 1)
 ).
 
 %---- Para apagar um package, nenhum estafeta o pode estar a entregar
 
--package(ID,_,_,_,_,_) :: (
+-package(ID,_,_,_,_,_,_) :: (
 
 	solucoes(Id, (estafeta(Id,_,Pkgs), member(ID, Pkgs)), List),
 	length(List,0)
@@ -194,10 +195,17 @@ testI([H | T]) :- H, testI(T).
 
 %---- Para apagar um package, nenhum record pode existir sobre ele
 
--package(ID,_,_,_,_,_) :: (
+-package(ID,_,_,_,_,_,_) :: (
 
 	solucoes(ID, record(ID,_,_,_,_,_), N),
 	length(N,0)
+	).
+
+%---- Para verificar que o tempoEspera está dentro das opções.
+
++package(_,_,_,_,_,_,T) :: (
+
+	T=0; T=2; T=6; T=12; T=24; T=48; T=72; T=96; T=120
 	).
 %---------------------------------------
 
@@ -222,7 +230,7 @@ testI([H | T]) :- H, testI(T).
 
 +record(Pid, Cid, Eid, _, Tid, _) :: (
 
-	package(Pid,_,_,_,_,_),
+	package(Pid,_,_,_,_,_,_),
 	client(Cid,_),
 	estafeta(Eid,_,L),
 	member(Pid, L),						% package -> estafeta -> record, logo record depende de ambos
@@ -233,7 +241,7 @@ testI([H | T]) :- H, testI(T).
 
 +record(Pid, _, _, Ddate, _, _) :: (
 
-	package(Pid,_,_,_,_,D),
+	package(Pid,_,_,_,_,D,_),
 	isAfter(D, Ddate)
 ).
 
@@ -354,7 +362,7 @@ testI([H | T]) :- H, testI(T).
 
 -address(R,F) :: (
 
-	solucoes(ID, package(ID,_,_,_,address(R,F),_),N),
+	solucoes(ID, package(ID,_,_,_,address(R,F),_),N,_),
 	length(N,0)
 ).
 %----------------------------------------

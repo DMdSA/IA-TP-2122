@@ -19,7 +19,7 @@ may change during execution (using assert/1 and/or retract/1).
 :- dynamic address/2 .
 :- dynamic client/2 .
 
-:- discontiguous package/6 .
+:- discontiguous package/7 .
 :- discontiguous record/6 .
 
 
@@ -67,43 +67,42 @@ car(32, 25,2).
 
 /*---------------------
 Package
-package : Codigo, Peso, Volume, Valor, Morada, DataCriacao -> {V,F}
-
+package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}
 Record
 record : PackageID, ClientID, EstafetaID, DeliverDate, TransportID, DeliverRate -> {V,F}
 ---------------------
 */
 
-package(1000000, 2.5, 25 , 30 , address('Rua Baldeira','Adaúfe'), date(11, 11, 2021)).
-record(1000000, 10000, 1, date(11, 11, 2021), 1, 5).
+package(1000000, 2.5, 25 , 30 , address('Rua Baldeira','Adaúfe'), date(11, 11, 2021, 12), 6).
+record(1000000, 10000, 1, date(11, 11, 2021, 16), 1, 5).
 
-package(1000001, 3.3, 27, 32, address('Rua Ortigueira', 'Adaúfe'), date(11, 11, 2021)).
-record(1000001, 10001, 1, date(11, 11, 2021), 1, 4). 
+package(1000001, 3.3, 27, 32, address('Rua Ortigueira', 'Adaúfe'), date(11, 11, 2021, 8), 12).
+record(1000001, 10001, 1, date(11, 11, 2021, 20), 1, 4). 
 
-package(1000002, 3.4, 20, 33, address('Rua Aida Gonçalves', 'Arentim'), date(11, 11, 2021)).
-record(1000001, 10002, 1, date(11, 11, 2021), 1, 3). 
+package(1000002, 3.4, 20, 33, address('Rua Aida Gonçalves', 'Arentim'), date(11, 11, 2021, 17), 0).
+record(1000001, 10002, 1, date(11, 11, 2021, 18), 1, 3). 
 
-package(1000003, 5, 10, 15, address('Rua Aida Gonçalves', 'Arentim'), date(12, 11, 2021)).
-record(1000003, 10002, 1, date(13, 11, 2021), 2, 1). 
+package(1000003, 5, 10, 15, address('Rua Aida Gonçalves', 'Arentim'), date(12, 11, 2021, 11), 2).
+record(1000003, 10002, 1, date(13, 11, 2021, 11), 2, 1). 
 
-package(1000004, 1, 5, 10, adress('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021)).
-record(1000004, 10003, 3, date(15, 11, 2021), 3, 3).
+package(1000004, 1, 5, 10, adress('Rua dos Regos', 'Cabreiros'), date(13, 11, 2021, 20), 24).
+record(1000004, 10003, 3, date(15, 11, 2021, 10), 3, 3).
 
-package(1000005, 0.988, 20, 876, address('Rua dos Regos', 'Cabreiros'), date(17,11,2021)). 
-record(1000005, 10004, 3, date(18, 11, 2021),3, 4).
+package(1000005, 0.988, 20, 876, address('Rua dos Regos', 'Cabreiros'), date(17,11,2021, 12), 72). 
+record(1000005, 10004, 3, date(18, 11, 2021, 19),3, 4).
 
-package(1000006, 13, 102, 2.099, address('Rua da Mamoa', 'Lamas'), date(11,11,2021)).
-record(1000006, 10005, 1, date(18, 11, 2021), 1, 5).
+package(1000006, 13, 102, 2.099, address('Rua da Mamoa', 'Lamas'), date(11,11,2021, 9), 12).
+record(1000006, 10005, 1, date(11, 11, 2021, 15), 1, 5).
 
-package(1000007, 2.112, 122, 44.59, address('Rua da Sacota', 'Cabreiros'), date(03, 10, 2021)).
-record(1000007, 10006, 1, date(03, 10, 2021), 2, 2).
+package(1000007, 2.112, 122, 44.59, address('Rua da Sacota', 'Cabreiros'), date(03, 10, 2021, 8), 6).
+record(1000007, 10006, 1, date(03, 10, 2021, 20), 2, 2).
 
-package(1000008, 88, 122, 443, address('Rua da Escola', 'Crespos'), date(03, 10, 2021)).
-record(1000008, 10007, 4, date(04, 10, 2021), 3, 3).
+package(1000008, 88, 122, 443, address('Rua da Escola', 'Crespos'), date(03, 10, 2021, 20), 2).
+record(1000008, 10007, 4, date(04, 10, 2021, 8), 3, 3).
 
 
-package(1000009, 88, 122, 200, address('Rua da Gregossa', 'Crespos'), date(03, 10, 2021)).
-record(1000009, 10008, 4, date(18, 11, 2021), 3, 3).
+package(1000009, 88, 122, 200, address('Rua da Gregossa', 'Crespos'), date(03, 10, 2021, 21), 48).
+record(1000009, 10008, 4, date(18, 10, 2021, 12), 3, 1).
 
 
 /*
@@ -125,7 +124,7 @@ estafeta(4, car(100, 25,2), [1000008, 1000009]).
 validate_pkg_unicity([]).
 validate_pkg_unicity([H | T]) :- 
                 
-                package(H,_,_,_,_,_),
+                package(H,_,_,_,_,_,_),
                 validate_pkg_unicity(T).
 
 %--------------------- AUXILIAR
@@ -144,24 +143,28 @@ date : Day, Month, Year -> {V,F}
 ---------------------
 */
 
-date(D,M,A) :- D >= 1, D =< 30, member(M, [4,6,9,11]),
-                A > 0, !.
-date(D,M,A) :- D >= 1, D =< 31, member(M, [1,3,5,7,8,10,12]),
-                A > 0, !.
-date(D,2,A) :- D >= 1, D =< 29,
+date(D,M,A,H) :- D >= 1, D =< 30, member(M, [4,6,9,11]),
+                A > 0, H>=0, H<24, !.
+date(D,M,A,H) :- D >= 1, D =< 31, member(M, [1,3,5,7,8,10,12]),
+                A > 0, H>=0, H<24, !.
+date(D,2,A,H) :- D >= 1, D =< 29,
+                H>=0, H<24,
                 A mod 4 =:= 0, A mod 100 =:= 0, A mod 400 =:= 0.
-date(D,2,A) :- D >= 1, D =< 29,
+date(D,2,A,H) :- D >= 1, D =< 29,
+                H>=0, H<24,
                 A mod 4 =:= 0, A mod 100 =\= 0 .
-date(D,2,A) :- D >= 1, D =< 28,
+date(D,2,A,H) :- D >= 1, D =< 28,
+                H>=0, H<24,
                 A mod 4 =:= 0, A mod 100 =:= 0, A mod 400 =\= 0.
-date(D,2,A) :- D >= 1, D =< 28,
+date(D,2,A,H) :- D >= 1, D =< 28,
+                H>=0, H<24,
                 A mod 4 =\= 0.
 
 %--------------------- AUXILIAR
 % Verifica se uma data é válida
 
-validate_date(date(D,M,Y)) :- 
-                date(D,M,Y).
+validate_date(date(D,M,Y,H)) :- 
+                date(D,M,Y,H).
 
 /*
 ---------------------
