@@ -61,7 +61,7 @@ query_help(8) :-
 
 query_help(9) :-
         	write("#> q9(Date, Value)"),nl,
-        	write("#> ex: q7(date(3,10,2021),date(17,11,2021))."),nl.
+        	write("#> ex: q9(date(3,10,2021),date(17,11,2021))."),nl.
 
 query_help(10) :-
 		write("#> q10 (Estafeta, Data, Weight"),nl,
