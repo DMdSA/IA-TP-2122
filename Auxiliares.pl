@@ -16,13 +16,13 @@
 */
 
 validate_transp(transport('Bicycle',W,10,0)) :- 
-			(W > 0 , W =< 5).
+                        (W > 0 , W =< 5).
 
 validate_transp(transport('Car',W, 25, 2)) :- 
-			(W > 0, W =< 100).
+                        (W > 0, W =< 100).
 
 validate_transp(transport('Motorcycle',W,35, 1)) :- 
-			(W > 0, W =< 20).
+                        (W > 0, W =< 20).
 
 
 
@@ -46,15 +46,16 @@ isAfter(date(_,_,_,H),date(_,_,_,H1)) :-
 
 /*
 ---------------------
-
+Calculates the final price of the delivery
 ---------------------
 */
 
-total_price(package(C,P,W,V,_,_,_), X) :-
+total_price(package(C,W,V,P,_,_,H), X) :-
                 
                 record(C,_,_,_,TName,_),
                 transport(TName,_,_,ECO),!,
-                X is 2.75 + P + 0.2*W + 0.15*V + 2*ECO.
+                Y is div(5,5*H+1),
+                X is 2.75 + P + 0.2*W + 0.15*V + 2*ECO + Y.
 
                 
 /*
@@ -108,16 +109,23 @@ average( List, Average) :-
     Length > 0,
     Average is Sum/Length.
 
+/*
+----------------------
+Removes all occurences of a given element on a list
+----------------------
+*/
 
-
-
-
-
-% "AUXILIAR RULES, ADD TO OTHER FILE + COMMENT"
 remover( _, [], []).
 remover( R, [R|T], T2) :- remover( R, T, T2).
 remover( R, [H|T], [H|T2]) :- H \= R, remover( R, T, T2).
 
+/*
+----------------------
+Groups together repeted numbers on a list
+The result will be a List of pairs where the first numbers
+is an element of the list and the second is the number of occurences
+----------------------
+*/
 agrupa([], []).
 agrupa([X], [(X, 1)]).
 agrupa([H | T], [(H, NTimes) | Resto]) :-
@@ -127,12 +135,21 @@ agrupa([H | T], [(H, NTimes) | Resto]) :-
                 remover(H,T,T2),
                 agrupa(T2, Resto).
 
-
-filter_by_date_estafetas(Date1, Date2, Package) :-
+/*
+----------------------
+Filters the CourierID of the couriers who delivered
+between two given dates
+----------------------
+*/
+filter_by_date_estafetas(Date1, Date2, EstafetasList) :-
                     findall(C, (record(_,_,C,DATE,_,_),
-                    dateInBetween(DATE, Date1, Date2)), Package).
+                    dateInBetween(DATE, Date1, Date2)), EstafetasList).
 
-
+/*
+----------------------
+Verifies if a date is between two other given dates
+----------------------
+*/
 dateInBetween(date(D,M,Y,H), date(D1,M1,Y1,H1), date(D2,M2,Y2,H2)) :-
         \+isAfter(date(D,M,Y,H),date(D1,M1,Y1,H1)),
           isAfter(date(D,M,Y,H1),date(D2,M2,Y2,H2)).
@@ -140,7 +157,12 @@ dateInBetween(date(D,M,Y,H), date(D1,M1,Y1,H1), date(D2,M2,Y2,H2)) :-
 
 
 
-% "COMMENT + OTHER FILE"
+/*
+---------------------
+Filters the transports who were used to deliver
+packages between two given dates
+---------------------
+*/
 filter_by_date_Transport(Date1, Date2, Transport) :-
                     findall(C, (record(_,_,_,DATE,C,_),
                     dateInBetween(DATE, Date1, Date2)), Transport).

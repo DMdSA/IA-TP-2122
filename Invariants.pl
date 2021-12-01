@@ -43,13 +43,13 @@ testI([H | T]) :- H, testI(T).
 	integer(Eco)
 ).
 
-%---- Unicidade e validadedo facto
+%---- Unicidade e validade do facto
 
 +transport(N,W,S,E) :: (
 
+	validate_transp(transport(N,W,S,E)),
 	solucoes((N,W), transport(N,W,_,_),List),
-	length(List,1),
-	validate_transp(transport(N,W,S,E))
+	length(List,1)
 ).
 
 %---- Só posso eliminar se não houver nenhum record que o utilize
@@ -61,6 +61,7 @@ testI([H | T]) :- H, testI(T).
 	length(List,0) 
 ).
 %----------------------------------------
+
 
 
 %----------------------------------------
@@ -92,8 +93,9 @@ testI([H | T]) :- H, testI(T).
 
 +package(_,_,_,_,_,_,T) :: (
 
-	T=0; T=2; T=6; T=12; T=24; T=48; T=72; T=96; T=120
-	).
+	T=0; T=2; T=6; T=12;
+	(X is mod(T,24), X=:=0)
+).
 
 
 %---- Para apagar um package, nenhum estafeta o pode estar a entregar
@@ -120,25 +122,27 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 %---- Tipo do facto
 
-+record(Pid, Cid, Eid, Ddate, Tid, Drate) :: (
++record(Pid, Cid, Eid, Ddate, TName, Drate) :: (
 
 	integer(Pid),
 	integer(Cid),
 	integer(Eid),
 	validate_date(Ddate),
-	integer(Tid),
+	atom(TName),
 	integer(Drate)
 ).
 
 %---- Confirmação da existência dos IDs
 
-+record(Pid, Cid, Eid, _, Tid, _) :: (
++record(Pid, Cid, Eid, _, TName, _) :: (
 
 	package(Pid,_,_,_,_,_,_),
 	client(Cid,_),
-	estafeta(Eid,_,L),
-	member(Pid, L),						% package -> estafeta -> record, logo record depende de ambos
-	transport(_,Tid)
+	transport(TName, _, _, _),!,
+	solucoes(Pid, record(Pid, Cid, Eid, _, _, _), N), 
+	length(N,1),
+
+	estafeta(Eid, transport(TName,_,_,_),_)
 ).
 
 %---- Verificar se a data do record é (>=) que a data da criação do package
@@ -193,7 +197,7 @@ testI([H | T]) :- H, testI(T).
 
 	sort(Pkgs, Ps),						%% remover duplicados
 	validate_pkg_unicity(Ps),			%% verificar que existem, pelo menos
-	validate_to_deliver(Ps)				%% confirmar que todos estão por entregar
+	validate_to_deliver(Ps)				%% confirmar que todos estão por entregar (não há record)
 ).
 
 %---- Só pode adicionar uma lista de encomendas se o peso de cada uma delas for suportado pelo transporte associado

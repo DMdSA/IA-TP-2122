@@ -1,10 +1,9 @@
 %----------------------
 % File written by------
-% ---------------DMdSA-
+% ---------------G28---
 %----------------------
 cls :- write('\e[H\e[2J').
 % make. to reload
-
 
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
@@ -13,14 +12,12 @@ cls :- write('\e[H\e[2J').
 :- consult('Invariants.pl').
 :- consult('texts.pl').
 
-:- discontiguous q4/2 .
 :- discontiguous q5/3 .
+:- discontiguous q4/2 .
 
 :- write("#> \"queries()\" to know what queries are available ..."),nl,nl.
 
 
-
- 
 /*
 ---------------------
 Query1,  Estafeta que realizou (+) vezes um meio de transporte (+) ecológico
@@ -77,7 +74,7 @@ q2(Client, Estafeta, Encomendas) :-
         verify_client(Client),
         estafeta(Estafeta, _, _),
         clientID(Client, Aux),
-        findall(Enc, record(Enc, Aux, Estafeta,_,_,_), Encomendas),
+        findall(Enc, record(Enc, Aux, Estafeta,_,_,_), Encomendas),nl,
         writeq2_1(Encomendas), !.
 % -------------------------------------------------------
 
@@ -91,23 +88,21 @@ q2(Client, Encomendas, List) :-
         
         verify_client(Client),
         clientID(Client, Aux),
-        findall((Enc,Est), (record(Enc, Aux, Est,_,_,_), member(Enc, Encomendas)), List),
+        findall((Enc,Est), (record(Enc, Aux, Est,_,_,_), member(Enc, Encomendas)), List),nl,
         writeq2(List).
 
 
-writeq2([(H,E)]) :-
-    write("Encomenda "), write(H), write(", Estafeta ["), write(E), write("]"),nl,nl.
-
-
-writeq2([(H,E) | T]) :- nl,
+writeq2([]).
+writeq2([(H,E) | T]) :- 
     write("Encomenda "), write(H), write(", Estafeta ["), write(E), write("]"),nl,
     writeq2(T).
 
-writeq2_1([H | T]) :- nl,
+
+writeq2_1([]).
+writeq2_1([H | T]) :-
     write("Encomenda "), write(H),nl,
     writeq2_1(T).
 
-writeq2_1([]).
 
 /*
 ---------------------
@@ -144,9 +139,6 @@ q3(Client, Answer) :-
             sort(Estafetas, Answer),
             write_q3_1(Client, Answer),!.
 
-
-% "Experimentar Client == Estafeta, como distinguir? se aparecerem os 2, se houvesse texto podia-se perceber"
-
 % "Auxiliar function here"
 write_q3(Estafeta, [H]):-
             estafeta(Estafeta, _,_),
@@ -155,7 +147,6 @@ write_q3(Estafeta, [H]):-
             write("Estafeta: "), write(Estafeta),nl,!.
 
 write_q3(E, [H|T]) :-
-                nl,
             estafeta(E,_,_),
             write("Client: "), write(H), write(" "),
             client(H,X), write(X), nl,
@@ -166,7 +157,6 @@ write_q3_1(Client, [H]):-
             write("Client: "), write(Client),nl,nl,!.
 
 write_q3_1(C, [H|T]) :-
-                nl,
             write("Estafeta: "), write(H), write(" "),nl,
             write_q3_1(C,T).
 
@@ -191,17 +181,15 @@ q4(date(D,M,Y,_), Value) :-
 
 custo([ID], V) :-
         
-        package(ID,A,B,C,_,_,_),
-        total_price(package(ID,A,B,C,_,_,_), V).
+        package(ID,A,B,C,_,_,H),
+        total_price(package(ID,A,B,C,_,_,H), V).
 
 custo([H|T], V) :-
         
-        package(H,A,B,C,_,_,_), 
-        total_price(package(H,A,B,C,_,_,_), V1),
+        package(H,A,B,C,_,_,Hr), 
+        total_price(package(H,A,B,C,_,_,Hr), V1),
         custo(T,V2),
         V is V1+V2.
-
-
 
 
 % ------------------------------------
@@ -336,10 +324,10 @@ Query7, Calcular o nº de entregas pelos diferentes meios de transporte, num int
 ---------------------------------------------------
 */
 
-q7(Date, Answer) :-
+q7(date(D,M,Y,_), Answer) :-
         
-        Date,
-        findall(ID, record(ID,_,_,Date,_,_), ListaPackage),
+        date(D,M,Y,0),
+        findall(ID, record(ID,_,_,date(D,M,Y,_),_,_), ListaPackage), 
         findall(X, (member(P, ListaPackage), record(P,_,_,_,X,_)), List),
         agrupa(List, Answer),!,
         writeq7(Answer).
@@ -355,11 +343,9 @@ q7(Date1,Date2,Answer) :-
 % "AUXILIAR TEXT HERE"
 writeq7([]) :- nl.
 writeq7([(H,NTimes) | Resto]) :-
-        write(" ["),
-        write(NTimes), write("] package(s) was delivered by "), write(H), nl,
+        write("["),
+        write(NTimes), write("] package(s) by "), write(H), nl,
         writeq7(Resto).
-
-
 
 /*
 ---------------------------------------------------
@@ -368,9 +354,9 @@ query8 : Data, Data -> {V,F}
 ---------------------------------------------------
 */ 
 
-q8(Date,Answer) :-
-    Date,
-    findall(ID, record(_,_,ID,Date,_,_), ListaEst),
+q8(date(D,M,Y,_),Answer) :-
+    date(D,M,Y,0),
+    findall(ID, record(_,_,ID,date(D,M,Y,_),_,_), ListaEst),
     agrupa(ListaEst,Answer),!,
     writeq8(Answer).
 
@@ -412,7 +398,8 @@ q9(Date1, Date2, Total, Entregues, NEntregues):-
                 ,
                 EncomendasConcluidas),
         length(EncomendasConcluidas, Entregues),
-        NEntregues is Total - Entregues.
+        NEntregues is Total - Entregues,
+        writeq9(Total, Entregues, NEntregues).
 
 
 
@@ -444,9 +431,13 @@ repara_date(date(DI,MI,AI,HI),Date):-
 
 repara_date(DateI,Date):-
         Date = DateI.
+
+
+writeq9(T, E, N):-
+        write("Total:"), write(T),nl,
+        write("Total entregues:"), write(E),nl,
+        write("Total não entregues:"), write(N),nl,nl.
  
-
-
 /*
 ---------------------
 Q10 - Calcular o PESO TOTAL transportado por UM estafeta NUM determinado dia

@@ -1,26 +1,15 @@
-%----------------------
-% File written by------
-% ---------------DMdSA-
-%----------------------
-
 :- set_prolog_flag(encoding, utf8).
-
-/*
-    |dynamic predicate|
-Informs the interpreter that the definition of the predicate(s)
-may change during execution (using assert/1 and/or retract/1).
-*/
-
 
 :- dynamic transport/4 .
 :- dynamic address/2 .
 :- dynamic client/2 .
-:- dynamic date/3 .
+:- dynamic package/7 .
+:- dynamic record/6 .
+:- dynamic estafeta/3 .
 
 :- discontiguous package/7 .
 :- discontiguous record/6 .
  
-
 /*
 ---------------------
 transport : Name, Weight, Speed, EcoValue
@@ -35,8 +24,6 @@ transport('Motorcycle', 12, 35, 1).
 
 transport('Car', 100,25, 2).
 transport('Car', 32,25, 2).
-
-
 
 /*---------------------
 Package
@@ -99,7 +86,8 @@ package(1000016, 45, 2, 3, address('Rua da Formiga','Escudeiros'), date(10, 3, 2
 record(1000016, 10012, 2, date(19,3,2021, 17), 'Car', 1).
 
 package(1000017, 5, 6, 3.2, address('Rua das Vinhas','Esporões'), date(17, 7, 2021, 15), 0).
-record(1000017, 10014, 4, date(18,7,2021, 17),'Motorcycle', 1).
+
+% evolucao(record(1000017, 10000, 4, date(18,7,2021,16),'Motorcycle', 1)).
 
 /*
 ---------------------
@@ -117,7 +105,7 @@ estafeta(3, transport('Car',32, 25,2), [1000004, 1000005]).
 estafeta(3, transport('Bicycle',5,10,0),[1000012]).
 
 estafeta(4, transport('Car',100, 25,2), [1000008, 1000011, 1000014]).
-estafeta(4, transport('Motorcycle',20,35,1),[1000009,1000017]).
+estafeta(4, transport('Motorcycle',20,35,1),[1000009, 1000017]).
 
 
 %--------------------- AUXILIAR
@@ -162,6 +150,7 @@ date(D,2,A,H) :- D >= 1, D =< 28,
                 H>=0, H<24,
                 A mod 4 =\= 0.
 
+
 %--------------------- AUXILIAR
 % Verifica se uma data é válida
 
@@ -204,7 +193,6 @@ client(10025, 'Rui Morais').
 client(10026, 'Sara Silva').
 client(10027, 'Simão Cunha').
 client(10028, 'Tiago Silva').
-
 
 /*
 ---------------------
