@@ -10,6 +10,7 @@
 :- discontiguous package/7 .
 :- discontiguous record/6 .
  
+
 /*
 ---------------------
 transport : Name, Weight, Speed, EcoValue
@@ -25,9 +26,10 @@ transport('Motorcycle', 12, 35, 1).
 transport('Car', 100,25, 2).
 transport('Car', 32,25, 2).
 
+
 /*---------------------
 Package
-package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, **TempoEspera (em horas) * -> {V,F}
+package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}
 
 Record
 record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F}
@@ -89,12 +91,14 @@ package(1000017, 5, 6, 3.2, address('Rua das Vinhas','Esporões'), date(17, 7, 2
 
 % evolucao(record(1000017, 10000, 4, date(18,7,2021,16),'Motorcycle', 1)).
 
+
 /*
 ---------------------
 Estafeta
 estafeta : ID, MeioTransporte, [Encomendas]
 ---------------------
 */
+
 estafeta(1, transport('Bicycle',5,10,0), [1000000, 1000001, 1000006]).
 estafeta(1, transport('Motorcycle',12,35,1), [1000003, 1000007, 1000013]).
 
@@ -106,6 +110,7 @@ estafeta(3, transport('Bicycle',5,10,0),[1000012]).
 
 estafeta(4, transport('Car',100, 25,2), [1000008, 1000011, 1000014]).
 estafeta(4, transport('Motorcycle',20,35,1),[1000009, 1000017]).
+
 
 
 %--------------------- AUXILIAR
@@ -125,9 +130,11 @@ validate_to_deliver([H | T]) :-
                 
                 \+record(H,_,_,_,_,_),
                 validate_to_deliver(T).
-            
+         
 
-/*---------------------
+
+/*
+---------------------
 Date
 date : Day, Month, Year, Hour -> {V,F}
 ---------------------
@@ -151,11 +158,14 @@ date(D,2,A,H) :- D >= 1, D =< 28,
                 A mod 4 =\= 0.
 
 
+
 %--------------------- AUXILIAR
 % Verifica se uma data é válida
 
 validate_date(date(D,M,Y,H)) :- 
                 date(D,M,Y,H).
+
+
 
 /*
 ---------------------
@@ -193,6 +203,7 @@ client(10025, 'Rui Morais').
 client(10026, 'Sara Silva').
 client(10027, 'Simão Cunha').
 client(10028, 'Tiago Silva').
+
 
 /*
 ---------------------
@@ -255,6 +266,8 @@ address('Rua das Pochinhas', 'São Vicente').
 address('Rua de Espanha', 'São Vicente').
 address('Rua da Tomada', 'Sequeira').
 address('Rua da Venda', 'Sequeira').
+
+
 
 %--------------------- AUXILIAR
 % Verifica se uma rua é valida e existe

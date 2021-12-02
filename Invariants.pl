@@ -25,10 +25,15 @@ testI([]).
 testI([H | T]) :- H, testI(T).
 %----------------------------------------
 
+
+
+
  
 %----------------------------------------
 % Invariantes Estruturais e Referenciais |
 %----------------------------------------
+
+
 
 %----------------------------------------
 % TRANSPORT
@@ -67,6 +72,8 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 % PACKAGE
 %----------------------------------------
+
+
 %---- Tipo do facto
 
 +package(ID,P,V,Value,A,D,T) :: (
@@ -89,6 +96,7 @@ testI([H | T]) :- H, testI(T).
 	length(IDs, 1)
 ).
 
+
 %---- Para verificar que o tempoEspera está dentro das opções.
 
 +package(_,_,_,_,_,_,T) :: (
@@ -106,6 +114,7 @@ testI([H | T]) :- H, testI(T).
 	length(List,0)
 ).
 
+
 %---- Para apagar um package, nenhum record pode existir sobre ele
 
 -package(ID,_,_,_,_,_,_) :: (
@@ -120,6 +129,8 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 % RECORD
 %----------------------------------------
+
+
 %---- Tipo do facto
 
 +record(Pid, Cid, Eid, Ddate, TName, Drate) :: (
@@ -131,6 +142,7 @@ testI([H | T]) :- H, testI(T).
 	atom(TName),
 	integer(Drate)
 ).
+
 
 %---- Confirmação da existência dos IDs
 
@@ -145,6 +157,7 @@ testI([H | T]) :- H, testI(T).
 	estafeta(Eid, transport(TName,_,_,_),_)
 ).
 
+
 %---- Verificar se a data do record é (>=) que a data da criação do package
 
 +record(Pid, _, _, Ddate, _, _) :: (
@@ -153,12 +166,14 @@ testI([H | T]) :- H, testI(T).
 	isAfter(D, Ddate)
 ).
 
+
 %---- Verificar se a rate atribuída está nos limites [0,5]
 
 +record(_,_,_,_,Drate) :: (
 
 	Drate >= 0, Drate =< 5
 ).
+
 
 %---- Posso apagar um record quando nenhum estafeta tiver o seu Package id na lista
 
@@ -169,9 +184,12 @@ testI([H | T]) :- H, testI(T).
 ).
 %----------------------------------------
 
+
+
 %----------------------------------------
 % ESTAFETA
 %----------------------------------------
+
 
 %---- Tipo do facto
 
@@ -183,6 +201,7 @@ testI([H | T]) :- H, testI(T).
 	is_list(Pkgs)
 ).
 
+
 %---- Unicidade
 
 +estafeta(ID, _, _) :: (
@@ -190,6 +209,7 @@ testI([H | T]) :- H, testI(T).
 	solucoes(ID, estafeta(ID,_,_), L),
 	length(L,1)
 ).
+
 
 %---- Verificação lista encomendas
 
@@ -199,6 +219,7 @@ testI([H | T]) :- H, testI(T).
 	validate_pkg_unicity(Ps),			%% verificar que existem, pelo menos
 	validate_to_deliver(Ps)				%% confirmar que todos estão por entregar (não há record)
 ).
+
 
 %---- Só pode adicionar uma lista de encomendas se o peso de cada uma delas for suportado pelo transporte associado
 
@@ -217,6 +238,7 @@ testI([H | T]) :- H, testI(T).
 	length(N,0)
 ).
 
+
 %---- Posso remover um estafeta se não tiver nenhum package para/por entregar
 
 -estafeta(_,_,Pkgs) :: (
@@ -226,9 +248,12 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 
 
+
 %----------------------------------------
 % CLIENT
 %----------------------------------------
+
+
 %---- Tipo do facto
 
 +client(ID, Name) :: (
@@ -236,6 +261,7 @@ testI([H | T]) :- H, testI(T).
 	integer(ID),
 	atom(Name)
 ).
+
 
 %---- Unicidade
 
@@ -256,9 +282,12 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 
 
+
 %----------------------------------------
 % ADDRESS
 %----------------------------------------
+
+
 %---- Tipo do facto
 
 +address(R, F) :: (
@@ -267,6 +296,7 @@ testI([H | T]) :- H, testI(T).
 	atom(F)
 ).
 
+
 %---- Unicidade
 
 +address(R,F) :: (
@@ -274,6 +304,7 @@ testI([H | T]) :- H, testI(T).
 	solucoes((R,F), address(R,F), List),
 	length(List,1)
 ).
+
 
 %---- Posso apagar um address se não houver qualquer package sobre ele
 
