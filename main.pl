@@ -569,8 +569,9 @@ q10(EstafetaID, date(D,M,Y,_), Peso) :-
 
 q10(Date, Answer) :- 
 
-        findall(E, estafeta(E,_,_), X), sort(X,A),
-        q10aux(Date, A, Answer).
+        findall(E, estafeta(E,,), X), sort(X,A),
+        q10aux(Date, A, Answer),
+        writeq10(Answer).
 
 
 
@@ -582,3 +583,14 @@ q10aux(Date, [H|T], [(H,P) | R]) :-
         
         q10(H, Date, P),
         q10aux(Date, T, R).
+
+
+
+% writeq10 : Escreve a informação relativa a query10.
+% ---------------------------------------------------------
+
+writeq10([]) :- nl.
+writeq10([(H,Peso) | Resto]) :-
+
+        write("Courier ["), write(H), write("] -> ["), write(Peso), write("] kg."), nl,
+        writeq10(Resto).
