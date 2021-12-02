@@ -277,7 +277,9 @@ testI([H | T]) :- H, testI(T).
 -client(ID,_) :: (
 
 	solucoes(ID, client(ID,_), N),
-	length(N,0)
+	length(N,0),
+	solucoes(ID, record(_,ID, _,_,_,_), N2),
+	length(N2,0)
 ).
 %----------------------------------------
 

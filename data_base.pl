@@ -30,7 +30,6 @@ transport('Car', 32,25, 2).
 /*---------------------
 Package
 package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}
-
 Record
 record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F}
 ---------------------

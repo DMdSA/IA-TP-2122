@@ -18,7 +18,20 @@ cls :- write('\e[H\e[2J').
 :- write("#> \"queries()\" to know what queries are available ..."),nl,nl.
 
 
+newClient(ID, NAME) :- evolucao(client(ID,NAME)).
+newAddress(RUA, FREGUESIA) :- evolucao(address(RUA, FREGUESIA)).
+newEstafeta(ID, TRANSPORT, LIST) :- evolucao(estafeta(ID, TRANSPORT, LIST)).
+newRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- evolucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
+newPackage(ID, W, V, P, ADD, DATE, HOURS) :- evolucao(package(ID, W, V, P, ADD, DATE, HOURS)).
+newTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
+
+remClient(ID, NAME) :- involucao(client(ID,NAME)).
+remAddress(RUA, FREGUESIA) :- involucao(address(RUA, FREGUESIA)).
+remEstafeta(ID, TRANSPORT, LIST) :- involucao(estafeta(ID, TRANSPORT, LIST)).
+remRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- involucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
+remPackage(ID, W, V, P, ADD, DATE, HOURS) :- involucao(package(ID, W, V, P, ADD, DATE, HOURS)).
+remTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
 /*
 ---------------------
@@ -569,9 +582,9 @@ q10(EstafetaID, date(D,M,Y,_), Peso) :-
 
 q10(Date, Answer) :- 
 
-        findall(E, estafeta(E,,), X), sort(X,A),
+        findall(E, estafeta(E,_,_), X), sort(X,A),
         q10aux(Date, A, Answer),
-        writeq10(Answer).
+                writeq10(Answer).
 
 
 
@@ -591,6 +604,5 @@ q10aux(Date, [H|T], [(H,P) | R]) :-
 
 writeq10([]) :- nl.
 writeq10([(H,Peso) | Resto]) :-
-
-        write("Courier ["), write(H), write("] -> ["), write(Peso), write("] kg."), nl,
-        writeq10(Resto).
+    write("Courier ["), write(H), write("] -> ["), write(Peso), write("] kg."), nl,
+     writeq10(Resto).
