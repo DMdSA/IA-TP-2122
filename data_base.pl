@@ -94,21 +94,38 @@ package(1000017, 5, 6, 3.2, address('Rua das Vinhas','Esporões'), date(17, 7, 2
 /*
 ---------------------
 Estafeta
-estafeta : ID, MeioTransporte, [Encomendas]
+estafeta : ID, MeioTransporte, [Encomendas], DataEntrega (ou seja, cada facto de estafeta é UMA das entregas)
 ---------------------
 */
 
-estafeta(1, transport('Bicycle',5,10,0), [1000000, 1000001, 1000006]).
-estafeta(1, transport('Motorcycle',12,35,1), [1000003, 1000007, 1000013]).
+estafeta(1, transport('Bicycle',5,10,0), [1000000]).
+estafeta(1, transport('Bicycle', 5, 10, 0), [1000001]).
+estafeta(1, transport('Bicycle', 5, 10, 0), [1000006]).
 
-estafeta(2, transport('Bicycle',3,10,0), [10000010, 1000002, 1000015]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000003]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000007]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000013]).
+
+
+estafeta(2, transport('Bicycle',3,10,0), [10000010]).
+estafeta(2, transport('Bicycle',3,10,0), [1000002]).
+estafeta(2, transport('Bicycle',3,10,0), [1000015]).
+
 estafeta(2, transport('Car',100,25,2), [1000016]).
 
-estafeta(3, transport('Car',32, 25,2), [1000004, 1000005]).
+
+estafeta(3, transport('Car',32, 25,2), [1000004]).
+estafeta(3, transport('Car',32, 25,2), [1000005]).
+
 estafeta(3, transport('Bicycle',5,10,0),[1000012]).
 
-estafeta(4, transport('Car',100, 25,2), [1000008, 1000011, 1000014]).
-estafeta(4, transport('Motorcycle',20,35,1),[1000009, 1000017]).
+
+estafeta(4, transport('Car',100, 25,2), [1000008]).
+estafeta(4, transport('Car',100, 25,2), [1000011]).
+estafeta(4, transport('Car',100, 25,2), [1000014]).
+
+estafeta(4, transport('Motorcycle',20,35,1),[1000009]).
+estafeta(4, transport('Motorcycle',20,35,1),[1000017]).
 
 
 
@@ -211,61 +228,25 @@ address : Rua, Freguesia -> {V,F}
 ---------------------
 */
 
-address('Rua Balbeira', 'Adaúfe').
-address('Rua Ortigueira', 'Adaúfe').
-address('Rua Aida Gonçalves', 'Arentim').
-address('Rua da Barroca', 'Arentim').
-address('Rua da Sacota', 'Cabreiros').
-address('Rua dos Regos', 'Cabreiros').
-address('Rua da Portagem', 'Celeiros').
-address('Rua da Quinta', 'Celeiros').
-address('Rua da Escola', 'Crespos').
-address('Rua da Gregossa', 'Crespos').
-address('Rua da Encosta', 'Escudeiros').
-address('Rua da Formiga', 'Escudeiros').
-address('Rua das Carvalheiras', 'Espinho').
-address('Rua das Fontaínhas', 'Espinho').
-address('Rua das Vinhas', 'Esporões').
-address('Rua do Carvalhal', 'Esporões').
-address('Rua Cruz do Outeiro', 'São Mamede').
-address('Rua da Batoca', 'São Pedro').
-address('Rua da Esperança', 'Ferreiros').
-address('Rua da Figueira', 'Ferreiros').
-address('Rua das Mimosas', 'Figueiredo').
-address('Rua de Coruche', 'Figueiredo').
-address('Rua Monte de Baixo', 'Gualtar').
-address('Rua da Pedreira', 'Gualtar').
-address('Rua da Igreja Velha', 'Guisande').
-address('Rua da Lage', 'Guisande').
-address('Rua da Cabraínha', 'Lamas').
-address('Rua da Mamoa', 'Lamas').
-address('Rua da Varziela', 'Lomar').
-address('Rua da Quinta das Mouras', 'Lomar').
-address('Rua da Estação', 'Maximinos').
-address('Rua das Portas', 'Maximinos').
-address('Rua das Lavandeiras', 'Tibães').
-address('Rua do Sobrado', 'Tibães').
-address('Rua de Almoinha', 'Morreira').
-address('Rua do Monte', 'Morreira').
-address('Rua da Senra', 'Nogueira').
-address('Rua das Flores', 'Nogueira').
-address('Rua da Mina', 'Palmeira').
-address('Rua da Paz', 'Palmeira').
-address('Rua do Rio', 'Pedralva').
-address('Rua do Souto', 'Pedralva').
-address('Rua da Casa Nova', 'Priscos').
-address('Rua do Castro', 'Priscos').
-address('Rua da Cachada', 'Semelhe').
-address('Rua da Escola', 'Semelhe').
-address('Rua do Eiteiro', 'Ruilhe').
-address('Rua do Ferreiro', 'Ruilhe').
-address('Rua da Arcela', 'São Vitor').
-address('Rua da Chamadeira', 'São Vitor').
-address('Rua das Pochinhas', 'São Vicente').
-address('Rua de Espanha', 'São Vicente').
-address('Rua da Tomada', 'Sequeira').
-address('Rua da Venda', 'Sequeira').
-
+address( complexoPedagogico1, uni_este).
+address( complexoPedagogico2, uni_sul).
+address( complexoPedagogico3, uni_centro).
+address( biblioteca, uni_sul).
+address( intitutoLetras, uni_sul).
+address( escolaCiencias, uni_centro).
+address( escolaEngenharia1, uni_centro).
+address( escolaEconomia, uni_centro).
+address( complexoDesportivo, uni_este).
+address( servicosTecnicos, uni_este).
+address( cantina, uni_norte).
+address( acaoSocial, uni_norte).
+address( educacao, uni_oeste).
+address( psicologia, uni_oeste).
+address( cienciasSociais, uni_oeste).
+address( escolaEngenharia2, uni_oeste).
+address( escolaDireito, uni_oeste).
+address( bioSustentabilidade, uni_oeste) .
+address( medicina, olimpo).
 
 
 %--------------------- AUXILIAR
