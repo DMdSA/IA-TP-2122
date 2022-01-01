@@ -124,6 +124,8 @@ adjacentes(A,B,C, grafo(_,Arestas)) :-
 
 %-----------------------------------------------------------------
 
+% 
+
 move(  (escolaEngenharia1, uni_centro), (complexoDesportivo, uni_este), 16).
 move(  (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 5).
 move(  (escolaEngenharia1, uni_centro), (escolaEconomia, uni_centro), 7).
@@ -161,16 +163,16 @@ start_address(address(escolaEngenharia1, uni_centro)).
 
 
 
-goal((servicosTecnicos, uni_este)).
+%goal((servicosTecnicos, uni_este)).
 
 
-%----- DEPTH FIRST SEARCH
+%----- DEPTH FIRST SEARCH -----------------------------------------------------------------------------
 
 tail([], []).
 tail([_ | R], R).
 
  
-circuito(PontoEntrega, CaminhoFinal, CustoFinal) :-
+circuitoDFS(PontoEntrega, CaminhoFinal, CustoFinal) :-
 
   ida(PontoEntrega, Caminho1Aux, Custo1),
 
@@ -197,8 +199,6 @@ volta(Inicio, Caminho, Custo) :-
 
 
 
-
-
 dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
 
 dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
@@ -208,3 +208,60 @@ dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
   dfs([Nodo | Visitados], NextNodo, Caminho, C2, PontoEntrega),
 
   Custo is C1 + C2.
+
+
+
+  %----- BREADTH FIRST SEARCH -----------------------------------------------------------------------------
+ 
+
+goal((complexoDesportivo, uni_este)).
+
+bfs(Dest,Caminho, Custo):-
+  
+  bfs2(Dest,[[(escolaEngenharia1, uni_centro)]], Cam1),
+
+  bfs2((escolaEngenharia1, uni_centro), [[Dest]], Cam2),
+
+  weight(Cam1, Custo1),
+
+  weight(Cam2, Custo2),
+
+  tail(Cam2, Cam2Aux),
+
+  append(Cam1, Cam2Aux, Caminho),
+
+  Custo is Custo1 + Custo2.
+
+
+
+%- Condição final, onde a HEAD é o destino final
+
+bfs2(Dest,[[Dest|T]|_],Cam):-
+
+  reverse([Dest|T],Cam).
+
+
+bfs2(Dest,[LA|Outros],Cam):-
+  
+  LA=[Act|_],
+  
+  findall([X|LA],
+  
+  (Dest\==Act,connected(Act,X, _),\+member(X,LA)), 
+
+  Novos),
+
+  append(Outros, Novos, Todos),
+  
+  bfs2(Dest,Todos,Cam).
+
+
+
+
+weight([I, F], W) :- connected(I, F, W).
+
+weight([I,F | R], W) :-
+
+    connected(I, F, W1),
+    weight([F | R], W2),
+    W is W1+W2. 
