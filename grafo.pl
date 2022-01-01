@@ -57,7 +57,7 @@ g( grafo(
       % 10 -> 1 = 15
     aresta(  (servicosTecnicos, uni_este), (complexoPedagogico1, uni_este), 15),
       % 1 -> 4 = 2
-    aresta(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 1),
+    aresta(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 2),
       % 6 -> 5 = 3
     aresta(  (escolaCiencias, uni_centro), (institutoLetras, uni_sul), 3),
       % 5 -> 4 = 1
@@ -131,7 +131,7 @@ move(  (escolaEngenharia1, uni_centro), (complexoPedagogico3, uni_centro), 6).
 move(  (complexoDesportivo, uni_este), (servicosTecnicos, uni_este), 9).
 move(  (complexoDesportivo, uni_este), (complexoPedagogico1, uni_este), 11).
 move(  (servicosTecnicos, uni_este), (complexoPedagogico1, uni_este), 15).
-move(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 1).
+move(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 2).
 move(  (escolaCiencias, uni_centro), (institutoLetras, uni_sul), 3).
 move(  (institutoLetras, uni_sul), (biblioteca, uni_sul), 1).
 move(  (institutoLetras, uni_sul), (complexoPedagogico2, uni_sul), 2).
@@ -152,119 +152,59 @@ move(  (acaoSocial, uni_norte), (medicina, olimpo), 28).
 move(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25).
 
 
+
+connected( A, B, C) :- move( A, B, C).
+connected(A,B,C) :- move( B, A, C).
+
+
 start_address(address(escolaEngenharia1, uni_centro)).
 
 
-move(F, S) :- move(F, S, _).
-move(F, S) :- move(S, F, _).
 
 goal((servicosTecnicos, uni_este)).
 
 
 %----- DEPTH FIRST SEARCH
 
+tail([], []).
+tail([_ | R], R).
 
+ 
+circuito(PontoEntrega, CaminhoFinal, CustoFinal) :-
 
-dfs2((Rua,Freguesia), [(Rua, Freguesia) | _], _, []).
+  ida(PontoEntrega, Caminho1Aux, Custo1),
 
-dfs2((Rua,Freguesia), [(Rua,Freguesia) | Caminho], Custo, [Last]) :-
-      
-      dfs_alg2((Rua,Freguesia), Caminho, Custo, Last).
+  volta(PontoEntrega, Caminho2Aux, Custo2),
 
+  tail(Caminho2Aux, Caminho2),
 
+  append(Caminho1Aux, Caminho2, CaminhoFinal),
 
-
-dfs2((Rua, Freguesia), [(Rua,Freguesia) | CaminhoFinal], CustoFinal, [F , S | R]) :-
-
-    %% procura o dfs para o F
-    dfs_alg2((Rua,Freguesia), Caminho, Custo, F),
-
-    %% se 'S' já for membro, não vale a pena voltar a procurar caminho por ele
-    member(S, Caminho),
-
-    write('wat'),
-
-    %% começar uma nova procura a partir do último
-    last(Caminho, Last),
-
-    %% nova procura até ao prox elemento
-    dfs_alg2(Last, [Last | CaminhoAux], CustoAux, R),
-
-    %% juntar ambos os caminhos
-    append(Caminho, CaminhoAux, CaminhoFinal),
-
-    %% juntar ambos os custos
-    CustoFinal is Custo + CustoAux.
+  CustoFinal is Custo1 + Custo2.
 
 
 
-dfs2((Rua,Freguesia), [(Rua,Freguesia) | CaminhoFinal], CustoFinal, [F, S | R]) :-
-    
-    dfs_alg2((Rua,Freguesia), Caminho, Custo, F),
+ida(PontoEntrega, CaminhoFinal, Custo) :-
 
-    \+member(S,Caminho),
+  dfs([], (escolaEngenharia1, uni_centro), Caminho, Custo, PontoEntrega),
+  reverse(Caminho, CaminhoFinal).
 
-    write('oi'),
 
-    last(Caminho, Last),
+volta(Inicio, Caminho, Custo) :-
 
-    dfs_alg2(Last, [Last | CaminhoAux], CustoAux, [S|R]),
-
-    append(Caminho, CaminhoAux, CaminhoFinal),
-
-    CustoFinal is Custo + CustoAux.
+  dfs([], Inicio, CaminhoAux, Custo, (escolaEngenharia1, uni_centro)),
+  reverse(CaminhoAux, Caminho).
 
 
 
 
 
+dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
 
+dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
 
+  connected(Nodo, NextNodo, C1),
+  \+member(NextNodo, Visitados),
+  dfs([Nodo | Visitados], NextNodo, Caminho, C2, PontoEntrega),
 
-
-
-dfs_alg2(Last, [], 0, Last).
-
-dfs_alg2(Inicio, [NextNodo | Resto], Custo, Last) :-
-
-    move(Inicio, NextNodo, CustoAux),
-
-    dfs_alg2(NextNodo, Resto, CustoAux2, Last),
-
-    Custo is CustoAux2 + CustoAux.
-
-
-
-
-
-
-
-
-
-
-
-
-
-dfs((Rua, Freguesia), [(Rua, Freguesia) | Caminho], Custo)  :-
-        
-        dfs_alg((Rua, Freguesia), Caminho, Custo).
-
-
-%% Chegamos ao fim do circuito quando chegarmos ao address goal
-
-dfs_alg(Address, [], 0) :-
-    
-    goal(Address).
-
-dfs_alg(Inicio, [NextNodo | Resto], Custo) :-
-    
-    move(Inicio, NextNodo, CustoAux),
-
-    dfs_alg(NextNodo, Resto, CustoAux2),
-
-    Custo is CustoAux2 + CustoAux.
-
-
-dfs_findall(List) :- findall((Caminho,Custo), (dfs((escolaEngenharia1, uni_centro), Caminho, Custo)), List).
-
-
+  Custo is C1 + C2.
