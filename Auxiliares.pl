@@ -13,13 +13,13 @@ validate_transp, verifica se um transporte é válido.
 ---------------------
 */
 
-validate_transp(transport('Bicycle',W,10,0)) :- 
+validate_transp(transport('Bicycle',W,10,0.7,0)) :- 
         (W > 0 , W =< 5).
 
-validate_transp(transport('Car',W, 25, 2)) :- 
+validate_transp(transport('Car',W, 25, 0.1, 2)) :- 
         (W > 0, W =< 100).
 
-validate_transp(transport('Motorcycle',W,35, 1)) :- 
+validate_transp(transport('Motorcycle',W,35, 0.5, 1)) :- 
         (W > 0, W =< 20).
 
 
@@ -53,7 +53,7 @@ total_price, calcula o preço total de um package.
 total_price(package(C,W,V,P,_,_,H), X) :-
                 
         record(C,_,_,_,TName,_),
-        transport(TName,_,_,ECO),!,
+        transport(TName,_,_,_,ECO),!,
         Y is div(5,5*H+1),
         X is 2.75 + P + 0.2*W + 0.15*V + 2*ECO + Y.
 

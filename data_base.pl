@@ -13,18 +13,18 @@
 
 /*
 ---------------------
-transport : Name, Weight, Speed, EcoValue
+transport : Name, Weight, Speed, SpeedLoss, EcoValue
 ---------------------
 */
 
-transport('Bicycle', 5, 10, 0).
-transport('Bicycle', 3, 10, 0).
+transport('Bicycle', 5, 10, 0.7, 0).
+transport('Bicycle', 3, 10, 0.7, 0).
 
-transport('Motorcycle', 20, 35, 1).
-transport('Motorcycle', 12, 35, 1).
+transport('Motorcycle', 20, 35, 0.5, 1).
+transport('Motorcycle', 12, 35, 0.5, 1).
 
-transport('Car', 100, 25, 2).
-transport('Car', 32, 25, 2).
+transport('Car', 100, 25, 0.1, 2).
+transport('Car', 32, 25, 0.1, 2).
 
 
 /*---------------------
@@ -98,17 +98,17 @@ estafeta : ID, MeioTransporte, [Encomendas]
 ---------------------
 */
 
-estafeta(1, transport('Bicycle',5,10,0), [1000000, 1000001, 1000006]).
-estafeta(1, transport('Motorcycle',12,35,1), [1000003, 1000007, 1000013]).
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000000, 1000001, 1000006]).
+estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000003, 1000007, 1000013]).
 
-estafeta(2, transport('Bicycle',3,10,0), [10000010, 1000002, 1000015]).
-estafeta(2, transport('Car',100,25,2), [1000016]).
+estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [10000010, 1000002, 1000015]).
+estafeta(2, transport('Car', 100, 25, 0.1, 2), [1000016]).
 
-estafeta(3, transport('Car',32, 25,2), [1000004, 1000005]).
-estafeta(3, transport('Bicycle',5,10,0),[1000012]).
+estafeta(3, transport('Car', 32, 25, 0.1, 2), [1000004, 1000005]).
+estafeta(3, transport('Bicycle', 5, 10, 0.7, 0),[1000012]).
 
-estafeta(4, transport('Car',100, 25,2), [1000008, 1000011, 1000014]).
-estafeta(4, transport('Motorcycle',20,35,1),[1000009, 1000017]).
+estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008, 1000011, 1000014]).
+estafeta(4, transport('Motorcycle', 20, 35, 0.5, 1),[1000009, 1000017]).
 
 
 

@@ -13,7 +13,7 @@ query_help(0, "#> write \"query_help('number')\" to know more(...)").
 
 query_help(1) :-nl,
 	write("#> q1(IDestafeta, Meio, Nvezes)"),nl,
-	write("#> ex: q1(E, transport(\'Car\',_,_,_), X)."),nl,
+	write("#> ex: q1(E, transport(\'Car\',_,_,_,_), X)."),nl,
 	write("#> ex: q1(E, 'Bicycle', X)."),nl,nl.
 
 query_help(2) :-nl,

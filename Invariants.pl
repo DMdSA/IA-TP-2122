@@ -40,29 +40,30 @@ testI([H | T]) :- H, testI(T).
 %----------------------------------------
 %---- Tipo do facto
 
-+transport(Name, Weight, Speed, Eco) :: (
++transport(Name, Weight, Speed, SpeedLoss, Eco) :: (
 
 	atom(Name),
 	integer(Weight),
 	integer(Speed),
+	float(SpeedLoss),
 	integer(Eco)
 ).
 
 %---- Unicidade e validade do facto
 
-+transport(N,W,S,E) :: (
++transport(N,W,S,L,E) :: (
 
-	validate_transp(transport(N,W,S,E)),
-	solucoes((N,W), transport(N,W,_,_),List),
+	validate_transp(transport(N,W,S,L,E)),
+	solucoes((N,W), transport(N,W,_,_,_),List),
 	length(List,1)
 ).
 
 %---- Só posso eliminar se não houver nenhum record que o utilize
 %---- O seu ID é como se fosse Nome+Weight, visto serem as únicas variáveis
 
--transport(N,W,_,_) :: (
+-transport(N,W,_,_,_) :: (
 
-	solucoes((N,W), estafeta(_,transport(N,W,_,_),_), List),
+	solucoes((N,W), estafeta(_,transport(N,W,_,_,_),_), List),
 	length(List,0) 
 ).
 %----------------------------------------
@@ -150,11 +151,11 @@ testI([H | T]) :- H, testI(T).
 
 	package(Pid,_,_,_,_,_,_),
 	client(Cid,_),
-	transport(TName, _, _, _),!,
+	transport(TName, _, _, _,_),!,
 	solucoes(Pid, record(Pid, Cid, Eid, _, _, _), N), 
 	length(N,1),
 
-	estafeta(Eid, transport(TName,_,_,_),_)
+	estafeta(Eid, transport(TName,_,_,_,_),_)
 ).
 
 
@@ -223,7 +224,7 @@ testI([H | T]) :- H, testI(T).
 
 %---- Só pode adicionar uma lista de encomendas se o peso de cada uma delas for suportado pelo transporte associado
 
-+estafeta(_, transport(_,W,_,_), Pkgs) :: (
++estafeta(_, transport(_,W,_,_,_), Pkgs) :: (
 
 	solucoes(Weight, (member(ID, Pkgs), package(ID, Weight,_,_,_,_,_)), List),
 	verify_possible_weight(List, W)
