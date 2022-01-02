@@ -214,9 +214,9 @@ dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
   %----- BREADTH FIRST SEARCH -----------------------------------------------------------------------------
  
 
-goal((complexoDesportivo, uni_este)).
+% Circuito : Destino, Caminho, Custo
 
-bfs(Dest,Caminho, Custo):-
+circuitoBFS(Dest,Caminho, Custo):-
   
   bfs2(Dest,[[(escolaEngenharia1, uni_centro)]], Cam1),
 
@@ -265,3 +265,79 @@ weight([I,F | R], W) :-
     connected(I, F, W1),
     weight([F | R], W2),
     W is W1+W2. 
+
+
+
+  %----- Iterative Deepening Search -----------------------------------------------------------------------------
+
+/*
+
+Limitations of this approach :
+- Bratko´s implementation is quite elegant, and it will return a solution if one exists.
+- Returns all alternative solutions on backtracking.
+- However, if there are no solutions (or no more solutions on backtracking), search
+does not terminate, even if the state space is finite.
+- Can´t be used to exhaustively enumerate all solutions (e.g., with all solutions
+  predicates).
+- Brantko sees the nodes more as States, than an actual node.
+
+*/
+
+% CircuitoIDS : Caminho, Custo, PontoEntrega
+
+circuitoIDS(CaminhoFinal, CustoFinal, PontoEntrega) :-
+  
+  path((escolaEngenharia1, uni_centro), PontoEntrega, Custo1, Caminho1),
+  reverse(Caminho1, Caminho1Final),
+
+  path(PontoEntrega, (escolaEngenharia1, uni_centro), Custo2, Caminho2),
+  reverse(Caminho2, Caminho2Aux),
+  tail(Caminho2Aux, Caminho2Final),
+
+  append(Caminho1Final, Caminho2Final, CaminhoFinal),
+  CustoFinal is Custo1 + Custo2.
+
+
+
+path(PontoEntrega, PontoEntrega, 0, [PontoEntrega]).
+
+path(Inicio, Fim, Custo, [Fim | Path]) :-
+
+  path(Inicio, Penultimo, C1, Path),
+
+  connected(Penultimo, Fim, C2),
+
+  \+member(Fim, Path),
+
+  Custo is C1+C2.
+
+
+/*
+------ Depth limited Search (teste)
+
+dls(Last, Last, [Last], D):-
+
+  D >= 0.
+
+dls(First, Last, [First | Resto], D) :-
+
+  D > 0,
+  connected(First, Algo, _),
+  D1 is D - 1,
+  dls(Algo, Last, Resto, D1).
+
+*/
+
+
+
+/*
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
+
+2 maneiras de medir o tempo de execução:
+
+time( metodo(arg1, arg2) ).
+
+call_time( metodo(arg1,arg2) , Dict).
+
+%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
+*/
