@@ -58,6 +58,7 @@ getAllPossibleTransports(PackageID, Km, List) :-
 
 %%- PossibleTransports : PackageID, (Transport, RealSpeed, DurationTime), Answer
 
+
 possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)], [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)]) :-
 
     RealSpeed > 0,
@@ -66,7 +67,7 @@ possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationT
 
     PWeight =< TWeight,
 
-    DurationTime =< TempoEspera, !.
+    DurationTime =< TempoEspera.
 
 
 possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime) | Resto], Answer) :-
@@ -85,10 +86,12 @@ possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationT
 
     append(List1, List2, Answer).
 
+possibleTransports(_, [], []).
 
 possibleTransports(PackageID, [(_, _, _) | Resto], Answer) :-
 
     possibleTransports(PackageID, Resto, Answer).
+
 
 
 
@@ -110,17 +113,22 @@ getTransportationINFO([transport(Name,A,Speed,SpeedLoss,B)], Weight, Km, List) :
 
     RealSpeed is Speed - (SpeedLoss * Weight),
 
-    Tempo is Km/RealSpeed,
+    (RealSpeed > 0 -> Real is RealSpeed; Real is 1),
 
-    List = [(transport(Name,A,Speed,SpeedLoss,B), RealSpeed, Tempo)].
+    Tempo is Km/Real,
+
+    List = [(transport(Name,A,Speed,SpeedLoss,B), Real, Tempo)].
 
 
 getTransportationINFO([transport(Name,A,Speed, SpeedLoss, B) | Resto], Weight, Km, List) :-
 
     RealSpeed is Speed - (SpeedLoss * Weight),
-    Tempo is Km/RealSpeed,
 
-    List1 = [(transport(Name,A,Speed,SpeedLoss,B), RealSpeed, Tempo)],
+    (RealSpeed > 0 -> Real is RealSpeed; Real is 1),
+
+    Tempo is Km/Real,
+
+    List1 = [(transport(Name,A,Speed,SpeedLoss,B), Real, Tempo)],
 
     getTransportationINFO(Resto, Weight, Km, List2),
 

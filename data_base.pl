@@ -9,22 +9,30 @@
 
 :- discontiguous package/7 .
 :- discontiguous record/6 .
- 
+
 
 /*
 ---------------------
 transport : Name, Weight, Speed, SpeedLoss, EcoValue
 ---------------------
 */
+%%- Para obter resultados mais eficientes (em escolhas de transportes),
+%%- é de valor apresentar os que têm menor capacidade primeiro
 
-transport('Bicycle', 5, 10, 0.7, 0).
+
 transport('Bicycle', 3, 10, 0.7, 0).
+transport('Bicycle', 5, 10, 0.7, 0).
 
-transport('Motorcycle', 20, 35, 0.5, 1).
 transport('Motorcycle', 12, 35, 0.5, 1).
+transport('Motorcycle', 20, 35, 0.5, 1).
 
-transport('Car', 100, 25, 0.1, 2).
 transport('Car', 32, 25, 0.1, 2).
+transport('Car', 100, 25, 0.1, 2).
+
+
+transport('Carrinha', 500, 55, 0.07, 3).
+transport('Carrinha', 600, 55, 0.07, 3).
+
 
 %%- Get do valor ecológico de um meio de transporte
 
@@ -90,7 +98,7 @@ record(1000013, 10016, 1, date(2,7,2021, 17), 'Motorcycle', 4).
 package(1000014, 56, 10, 3, address('complexoDesportivo','uni_este'), date(23, 7, 2021, 15), 48).
 record(1000014, 10002, 4, date(24,7,2021, 17), 'Car', 2).
 
-package(1000015, 2000, 0.2, 0.1, address('educacao','uni_oeste'), date(30, 9, 2021, 15), 12).
+package(1000015, 600, 0.2, 0.1, address('educacao','uni_oeste'), date(30, 9, 2021, 15), 12).
 record(1000015, 10003, 2, date(1,10,2021, 17), 'Bicycle', 5).
 
 package(1000016, 45, 2, 3, address('servicosTecnicos','uni_este'), date(10, 3, 2021, 15), 6).
@@ -102,42 +110,111 @@ package(1000017, 5, 6, 3.2, address('escolaCienciass','uni_centro'), date(17, 7,
 
 
 
+
+
+
 /*
 ---------------------
 Estafeta
-estafeta : ID, MeioTransporte, [Encomendas]
+estafeta : ID, MeioTransporte, [Encomendas], AlgoritmoCaminho
 ---------------------
 */
 
-
-estafeta(1, transport('Bicycle',5,10,0), [1000000]).
-estafeta(1, transport('Bicycle', 5, 10, 0), [1000001]).
-estafeta(1, transport('Bicycle', 5, 10, 0), [1000006]).
-
-estafeta(1, transport('Motorcycle',12,35,1), [1000003]).
-estafeta(1, transport('Motorcycle',12,35,1), [1000007]).
-estafeta(1, transport('Motorcycle',12,35,1), [1000013]).
+%%- DFS, 8.25 km/h, 2.424242 Horas, 20 km
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000000], dfs).
 
 
-estafeta(2, transport('Bicycle',3,10,0), [10000010]).
-estafeta(2, transport('Bicycle',3,10,0), [1000002]).
-estafeta(2, transport('Bicycle',3,10,0), [1000015]).
+%%- BFS, 7.69 km/h, 10.403120936 Horas, 80 km
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000001], bfs).
 
-estafeta(2, transport('Car',100,25,2), [1000016]).
+%%- DFS, 28.5 km/h, 1.75438 Horas, 50 km
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000006], dfs).
+
+%%- NÃO CUMPRE REQUISITOS DE TEMPO
+% estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000003]).
+
+%%- IDS, 8.5216 km/h, 1.64288 horas, 14 km
+estafeta(1, transport('Bicycle',5,10,0.7, 0), [1000007], ids).
+
+%%- IDS, 32.2 km/h, 2.7950310 horas, 90 km
+estafeta(1, transport('Motorcycle', 20, 35, 0.5, 1), [1000013], ids).
+
+%%- BFS, 22.2 km/h, 2.702702 horas, 60 km
+estafeta(2, transport('Car', 100, 25, 0.1, 2), [10000010], bfs).
+
+%%- NÃO CUMPRE REQUISITOS DE TEMPO
+% estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [1000002]).
+
+%%- NÃO CUMPRE REQUISITOS (2000 KG) 
+% estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [1000015]).
+
+%%- DFS, 20.5 km/h, 2.4390 horas, 50 km
+estafeta(2, transport('Car', 100, 25, 0.1, 2), [1000016], dfs).
+
+%%- BFS, 9.3 km/h, 2.36559 horas, 22 km
+estafeta(3, transport('Bicycle' , 5, 10, 0.7, 0), [1000004], bfs).
+
+%%- DFS, 9.3084 km/h, 5.371492 horas, 50 km
+estafeta(3, transport('Bicycle', 5, 10, 0.7, 0), [1000005], dfs).
+
+%%- IDS, 18 km/h, 1.3333 horas, 24 km
+estafeta(3, transport('Car', 100, 25, 0.1, 2),[1000012], ids).
+
+%%- NÃO CUMPRE REQUISITOS TEMPO
+% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008]).
+
+%%- NÃO CUMPRE REQUISITOS, > 2000 KG
+% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011]).
+
+%%- DFS, 19.4 km/h, 1.6494 horas, 32 km
+estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000014], dfs).
+
+%%- BFS, 16.2 km/h, 4.320987 horas, 70 km
+estafeta(4, transport('Car', 100, 25, 0.1, 2),[1000009], bfs).
+
+%%- NÃO CUMPRE REQUISITOS TEMPO
+% estafeta(4, transport('Motorcycle', 20, 35, 0.5, 1),[1000017]).
 
 
-estafeta(3, transport('Car',32, 25,2), [1000004]).
-estafeta(3, transport('Car',32, 25,2), [1000005]).
-
-estafeta(3, transport('Bicycle',5,10,0),[1000012]).
 
 
-estafeta(4, transport('Car',100, 25,2), [1000008]).
-estafeta(4, transport('Car',100, 25,2), [1000011]).
-estafeta(4, transport('Car',100, 25,2), [1000014]).
 
-estafeta(4, transport('Motorcycle',20,35,1),[1000009]).
-estafeta(4, transport('Motorcycle',20,35,1),[1000017]).
+
+/*
+
+                                                        \\ "GUIDE" //
+
+Como testar os estafetas - caminhos - etc ?
+
+
++ melhor caminho : melhorSolucaoDFS( (rua, freguesia), Caminho, Custo).
+            ""      ""  BFS     ""          ""
+            ""      ""  IDS     ""          ""
+
+
++ caminhos possiveis : circuitoDFS( (rua, freguesia), Caminho, Custo).
+
+
++ melhor caminho com escolha + ecologica : indicadorProdutividadeDFS(packageid, (rua, freguesia), EcoTransport, Caminho, Km).
+
+
++ Lista de transportes associados À velocidade média e ao tempo, em horas, :
+  Dado um peso de um package e a distancia do caminho que vai percorrer, devolve essa lista
+
+    getAllTransportsInfo(pesoDoPackage, KM, List).
+
+
++ Lista com todos os transportes associados à media da velocidade e ao tempo que durou a viagem, mas que respeitam os limites
+    de peso, velocidade, etc (indicadores de produtividade)
+
+    getAllPossibleTransports(packageid, KM, List). 
+
+*/
+
+
+
+
+
 
 
 
@@ -264,3 +341,7 @@ address( medicina, olimpo).
 % Verifica se uma rua é valida e existe
 validate_address(address(R, F)) :-
     atom(R), atom(F), address(R,F).
+
+
+
+
