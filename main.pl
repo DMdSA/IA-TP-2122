@@ -11,7 +11,6 @@ cls :- write('\e[H\e[2J').
 :- consult('Auxiliares.pl').
 :- consult('Invariants.pl').
 :- consult('texts.pl').
-:- consult('grafos.pl').
 
 :- discontiguous q5/3 .
 :- discontiguous q4/2 .
@@ -24,7 +23,7 @@ newAddress(RUA, FREGUESIA) :- evolucao(address(RUA, FREGUESIA)).
 newEstafeta(ID, TRANSPORT, LIST) :- evolucao(estafeta(ID, TRANSPORT, LIST)).
 newRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- evolucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 newPackage(ID, W, V, P, ADD, DATE, HOURS) :- evolucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-newTransport(NAME, MAXWEIGHT, AVGSPEED, SPEEDLOSS, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, SPEEDLOSS, ECOVALUE)).
+newTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
 
 remClient(ID, NAME) :- involucao(client(ID,NAME)).
@@ -32,7 +31,7 @@ remAddress(RUA, FREGUESIA) :- involucao(address(RUA, FREGUESIA)).
 remEstafeta(ID, TRANSPORT, LIST) :- involucao(estafeta(ID, TRANSPORT, LIST)).
 remRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- involucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 remPackage(ID, W, V, P, ADD, DATE, HOURS) :- involucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-remTransport(NAME, MAXWEIGHT, AVGSPEED, SPEEDLOSS, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, SPEEDLOSS, ECOVALUE)).
+remTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
 /*
 ---------------------
@@ -41,7 +40,7 @@ Query1,  Estafeta que usou (+) vezes um meio de transporte (+) ecológico.
 */
 
 
-% V1 -> q1 : EstafetaID, Transport(_,_,_,_,_), Count -> {V,F}
+% V1 -> q1 : EstafetaID, Transport(_,_,_,_), Count -> {V,F}
 % ---------------------------------------------------------
 
 q1(ID, Meio, Answer) :- 
@@ -56,8 +55,8 @@ q1(ID, Meio, Answer) :-
 
 q1(ID, M, A) :-
         
-        transport(M,_,_,_,_),!,
-        findall((ID,N), (estafeta(ID,transport(M,_,_,_,_),Pkgs), length(Pkgs,N)), X),
+        transport(M,_,_,_),!,
+        findall((ID,N), (estafeta(ID,transport(M,_,_,_),Pkgs), length(Pkgs,N)), X),
         max_couple(X, A), writeq1(A).
 
 
@@ -607,23 +606,3 @@ writeq10([]) :- nl.
 writeq10([(H,Peso) | Resto]) :-
     write("Courier ["), write(H), write("] -> ["), write(Peso), write("] kg."), nl,
      writeq10(Resto).
-
-% ---------------------------------------------------------
-
-breadth_first_package(PackageID,Answer,Custo,Tempo) :-
-    package(PackageID,Weight,_,_,address(R,F),_,_),
-    record(PackageID,_,_,_,Transport,_),
-    transport(Transport,_,Speed,Speedloss,_),
-    circuitoBFS((R,F),Answer,Custo),
-    SpeedAux is Speed - (Speedloss*Weight),
-    X is round(SpeedAux),
-    Tempo is div(Custo,X). %DIVISAO AQUI <----------------------------------
-
-depth_first_package(PackageID,Answer,Custo,Tempo) :-
-    package(PackageID,Weight,_,_,address(R,F),_,_),
-    record(PackageID,_,_,_,Transport,_),
-    transport(Transport,_,Speed,Speedloss,_),
-    circuitoDFS((R,F),Answer,Custo),
-    SpeedAux is Speed - (Speedloss*Weight),
-    X is round(SpeedAux),
-    Tempo is div(Custo,X). %DIVISAO AQUI <----------------------------------

@@ -2,8 +2,8 @@
 % File written by------
 % ---------------G28---
 %----------------------
-cls :- write('\e[H\e[2J').
-% make. to reload
+% cls :- write('\e[H\e[2J').
+% % make. to reload
 
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
@@ -15,25 +15,25 @@ g( grafo(
   [
       % cada nodo é um ADDRESS, address : Rua, Freguesia
 
-  address( complexoPedagogico1, uni_este ),     % 1
-  address( complexoPedagogico2, uni_sul ),      % 2
-  address( complexoPedagogico3, uni_centro),    % 3
-  address( biblioteca, uni_sul),                % 4
-  address( institutoLetras, uni_sul),           % 5
-  address( escolaCiencias, uni_centro),         % 6
-  address( escolaEngenharia1, uni_centro),      % 7
-  address( escolaEconomia, uni_centro),         % 8
-  address( complexoDesportivo, uni_este),       % 9
-  address( servicosTecnicos, uni_este),         % 10
-  address( cantina, uni_norte),                 % 11
-  address( acaoSocial, uni_norte),              % 12
-  address( educacao, uni_oeste),                % 13
-  address( psicologia, uni_oeste),              % 14
-  address( cienciasSociais, uni_oeste),         % 15
-  address( escolaEngenharia2, uni_oeste),       % 16
-  address( escolaDireito, uni_oeste),           % 17
-  address( bioSustentabilidade, uni_oeste),     % 18
-  address( medicina, olimpo)                    % 19
+  address( complexoPedagogico1, uni_este ),       % 1
+  address( complexoPedagogico2, uni_sul ),        % 2
+  address( complexoPedagogico3, uni_centro),      % 3
+  address( biblioteca, uni_sul),                  % 4
+  address( institutoLetras, uni_sul),             % 5
+  address( escolaCiencias, uni_centro),           % 6
+  address( escolaEngenharia1, uni_centro),        % 7
+  address( escolaEconomia, uni_centro),           % 8
+  address( complexoDesportivo, uni_este),         % 9
+  address( servicosTecnicos, uni_este),           % 10
+  address( cantina, uni_norte),                   % 11
+  address( acaoSocial, uni_norte),                % 12
+  address( educacao, uni_oeste),                  % 13
+  address( psicologia, uni_oeste),                % 14
+  address( cienciasSociais, uni_oeste),           % 15
+  address( escolaEngenharia2, uni_oeste),         % 16
+  address( escolaDireito, uni_oeste),             % 17
+  address( bioSustentabilidade, uni_oeste),       % 18
+  address( medicina, olimpo)                      % 19
   
   ],
 
@@ -98,11 +98,6 @@ g( grafo(
  )).
 
 
-%- Starting adress, always
-starting_point(address(escolaEngenharia1, uni_centro)).
-
-
-
 adjacentes(A,B,C, grafo(_,Arestas)) :- 
                 
                 member(aresta(A,B,C) , Arestas).
@@ -118,13 +113,7 @@ adjacentes(A,B,C, grafo(_,Arestas)) :-
 
 
 
-
-
-
-
 %-----------------------------------------------------------------
-
-% 
 
 move(  (escolaEngenharia1, uni_centro), (complexoDesportivo, uni_este), 16).
 move(  (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 5).
@@ -154,24 +143,22 @@ move(  (acaoSocial, uni_norte), (medicina, olimpo), 28).
 move(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25).
 
 
-
-connected( A, B, C) :- move( A, B, C).
-connected(A,B,C) :- move( B, A, C).
-
-
-start_address(address(escolaEngenharia1, uni_centro)).
+%%- Verifica se dois Addresses estão conectados
+%%- 
+connected( A, B, C ) :- move( A, B, C).
+connected( A, B, C ) :- move( B, A, C).
 
 
+%----- "DEPTH FIRST SEARCH" -----------------------------------------------------------------------------
 
-%goal((servicosTecnicos, uni_este)).
-
-
-%----- DEPTH FIRST SEARCH -----------------------------------------------------------------------------
-
+%%- Devolve a tail de uma lista
+%%- 
 tail([], []).
 tail([_ | R], R).
 
- 
+%%- CircuitoDFS : (Rua, Freguesia), Caminho, Custo) 
+%%- usage : circuitoDFS((rua, freguesia), Cam, Custo).
+
 circuitoDFS(PontoEntrega, CaminhoFinal, CustoFinal) :-
 
   ida(PontoEntrega, Caminho1Aux, Custo1),
@@ -198,6 +185,8 @@ volta(Inicio, Caminho, Custo) :-
   reverse(CaminhoAux, Caminho).
 
 
+%%- "Algoritmo"
+%%-
 
 dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
 
@@ -211,20 +200,24 @@ dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
 
 
 
-  %----- BREADTH FIRST SEARCH -----------------------------------------------------------------------------
+  %----- "BREADTH FIRST SEARCH" -----------------------------------------------------------------------------
  
 
-% Circuito : Destino, Caminho, Custo
+%%- Circuito : Destino, Caminho, Custo
+%%- usage : circuitoBFS((rua, freguesia), Cam, Custo).
+
 
 circuitoBFS(Dest,Caminho, Custo):-
   
+  %%- ida
   bfs2(Dest,[[(escolaEngenharia1, uni_centro)]], Cam1),
 
+  %%- volta
   bfs2((escolaEngenharia1, uni_centro), [[Dest]], Cam2),
 
-  weight(Cam1, Custo1),
+  distance(Cam1, Custo1),
 
-  weight(Cam2, Custo2),
+  distance(Cam2, Custo2),
 
   tail(Cam2, Cam2Aux),
 
@@ -256,19 +249,19 @@ bfs2(Dest,[LA|Outros],Cam):-
   bfs2(Dest,Todos,Cam).
 
 
+%%- Calcula a distância entre uma lista de moradas/arestas
+
+distance([Inicio, Next], Km) :- connected(Inicio, Next, Km).
+
+distance([Inicio, Next | Resto], Km) :-
+
+    connected(Inicio, Next, Km1),
+    distance([Next | Resto], Km2),
+    Km is Km1+Km2. 
 
 
-weight([I, F], W) :- connected(I, F, W).
 
-weight([I,F | R], W) :-
-
-    connected(I, F, W1),
-    weight([F | R], W2),
-    W is W1+W2. 
-
-
-
-  %----- Iterative Deepening Search -----------------------------------------------------------------------------
+  %----- "Iterative Deepening Search" -----------------------------------------------------------------------------
 
 /*
 
@@ -283,9 +276,11 @@ does not terminate, even if the state space is finite.
 
 */
 
-% CircuitoIDS : Caminho, Custo, PontoEntrega
+%%- usage : circuitoIDS((rua, freguesia), Cam, Custo).
 
-circuitoIDS(CaminhoFinal, CustoFinal, PontoEntrega) :-
+% CircuitoIDS : PontoEntrega, Caminho, Custo
+
+circuitoIDS(PontoEntrega, CaminhoFinal, CustoFinal) :-
   
   path((escolaEngenharia1, uni_centro), PontoEntrega, Custo1, Caminho1),
   reverse(Caminho1, Caminho1Final),
@@ -341,3 +336,86 @@ call_time( metodo(arg1,arg2) , Dict).
 
 %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
 */
+
+
+%--
+% MenorInteiros : Inteiro, Inteiro, Inteiro
+%--
+
+menorI(A,B, A) :- A =\= B, A < B.
+menorI(A,B, B) :- A =\= B, B < A.
+menorI(A,A,A).
+
+%--
+% MenorInteirosList : List, Inteiro
+%--
+
+menorIL([A], A).
+
+menorIL([A | R], Answer) :-
+  
+  %% extender a lista toda e comparar um a um
+  menorIL(R, Aux),
+  menorI(A, Aux, Answer).
+
+%--
+% MenorPares : (Algo, Inteiro), (Algo, Inteiro), (Algo, Inteiro)
+%--
+
+menorP((Cam1,C1), (_, C2), (Cam1,C1)) :- C1 =\= C2, C1 =< C2.
+
+menorP((_,C1), (Cam2,C2), (Cam2,C2)) :- C1 =\= C2, C2 < C1.
+
+%-- "por default, vai escoler sempre o primeiro"
+menorP((Cam,C), (_,C), (Cam,C)).
+
+
+%--
+% MenorParesList : PairsList, (Algo, Inteiro)
+
+menorPL([ (Cam, Custo) ], (Cam, Custo)).
+
+
+menorPL([(Cam,C) | R], Resposta) :-
+
+  %% extender a lista toda e comparar um a um
+  menorPL(R, (Cam2, C2)),
+  menorP((Cam, C), (Cam2,C2), Resposta).
+
+
+
+
+%-  "MELHOR SOLUCAO : DEPTH FIRST SEARCH : (PontoEntrega, Caminho, Custo)"
+
+melhorSolucaoDFS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
+
+  findall((Caminho, Custo),
+
+          (circuitoDFS(PontoEntrega, Caminho, Custo)),
+          List),
+
+  menorPL(List, (MelhorCaminho,MelhorCusto)).
+
+
+
+%- "MELHOR SOLUCAO : BREADTH FIRST SEARCH : (PontoEntrega, Caminho, Custo)"
+
+melhorSolucaoBFS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
+
+  findall((Caminho, Custo),
+
+          (circuitoBFS(PontoEntrega, Caminho, Custo)),
+          List),
+  menorPL(List, (MelhorCaminho,MelhorCusto)).
+
+
+
+%- "MELHOR SOLUCAO : ITERATIVE DEEPENING SEARCH : (PontoEntrega, Caminho, Custo)"
+%-- Neste algoritmo, fazer backtracking faz com que o programa fique em loop infinito
+%-- A melhor solução vai ser sempre a primeira
+
+
+melhorSolucaoIDS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
+
+  circuitoIDS(PontoEntrega, MelhorCaminho, MelhorCusto),
+  !.

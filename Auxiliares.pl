@@ -1,3 +1,4 @@
+
 :- dynamic validate_transp/1 .
 :- dynamic isAfter/2 .
 :- dynamic total_price/2 .

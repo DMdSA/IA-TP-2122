@@ -26,6 +26,16 @@ transport('Motorcycle', 12, 35, 0.5, 1).
 transport('Car', 100, 25, 0.1, 2).
 transport('Car', 32, 25, 0.1, 2).
 
+%%- Get do valor ecológico de um meio de transporte
+
+getEcoValue(transport(_,_,_,_,E), E).
+
+%%- Junta, numa lista, todos os transportes disponíveis
+
+getAllTransports(Transports) :-
+
+    findall((transport(A,B,C,D,E)), transport(A,B,C,D,E), Transports).
+
 
 /*---------------------
 Package
@@ -91,6 +101,7 @@ package(1000017, 5, 6, 3.2, address('escolaCienciass','uni_centro'), date(17, 7,
 % evolucao(record(1000017, 10000, 4, date(18,7,2021,16),'Motorcycle', 1)).
 
 
+
 /*
 ---------------------
 Estafeta
@@ -98,17 +109,35 @@ estafeta : ID, MeioTransporte, [Encomendas]
 ---------------------
 */
 
-estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000000, 1000001, 1000006]).
-estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000003, 1000007, 1000013]).
 
-estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [10000010, 1000002, 1000015]).
-estafeta(2, transport('Car', 100, 25, 0.1, 2), [1000016]).
+estafeta(1, transport('Bicycle',5,10,0), [1000000]).
+estafeta(1, transport('Bicycle', 5, 10, 0), [1000001]).
+estafeta(1, transport('Bicycle', 5, 10, 0), [1000006]).
 
-estafeta(3, transport('Car', 32, 25, 0.1, 2), [1000004, 1000005]).
-estafeta(3, transport('Bicycle', 5, 10, 0.7, 0),[1000012]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000003]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000007]).
+estafeta(1, transport('Motorcycle',12,35,1), [1000013]).
 
-estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008, 1000011, 1000014]).
-estafeta(4, transport('Motorcycle', 20, 35, 0.5, 1),[1000009, 1000017]).
+
+estafeta(2, transport('Bicycle',3,10,0), [10000010]).
+estafeta(2, transport('Bicycle',3,10,0), [1000002]).
+estafeta(2, transport('Bicycle',3,10,0), [1000015]).
+
+estafeta(2, transport('Car',100,25,2), [1000016]).
+
+
+estafeta(3, transport('Car',32, 25,2), [1000004]).
+estafeta(3, transport('Car',32, 25,2), [1000005]).
+
+estafeta(3, transport('Bicycle',5,10,0),[1000012]).
+
+
+estafeta(4, transport('Car',100, 25,2), [1000008]).
+estafeta(4, transport('Car',100, 25,2), [1000011]).
+estafeta(4, transport('Car',100, 25,2), [1000014]).
+
+estafeta(4, transport('Motorcycle',20,35,1),[1000009]).
+estafeta(4, transport('Motorcycle',20,35,1),[1000017]).
 
 
 
