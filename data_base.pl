@@ -11,14 +11,13 @@
 :- discontiguous record/6 .
 
 
-/*
----------------------
-transport : Name, Weight, Speed, SpeedLoss, EcoValue
----------------------
-*/
-%%- Para obter resultados mais eficientes (em escolhas de transportes),
-%%- é de valor apresentar os que têm menor capacidade primeiro
 
+%%-------------------------------------------------------------------
+% transport : Name, Weight, Speed, SpeedLoss, EcoValue               |
+%                                                                    |
+% Para obter resultados mais eficientes (em escolhas de transportes),|
+% é de valor apresentar os que têm menor capacidade primeiro         |
+%%-------------------------------------------------------------------
 
 transport('Bicycle', 3, 10, 0.7, 0).
 transport('Bicycle', 5, 10, 0.7, 0).
@@ -34,24 +33,34 @@ transport('Carrinha', 500, 55, 0.07, 3).
 transport('Carrinha', 600, 55, 0.07, 3).
 
 
-%%- Get do valor ecológico de um meio de transporte
+
+%%-------------------------------------------------
+% GetEcoValue : Transport, EcoValue                |
+% Get do valor ecológico de um meio de transporte  |
+% usage : getEcoValue( (transport(...)), Answer).  |
+%%-------------------------------------------------
 
 getEcoValue(transport(_,_,_,_,E), E).
 
-%%- Junta, numa lista, todos os transportes disponíveis
+
+%%----------------------------------------------------
+% GetAllTransports : Transports                       |
+% Junta, numa lista, todos os transportes disponíveis |
+% usage : getAllTransports(Answer).                   |
+%%----------------------------------------------------
 
 getAllTransports(Transports) :-
 
     findall((transport(A,B,C,D,E)), transport(A,B,C,D,E), Transports).
 
 
-/*---------------------
-Package
-package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}
-Record
-record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F}
----------------------
-*/
+%%-------------------------------------------------------------------------------------------
+% Package                                                                                    |
+% package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}           |
+% Record                                                                                     |
+% record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F} |
+%%-------------------------------------------------------------------------------------------
+
 
 package(1000000, 2.5, 25 , 30 , address('cantina','uni_norte'), date(11, 11, 2021, 12), 6).
 record(1000000, 10000, 1, date(11, 11, 2021, 16), 'Bicycle', 5).
@@ -113,12 +122,12 @@ package(1000017, 5, 6, 3.2, address('escolaCienciass','uni_centro'), date(17, 7,
 
 
 
-/*
----------------------
-Estafeta
-estafeta : ID, MeioTransporte, [Encomendas], AlgoritmoCaminho
----------------------
-*/
+
+%%--------------------------------------------------------------
+% Estafeta                                                      |
+% estafeta : ID, MeioTransporte, [Encomendas], AlgoritmoCaminho |
+%%--------------------------------------------------------------
+
 
 %%- DFS, 8.25 km/h, 2.424242 Horas, 20 km
 estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000000], dfs).
@@ -238,46 +247,13 @@ validate_to_deliver([H | T]) :-
          
 
 
-/*
----------------------
-Date
-date : Day, Month, Year, Hour -> {V,F}
----------------------
-*/
-
-date(D,M,A,H) :- D >= 1, D =< 30, member(M, [4,6,9,11]),
-                A > 0, H>=0, H<24, !.
-date(D,M,A,H) :- D >= 1, D =< 31, member(M, [1,3,5,7,8,10,12]),
-                A > 0, H>=0, H<24, !.
-date(D,2,A,H) :- D >= 1, D =< 29,
-                H>=0, H<24,
-                A mod 4 =:= 0, A mod 100 =:= 0, A mod 400 =:= 0.
-date(D,2,A,H) :- D >= 1, D =< 29,
-                H>=0, H<24,
-                A mod 4 =:= 0, A mod 100 =\= 0 .
-date(D,2,A,H) :- D >= 1, D =< 28,
-                H>=0, H<24,
-                A mod 4 =:= 0, A mod 100 =:= 0, A mod 400 =\= 0.
-date(D,2,A,H) :- D >= 1, D =< 28,
-                H>=0, H<24,
-                A mod 4 =\= 0.
 
 
 
-%--------------------- AUXILIAR
-% Verifica se uma data é válida
-
-validate_date(date(D,M,Y,H)) :- 
-                date(D,M,Y,H).
-
-
-
-/*
----------------------
-Client
-client : ID, Nome -> {V,F}
----------------------
-*/
+%%---------------------------
+% Client                     |
+% client : ID, Nome -> {V,F} |
+%%---------------------------
 
 client(10000, 'Diogo Araújo').
 client(10001, 'Joel Araújo').
@@ -310,12 +286,11 @@ client(10027, 'Simão Cunha').
 client(10028, 'Tiago Silva').
 
 
-/*
----------------------
-Address
-address : Rua, Freguesia -> {V,F}
----------------------
-*/
+
+%%-----------------------------------
+% Address                            |
+% address : Rua, Freguesia -> {V,F}  |
+%%-----------------------------------
 
 address( complexoPedagogico1, uni_este).
 address( complexoPedagogico2, uni_sul).
@@ -337,11 +312,12 @@ address( escolaDireito, uni_oeste).
 address( bioSustentabilidade, uni_oeste) .
 address( medicina, olimpo).
 
-%--------------------- AUXILIAR
-% Verifica se uma rua é valida e existe
+
+%%----------------------------------------
+% Address Auxiliar                        |
+% ValidateAddress : Address               |
+% Verifica se uma rua é valida e existe   |
+%%----------------------------------------
+
 validate_address(address(R, F)) :-
     atom(R), atom(F), address(R,F).
-
-
-
-

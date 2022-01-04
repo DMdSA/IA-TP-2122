@@ -14,44 +14,18 @@ cls :- write('\e[H\e[2J').
 % ---------------------------------------------------------
 
 
-hour(A,B,C) :-
 
-    A >= 0, A =< 23,
-    B >= 0, B =< 59,
-    C >= 0, C =< 59.
+%%-------------------------------------------------------------------------------------------------------------------
+% "Depth first search"                                                                                               |
+% indicadorProdutividadeDFS : PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km                        |
+% usage : indicadorProdutividadeDFS(packageid, (rua, freguesia), EcoT, Cam, CustoIda, CustoTotal).                   |
+%                                                                                                                    |
+% Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
+%%-------------------------------------------------------------------------------------------------------------------
 
+indicadorProdutividadeDFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
 
-%%------------------------------------------------------------------------------
-
-
-%%- Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar
-%%. Depth first search
-
-indicadorProdutividadeDFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Km) :-
-
-    melhorSolucaoDFS((Rua, Freguesia), Caminho, Km),
-
-    getAllPossibleTransports(PackageID, Km, List),
-
-    moreEcologicalTransportation(List, EcoTransportation).
-
-%%- Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar
-%%- Breadth first search
-
-indicadorProdutividadeBFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Km) :-
-
-    melhorSolucaoBFS((Rua, Freguesia), Caminho, Km),
-
-    getAllPossibleTransports(PackageID, Km, List),
-
-    moreEcologicalTransportation(List, EcoTransportation).
-
-%%- Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar
-%%- Iterative deepening search
-
-indicadorProdutividadeIDS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Km) :-
-
-    melhorSolucaoIDS((Rua, Freguesia), Caminho, Km),
+    melhorSolucaoDFS((Rua, Freguesia), Caminho, Ida, Km),
 
     getAllPossibleTransports(PackageID, Km, List),
 
@@ -59,48 +33,54 @@ indicadorProdutividadeIDS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho
 
 
 
+%%-------------------------------------------------------------------------------------------------------------------
+% "Breadth first search"                                                                                             |
+% indicadorProdutividadeBFS : PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km                        |
+% usage : indicadorProdutividadeBFS(packageid, (rua, freguesia), EcoT, Cam, CustoIda, CustoTotal).                   |
+%                                                                                                                    |
+% Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
+%%-------------------------------------------------------------------------------------------------------------------
 
+indicadorProdutividadeBFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
 
-%%- Dado um número, articula-o na parte das unidades e das casas decimais
-%%- usage : getDecimalPart(1.234, U, D).
+    melhorSolucaoBFS((Rua, Freguesia), Caminho, Ida, Km),
 
-getDecimalPart(Number, Unity, Decimal) :-
+    getAllPossibleTransports(PackageID, Km, List),
 
-    Unity is floor(Number),
-
-    Decimal is Number - Unity.
-
-
-%%- Converte um número na sua representação em Horas:Minutos:Segundos
-%%- (Não respeita os limites do horário de um dia)
-%%- usage : converterHoras(1.234, Answer).
-
-converterHoras(Hora, hour(H,M,S)) :-
-    
-    Hora >= 0,
-
-    %%- H é a hora, em unidades
-    H is floor(Hora),
-
-    %%- Parte decimal da 1.ª
-    Decimal1 is (Hora - H),
-    
-    %%- M são os minutos, em unidade
-    M is floor(Decimal1 * 60),
-
-    %%- Parte decimal da 2.ª
-    Decimal2 is ((Decimal1 * 60) - M),
-
-    %%- S são os segundos, em unidades
-    S is floor(Decimal2 * 60).
+    moreEcologicalTransportation(List, EcoTransportation).
 
 
 
+%%-------------------------------------------------------------------------------------------------------------------
+% "Iterative Deepening Search"                                                                                       |
+% indicadorProdutividadeBFS : PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km                        |
+% usage : indicadorProdutividadeIDS(packageid, (rua, freguesia), EcoT, Cam, CustoIda, CustoTotal).                   |
+%                                                                                                                    |
+% Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
+%%-------------------------------------------------------------------------------------------------------------------
 
-info(PackageID, Estafeta, Caminho, Custo) :-
+indicadorProdutividadeIDS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
+
+    melhorSolucaoIDS((Rua, Freguesia), Caminho, Ida, Km),
+
+    getAllPossibleTransports(PackageID, Km, List),
+
+    moreEcologicalTransportation(List, EcoTransportation).
+
+
+
+% n.o.t. u.s.e.d. y.e.t.
+%%---------------------------------------------------------------------------------------------
+% Info : Package, Estafeta, Caminho, CustoIda, Custo                                           |
+% A partir de um packageID, consegue-se consultar informação sobre o estafeta que o entregou,  |
+% o caminho que este utilizou, assim como o custo de ida e o custo total (km percorridos)      |
+% usage : info(101, E, Cam, Cida, Ctotal).                                                     |
+%%---------------------------------------------------------------------------------------------
+
+info(PackageID, Estafeta, Caminho, CustoIda, Custo) :-
 
     package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
 
     findall((estafeta(A,B,C)), (estafeta(A,B,C), member(PackageID, C)), Estafeta),
 
-    indicadorProdutividadeBFS(PackageID, (Rua, Freguesia), _, Caminho, Custo).
+    indicadorProdutividadeBFS(PackageID, (Rua, Freguesia), _, Caminho, CustoIda, Custo).

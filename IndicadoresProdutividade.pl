@@ -3,7 +3,13 @@
 % ---------------G28---
 %----------------------
 
-%-- De uma lista de transportes, escolhe o que será o mais ecológico
+
+%%----------------------------------------------------------------
+% MoreEcologicalTransportation : Transports, Transport            |
+% De uma lista de transportes, escolhe qual será mais ecológico   |
+%                                                                 |
+% usage : moreEcologicalTransportation([transport(...)], Answer). |
+%%----------------------------------------------------------------
 
 moreEcologicalTransportation([A], [A]).
 
@@ -15,7 +21,12 @@ moreEcologicalTransportation([ A | B], Answer) :-
 
 
 
-%%- Comparador de transportes, visando o valor ecológico
+%%---------------------------------------------------------------------
+% moreEcological : Transport, Transport, Transport                     |
+% Comparador de transportes, atentando o valor ecológico               |
+%                                                                      |
+% usage : moreEcological((transport(...)), (transport(...)) , Answer). |
+%%---------------------------------------------------------------------
 
 moreEcological( (A) , (B), (A)) :- 
 
@@ -31,12 +42,21 @@ moreEcological( (A), (B), (B)) :-
     Ae =\= Be,
     Be < Ae, !.
 
-% por default, será o primeiro
+%- por default, será o primeiro
 moreEcological( (A), (_), (A)).
 
 
 
-%%- GetAllPossibleTransports : PackageID, Kms da viagem, Lista de transportes que poderão fazer a viagem
+%%------------------------------------------------------------------------------------------------------------------
+% GetAllPossibleTransports : PackageID, Kms da viagem, Lista de transportes que poderão fazer a viagem              |
+%                                                                                                                   |
+% Para um packageID, é realizada uma análise sobre todos os transportes disponíveis nos quais se estuda             |
+% a velocidade média e a duração da viagem que realizariam caso transportassem o respetivo package, ao qual         |
+% é feita uma filtragem para poder escolher apenas os transportes que conseguiriam, de facto, cumprir os requisitos |
+% necessários (velocidade, limite carga, tempo).                                                                    |
+%                                                                                                                   |
+% usage : getAllPossibleTransports(101, Km, List).                                                                  |
+%%------------------------------------------------------------------------------------------------------------------
 
 getAllPossibleTransports(PackageID, Km, List) :-
 
@@ -52,12 +72,13 @@ getAllPossibleTransports(PackageID, Km, List) :-
     !.
 
 
-%%- Para um PACKAGE e uma lista de transportes já analisados para um determinado caminho (e o seu custo), é realizada uma filtragem
-%%- de quais serão capazes de levar o PACKAGE
-%%- Só a primeira opção interessa, pois contém todos os casos possíveis
 
-%%- PossibleTransports : PackageID, (Transport, RealSpeed, DurationTime), Answer
-
+%%--------------------------------------------------------------------------------------------------------------------------------
+% PossibleTransports : PackageID, (Transport, RealSpeed, DurationTime), Answer                                                    |
+% Para um PACKAGE e uma lista de transportes já analisados para um determinado caminho (e o seu custo), é realizada uma filtragem |
+% de quais serão capazes de levar o PACKAGE                                                                                       |
+% Só a primeira opção interessa, pois contém todos os casos possíveis                                                             |
+%%--------------------------------------------------------------------------------------------------------------------------------
 
 possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)], [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)]) :-
 
@@ -94,8 +115,13 @@ possibleTransports(PackageID, [(_, _, _) | Resto], Answer) :-
 
 
 
-
-%%- Para todos os transportes disponíveis, calcula a velocidade e tempo de viagem reais
+%%----------------------------------------------------------------------------------------
+% GetAllTransportsInfo : PackageWeight, Distance, List                                    |
+% Para todos os transportes disponíveis, calcula a velocidade e tempo de viagem reais que |
+% cumpririam, caso levassem o respetivo peso introduzido                                  |
+%                                                                                         |
+% usage : getAllTransportsInfo(50, 10, List).                                             |
+%%----------------------------------------------------------------------------------------
 
 getAllTransportsInfo(Weight, Km, List) :-
 
@@ -105,9 +131,11 @@ getAllTransportsInfo(Weight, Km, List) :-
 
 
 
-%%- getTransportationINFO : Transport, Weight, Km, (Transport, RealSpeed, DurationTime)
-%%- Para um determinado transporte, associado a um peso de um package e a distancia da viagem a que terá de recorrer,
-%%- calcula a velocidade real que o mesmo conseguirá atingir, assim como o tempo dessa mesma viagem
+%%------------------------------------------------------------------------------------------------------------------
+% getTransportationINFO : Transport, Weight, Km, (Transport, RealSpeed, DurationTime)                               |
+% Para um determinado transporte, associado a um peso de um package e a distancia da viagem a que terá de recorrer, |
+% calcula a velocidade real que o mesmo conseguirá atingir, assim como o tempo dessa mesma viagem                   |
+%%------------------------------------------------------------------------------------------------------------------
 
 getTransportationINFO([transport(Name,A,Speed,SpeedLoss,B)], Weight, Km, List) :-
 

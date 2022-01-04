@@ -143,25 +143,24 @@ move(  (acaoSocial, uni_norte), (medicina, olimpo), 28).
 move(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25).
 
 
-%%- Verifica se dois Addresses estão conectados
-%%- 
+%%--------------------------------------------
+% Verifica se dois Addresses estão conectados |
+%%-------------------------------------------
+
 connected( A, B, C ) :- move( A, B, C).
 connected( A, B, C ) :- move( B, A, C).
 
 
 %----- "DEPTH FIRST SEARCH" -----------------------------------------------------------------------------
 
-%%- Devolve a tail de uma lista
-%%- 
-tail([], []).
-tail([_ | R], R).
+%%------------------------------------------------------------------
+% CircuitoDFS : (Rua, Freguesia), Caminho, CustoIda, Custo)         |
+% usage : circuitoDFS((rua, freguesia), Cam, CustoIda, CustoFinal). |
+%%------------------------------------------------------------------
 
-%%- CircuitoDFS : (Rua, Freguesia), Caminho, Custo) 
-%%- usage : circuitoDFS((rua, freguesia), Cam, Custo).
+circuitoDFS(PontoEntrega, CaminhoFinal, CustoIDA, CustoFinal) :-
 
-circuitoDFS(PontoEntrega, CaminhoFinal, CustoFinal) :-
-
-  ida(PontoEntrega, Caminho1Aux, Custo1),
+  ida(PontoEntrega, Caminho1Aux, CustoIDA),
 
   volta(PontoEntrega, Caminho2Aux, Custo2),
 
@@ -169,15 +168,27 @@ circuitoDFS(PontoEntrega, CaminhoFinal, CustoFinal) :-
 
   append(Caminho1Aux, Caminho2, CaminhoFinal),
 
-  CustoFinal is Custo1 + Custo2.
+  CustoFinal is CustoIDA + Custo2.
 
 
+%%-----------------------------------------------------------------------------
+% Ida : PontoEntrega, Caminho, Custo                                           |
+% usage : ida( (rua,freguesia), Cam, Custo).                                   |
+% Realiza uma procura utilizando o depth first search de um ponto pré-definido |
+% (definido no corpo da regra) até um ponto final de entrega                   |
+%%-----------------------------------------------------------------------------
 
 ida(PontoEntrega, CaminhoFinal, Custo) :-
 
   dfs([], (escolaEngenharia1, uni_centro), Caminho, Custo, PontoEntrega),
   reverse(Caminho, CaminhoFinal).
 
+%%----------------------------------------------------------------------
+% Volta : PontoInicial, Caminho, Custo                                  |
+% usage : volta( (rua,freguesia), Cam, Custo).                          |
+% Realiza uma procura utilizando o depth first search de um ponto dado  |
+% até um ponto final de entrega (definido no corpo da regra)            |
+%%----------------------------------------------------------------------
 
 volta(Inicio, Caminho, Custo) :-
 
@@ -185,8 +196,9 @@ volta(Inicio, Caminho, Custo) :-
   reverse(CaminhoAux, Caminho).
 
 
-%%- "Algoritmo"
-%%-
+%%------------------
+% "Algoritmo DFS"   |
+%%------------------
 
 dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
 
@@ -202,12 +214,12 @@ dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
 
   %----- "BREADTH FIRST SEARCH" -----------------------------------------------------------------------------
  
+%%------------------------------------------------------------------
+% Circuito : Destino, Caminho, CustoIda, CustoFinal                 |
+% usage : circuitoBFS((rua, freguesia), Cam, CustoIda, CustoFinal). |
+%%------------------------------------------------------------------
 
-%%- Circuito : Destino, Caminho, Custo
-%%- usage : circuitoBFS((rua, freguesia), Cam, Custo).
-
-
-circuitoBFS(Dest,Caminho, Custo):-
+circuitoBFS(Dest,Caminho, CustoIDA, Custo):-
   
   %%- ida
   bfs2(Dest,[[(escolaEngenharia1, uni_centro)]], Cam1),
@@ -215,7 +227,7 @@ circuitoBFS(Dest,Caminho, Custo):-
   %%- volta
   bfs2((escolaEngenharia1, uni_centro), [[Dest]], Cam2),
 
-  distance(Cam1, Custo1),
+  distance(Cam1, CustoIDA),
 
   distance(Cam2, Custo2),
 
@@ -223,9 +235,13 @@ circuitoBFS(Dest,Caminho, Custo):-
 
   append(Cam1, Cam2Aux, Caminho),
 
-  Custo is Custo1 + Custo2.
+  Custo is CustoIDA + Custo2.
 
 
+%%-----------------------------------------------------------------------------
+% BFS2 : a partir de um destino, procura um caminho por breadth first search a |
+% partir de um ponto inicial pré-definido (no corpo da regra)                  |
+%------------------------------------------------------------------------------
 
 %- Condição final, onde a HEAD é o destino final
 
@@ -249,7 +265,11 @@ bfs2(Dest,[LA|Outros],Cam):-
   bfs2(Dest,Todos,Cam).
 
 
-%%- Calcula a distância entre uma lista de moradas/arestas
+%%-------------------------------------------------------
+% Distance : Caminho , Distancia                         |
+% Calcula a distância entre uma lista de moradas/arestas |
+% usage : distance([lista], Km).                         |
+%%-------------------------------------------------------
 
 distance([Inicio, Next], Km) :- connected(Inicio, Next, Km).
 
@@ -276,13 +296,16 @@ does not terminate, even if the state space is finite.
 
 */
 
-%%- usage : circuitoIDS((rua, freguesia), Cam, Custo).
+%%--------------------------------------------------------------------
+% CircuitoIDS : PontoEntrega, Caminho, CustoIda, Custo                |
+% realiza um circuito completo desde um ponto inicial pré-definido    |
+% (no corpo da regra), até um ponto de entrega pedido                 |
+% usage : circuitoIDS((rua, freguesia), Cam, CustoIda, CustoFinal).   |
+%%--------------------------------------------------------------------
 
-% CircuitoIDS : PontoEntrega, Caminho, Custo
+circuitoIDS(PontoEntrega, CaminhoFinal, CustoIda, CustoFinal) :-
 
-circuitoIDS(PontoEntrega, CaminhoFinal, CustoFinal) :-
-  
-  path((escolaEngenharia1, uni_centro), PontoEntrega, Custo1, Caminho1),
+  path((escolaEngenharia1, uni_centro), PontoEntrega, CustoIda, Caminho1),
   reverse(Caminho1, Caminho1Final),
 
   path(PontoEntrega, (escolaEngenharia1, uni_centro), Custo2, Caminho2),
@@ -290,9 +313,15 @@ circuitoIDS(PontoEntrega, CaminhoFinal, CustoFinal) :-
   tail(Caminho2Aux, Caminho2Final),
 
   append(Caminho1Final, Caminho2Final, CaminhoFinal),
-  CustoFinal is Custo1 + Custo2.
+  CustoFinal is CustoIda + Custo2.
 
 
+%%-------------------------------------------------------------------------
+% Path : PontoInicial, PontoEntrega, Custo, Caminho                        |
+% procura um caminho a partir de um ponto inicial até um ponto de entrega, |
+% a partir das arestas definidas/disponíveis                               |
+% usage : path( (rua, freguesia), (rua,freguesia), Custo, Caminho).        |
+%%-------------------------------------------------------------------------
 
 path(PontoEntrega, PontoEntrega, 0, [PontoEntrega]).
 
@@ -305,6 +334,7 @@ path(Inicio, Fim, Custo, [Fim | Path]) :-
   \+member(Fim, Path),
 
   Custo is C1+C2.
+
 
 
 /*
@@ -325,97 +355,41 @@ dls(First, Last, [First | Resto], D) :-
 
 
 
-/*
-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
 
-2 maneiras de medir o tempo de execução:
+%%---------------------------------------------------------------------------------------------
+%  "MELHOR SOLUCAO : DEPTH FIRST SEARCH : (PontoEntrega, Caminho, CustoIda, CustoTotal)"       |
+%%---------------------------------------------------------------------------------------------
 
-time( metodo(arg1, arg2) ).
+melhorSolucaoDFS(PontoEntrega, MelhorCaminho, MelhorIda, MelhorCusto) :-
 
-call_time( metodo(arg1,arg2) , Dict).
+  findall((Caminho, Ida, Custo),
 
-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
-*/
-
-
-%--
-% MenorInteiros : Inteiro, Inteiro, Inteiro
-%--
-
-menorI(A,B, A) :- A =\= B, A < B.
-menorI(A,B, B) :- A =\= B, B < A.
-menorI(A,A,A).
-
-%--
-% MenorInteirosList : List, Inteiro
-%--
-
-menorIL([A], A).
-
-menorIL([A | R], Answer) :-
-  
-  %% extender a lista toda e comparar um a um
-  menorIL(R, Aux),
-  menorI(A, Aux, Answer).
-
-%--
-% MenorPares : (Algo, Inteiro), (Algo, Inteiro), (Algo, Inteiro)
-%--
-
-menorP((Cam1,C1), (_, C2), (Cam1,C1)) :- C1 =\= C2, C1 =< C2.
-
-menorP((_,C1), (Cam2,C2), (Cam2,C2)) :- C1 =\= C2, C2 < C1.
-
-%-- "por default, vai escoler sempre o primeiro"
-menorP((Cam,C), (_,C), (Cam,C)).
-
-
-%--
-% MenorParesList : PairsList, (Algo, Inteiro)
-
-menorPL([ (Cam, Custo) ], (Cam, Custo)).
-
-
-menorPL([(Cam,C) | R], Resposta) :-
-
-  %% extender a lista toda e comparar um a um
-  menorPL(R, (Cam2, C2)),
-  menorP((Cam, C), (Cam2,C2), Resposta).
-
-
-
-
-%-  "MELHOR SOLUCAO : DEPTH FIRST SEARCH : (PontoEntrega, Caminho, Custo)"
-
-melhorSolucaoDFS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
-
-  findall((Caminho, Custo),
-
-          (circuitoDFS(PontoEntrega, Caminho, Custo)),
+          (circuitoDFS(PontoEntrega, Caminho, Ida, Custo)),
           List),
 
-  menorPL(List, (MelhorCaminho,MelhorCusto)).
+  menorTL(List, (MelhorCaminho, MelhorIda,  MelhorCusto)).
 
 
+%%---------------------------------------------------------------------------------------------
+%- "MELHOR SOLUCAO : BREADTH FIRST SEARCH : (PontoEntrega, Caminho, CustoIda, CustoTotal)"     |
+%%---------------------------------------------------------------------------------------------
 
-%- "MELHOR SOLUCAO : BREADTH FIRST SEARCH : (PontoEntrega, Caminho, Custo)"
+melhorSolucaoBFS(PontoEntrega, MelhorCaminho, MelhorIda, MelhorCusto) :-
 
-melhorSolucaoBFS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
+  findall((Caminho, Ida, Custo),
 
-  findall((Caminho, Custo),
-
-          (circuitoBFS(PontoEntrega, Caminho, Custo)),
+          (circuitoBFS(PontoEntrega, Caminho, Ida,Custo)),
           List),
-  menorPL(List, (MelhorCaminho,MelhorCusto)).
+  menorTL(List, (MelhorCaminho, MelhorIda, MelhorCusto)).
 
 
+%%----------------------------------------------------------------------------------------------
+% "MELHOR SOLUCAO : ITERATIVE DEEPENING SEARCH : (PontoEntrega, Caminho, CustoIda, CustoTotal)" |
+% Neste algoritmo, fazer backtracking faz com que o programa fique em loop infinito             |
+% A melhor solução vai ser sempre a primeira                                                    |
+%%----------------------------------------------------------------------------------------------
 
-%- "MELHOR SOLUCAO : ITERATIVE DEEPENING SEARCH : (PontoEntrega, Caminho, Custo)"
-%-- Neste algoritmo, fazer backtracking faz com que o programa fique em loop infinito
-%-- A melhor solução vai ser sempre a primeira
+melhorSolucaoIDS(PontoEntrega, MelhorCaminho, Ida, MelhorCusto) :-
 
-
-melhorSolucaoIDS(PontoEntrega, MelhorCaminho, MelhorCusto) :-
-
-  circuitoIDS(PontoEntrega, MelhorCaminho, MelhorCusto),
+  circuitoIDS(PontoEntrega, MelhorCaminho, Ida, MelhorCusto),
   !.
