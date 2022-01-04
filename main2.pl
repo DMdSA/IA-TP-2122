@@ -11,7 +11,6 @@ cls :- write('\e[H\e[2J').
 :- consult('grafo.pl').
 :- consult('IndicadoresProdutividade.pl').
  
-% ---------------------------------------------------------
 
 
 
@@ -23,11 +22,13 @@ cls :- write('\e[H\e[2J').
 % Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
 %%-------------------------------------------------------------------------------------------------------------------
 
-indicadorProdutividadeDFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
+indicadorProdutividadeDFS(PackageID, EcoTransportation, Caminho, Ida, Km) :-
+    
+    package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
 
     melhorSolucaoDFS((Rua, Freguesia), Caminho, Ida, Km),
 
-    getAllPossibleTransports(PackageID, Km, List),
+    getAllPossibleTransports(PackageID, Ida, List),
 
     moreEcologicalTransportation(List, EcoTransportation).
 
@@ -41,11 +42,13 @@ indicadorProdutividadeDFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho
 % Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
 %%-------------------------------------------------------------------------------------------------------------------
 
-indicadorProdutividadeBFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
-
+indicadorProdutividadeBFS(PackageID, EcoTransportation, Caminho, Ida, Km) :-
+    
+    package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
+    
     melhorSolucaoBFS((Rua, Freguesia), Caminho, Ida, Km),
 
-    getAllPossibleTransports(PackageID, Km, List),
+    getAllPossibleTransports(PackageID, Ida, List),
 
     moreEcologicalTransportation(List, EcoTransportation).
 
@@ -59,11 +62,13 @@ indicadorProdutividadeBFS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho
 % Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar |
 %%-------------------------------------------------------------------------------------------------------------------
 
-indicadorProdutividadeIDS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho, Ida, Km) :-
+indicadorProdutividadeIDS(PackageID, EcoTransportation, Caminho, Ida, Km) :-
+    
+    package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
 
     melhorSolucaoIDS((Rua, Freguesia), Caminho, Ida, Km),
 
-    getAllPossibleTransports(PackageID, Km, List),
+    getAllPossibleTransports(PackageID, Ida, List),
 
     moreEcologicalTransportation(List, EcoTransportation).
 
@@ -79,8 +84,6 @@ indicadorProdutividadeIDS(PackageID, (Rua,Freguesia), EcoTransportation, Caminho
 
 info(PackageID, Estafeta, Caminho, CustoIda, Custo) :-
 
-    package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
-
     findall((estafeta(A,B,C)), (estafeta(A,B,C), member(PackageID, C)), Estafeta),
 
-    indicadorProdutividadeBFS(PackageID, (Rua, Freguesia), _, Caminho, CustoIda, Custo).
+    indicadorProdutividadeBFS(PackageID, _, Caminho, CustoIda, Custo).

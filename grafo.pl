@@ -16,87 +16,94 @@ g( grafo(
   [
       % cada nodo é um ADDRESS, address : Rua, Freguesia
 
-  address( complexoPedagogico1, uni_este ),       % 1
-  address( complexoPedagogico2, uni_sul ),        % 2
-  address( complexoPedagogico3, uni_centro),      % 3
-  address( biblioteca, uni_sul),                  % 4
-  address( institutoLetras, uni_sul),             % 5
-  address( escolaCiencias, uni_centro),           % 6
-  address( escolaEngenharia1, uni_centro),        % 7
-  address( escolaEconomia, uni_centro),           % 8
-  address( complexoDesportivo, uni_este),         % 9
-  address( servicosTecnicos, uni_este),           % 10
-  address( cantina, uni_norte),                   % 11
-  address( acaoSocial, uni_norte),                % 12
-  address( educacao, uni_oeste),                  % 13
-  address( psicologia, uni_oeste),                % 14
-  address( cienciasSociais, uni_oeste),           % 15
-  address( escolaEngenharia2, uni_oeste),         % 16
-  address( escolaDireito, uni_oeste),             % 17
-  address( bioSustentabilidade, uni_oeste),       % 18
-  address( medicina, olimpo)                      % 19
+  address( complexoPedagogico1, uni_este ),       % A 1
+  address( complexoPedagogico2, uni_sul ),        % B 2
+  address( complexoPedagogico3, uni_centro),      % C 3
+  address( biblioteca, uni_sul),                  % D 4
+  address( institutoLetras, uni_sul),             % E 5
+  address( escolaCiencias, uni_centro),           % F 6
+  address( escolaEngenharia1, uni_centro),        % G 7
+  address( escolaEconomia, uni_centro),           % H 8
+  address( complexoDesportivo, uni_este),         % I 9
+  address( servicosTecnicos, uni_este),           % J 10
+  address( cantina, uni_norte),                   % K 11
+  address( acaoSocial, uni_norte),                % L 12
+  address( educacao, uni_oeste),                  % M 13
+  address( escolaPsicologia, uni_oeste),          % N 14
+  address( cienciasSociais, uni_oeste),           % O 15
+  address( escolaEngenharia2, uni_oeste),         % P 16
+  address( escolaDireito, uni_oeste),             % Q 17
+  address( bioSustentabilidade, uni_oeste),       % R 18
+  address( medicina, olimpo)                      % S 19
   
   ],
 
-
       % cada aresta é um par ({RUA, FREGUESIA}, {RUA,FREGUESIA}), acompanhada do peso
-      % entre esses dois pontos 
+      % entre esses dois pontos
 
+  [
 
-    [ % 7 -> 9 = 16
-    aresta(  (escolaEngenharia1, uni_centro), (complexoDesportivo, uni_este), 16),
-      % 7 -> 6 = 5 
-    aresta(  (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 5),
-      %  7 -> 8 = 7
-    aresta(  (escolaEngenharia1, uni_centro), (escolaEconomia, uni_centro), 7),
-      %  7 -> 3 = 6
-    aresta(  (escolaEngenharia1, uni_centro), (complexoPedagogico3, uni_centro), 6),
-      % 9 -> 10 = 9 
-    aresta(  (complexoDesportivo, uni_este), (servicosTecnicos, uni_este), 9),
-      % 9 -> 1 = 11
-    aresta(  (complexoDesportivo, uni_este), (complexoPedagogico1, uni_este), 11),
-      % 10 -> 1 = 15
-    aresta(  (servicosTecnicos, uni_este), (complexoPedagogico1, uni_este), 15),
-      % 1 -> 4 = 2
-    aresta(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 2),
-      % 6 -> 5 = 3
-    aresta(  (escolaCiencias, uni_centro), (institutoLetras, uni_sul), 3),
-      % 5 -> 4 = 1
-    aresta(  (intitutoLetras, uni_sul), (biblioteca, uni_sul), 1),
-      % 5 -> 2 = 2
-    aresta(  (institutoLetras, uni_sul), (complexoPedagogico2, uni_sul), 2),
-      % 4 -> 2 = 3
-    aresta(  (biblioteca, uni_sul), (complexoPedagogico2, uni_sul), 3),
-      % 2 -> 3 = 6
-    aresta(  (complexoPedagogico2, uni_sul), (complexoPedagogico3, uni_centro), 6),
-      % 2 -> 13 = 22
-    aresta(  (complexoPedagogico2, uni_sul), (educacao, uni_oeste), 22),
-      % 2 -> 15 = 23
-    aresta(  (complexoPedagogico2, uni_sul), (cienciasSociais, uni_oeste), 23),
-      % 13 -> 14 = 4
-    aresta(  (educacao, uni_oeste), (psicologia, uni_oeste), 4),
-      % 14 -> 15 = 5
-    aresta(  (psicologia, uni_oeste), (cienciasSociais, uni_oeste), 5),
-      % 15 -> 16 = 3
-    aresta(  (cienciasSociais, uni_oeste), (escolaEngenharia2, uni_oeste), 3),
-      % 15 -> 17 = 7
-    aresta(  (cienciasSociais, uni_oeste), (escolaDireito, uni_oeste), 7),
-      % 16 -> 17 = 5
-    aresta(  (escolaEngenharia2, uni_oeste), (escolaDireito, uni_oeste), 5),
-      % 17 -> 18 = 2
-    aresta(  (escolaDireito, uni_oeste), (bioSustentabilidade, uni_oeste), 2),
-      % 17 -> 8 = 16
-    aresta(  (escolaDireito, uni_oeste), (escolaEconomia, uni_centro), 16),
-      % 8 -> 11 = 3
-    aresta(  (escolaEconomia, uni_centro), (cantina, uni_norte), 3),
-      % 11 -> 12 = 2
-    aresta(  (cantina, uni_norte), (acaoSocial, uni_norte), 2),
-      % 12 -> 19 = 28
-    aresta(  (acaoSocial, uni_norte), (medicina, olimpo), 28),
-      % 19 -> 18 = 25
-    aresta(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25)
-    ]
- )).
+  % G -> K = 2
+  aresta(  (escolaEngenharia1, uni_centro), (cantina, uni_norte), 2),
+  % K -> H = 2
+  aresta( (cantina, uni_norte), ( escolaEconomia, uni_centro), 2),
+  % H -> R = 4
+  aresta( (escolaEconomia, uni_centro), (bioSustentabilidade, uni_norte), 4), 
+  % H -> S = 8
+  aresta( (escolaEconomia, uni_centro), ( medicina, olimpo), 8),
+  % R -> S = 7
+  aresta( (bioSustentabilidade, uni_norte), (medicina, olimpo), 7),
+  % R -> Q = 1
+  aresta( (bioSustentabilidade, uni_norte), (escolaDireito, uni_oeste), 1),
+  % Q -> P = 2
+  aresta( (escolaDireito, uni_oeste), (escolaEngenharia2, uni_oeste), 2),
+  % P -> O = 1
+  aresta( (escolaEngenharia2, uni_oeste), (cienciasSociais, uni_oeste), 1),
+  % O -> N = 2
+  aresta( (cienciasSociais, uni_oeste), (escolaPsicologia, uni_oeste), 2), 
+  % N -> M = 2
+  aresta( (escolaPsicologia, uni_oeste), (educacao, uni_oeste), 2),
+  % M -> B = 5
+  aresta( (educacao, uni_oeste), (complexoPedagogico2, uni_sul), 5),
+  % B -> H = 5
+  aresta( (complexoPedagogico2, uni_sul), (escolaEconomia, uni_centro), 5),
+  % B -> G = 4 
+  aresta( (complexoPedagogico2, uni_sul), (escolaEngenharia1, uni_centro), 4),
+  % B -> C = 3
+  aresta( (complexoPedagogico2, uni_sul), (escolaPedagogico3, uni_centro), 3),
+  % C -> G = 2
+  aresta( (complexoPedagogico3, uni_centro), (escolaEngenharia1, uni_centro), 2),
+  % B -> D = 2
+  aresta( (complexoPedagogico2, uni_centro), (biblioteca, uni_sul), 2),
+  % H -> L = 2
+  aresta(  (escolaEconomia, uni_centro), (acaoSocial, uni_norte), 2),
+  % K -> L = 3
+  aresta( (cantina, uni_norte), (acaoSocial, uni_norte), 3),
+  % L -> S = 5 
+  aresta( (acaoSocial, uni_norte), (medicina, olimpo), 5),
+  % G -> F = 3
+  aresta( (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 3),
+  % D -> E = 1
+  aresta( (biblioteca, uni_sul), (institutoLetras, uni_sul), 1),
+  % E -> F = 2
+  aresta( (institutoLetras, uni_sul), (escolaCiencias, uni_centro), 2),
+  % A -> I = 6
+  aresta( ( complexoPedagogico1, uni_este ), (complexoDesportivo, uni_este), 6), 
+  % A -> F = 3
+  aresta( (complexoPedagogico1, uni_este), (escolaCiencias, uni_centro), 3),
+  % I -> J = 2
+  aresta( (complexoDesportivo, uni_este), (servicosTecnicos, uni_este), 2),
+  % K -> J = 5
+  aresta( (cantina, uni_norte), (servicosTecnicos, uni_este), 5),
+  % R -> O = 2
+  aresta( (bioSustentabilidade, uni_oeste), (cienciasSociais, uni_oeste), 2),
+  % O -> M = 3
+  aresta( (cienciasSociais, uni_oeste), (educacao, uni_oeste), 3),
+  % O -> C = 6
+  aresta( (cienciasSociais, uni_oeste), (complexoPedagogico3, uni_centro), 6)
+
+  ]
+  )).
 
 
 adjacentes(A,B,C, grafo(_,Arestas)) :- 
@@ -116,32 +123,35 @@ adjacentes(A,B,C, grafo(_,Arestas)) :-
 
 %-----------------------------------------------------------------
 
-move(  (escolaEngenharia1, uni_centro), (complexoDesportivo, uni_este), 16).
-move(  (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 5).
-move(  (escolaEngenharia1, uni_centro), (escolaEconomia, uni_centro), 7).
-move(  (escolaEngenharia1, uni_centro), (complexoPedagogico3, uni_centro), 6).
-move(  (complexoDesportivo, uni_este), (servicosTecnicos, uni_este), 9).
-move(  (complexoDesportivo, uni_este), (complexoPedagogico1, uni_este), 11).
-move(  (servicosTecnicos, uni_este), (complexoPedagogico1, uni_este), 15).
-move(  (complexoPedagogico1, uni_este), (biblioteca, uni_sul), 2).
-move(  (escolaCiencias, uni_centro), (institutoLetras, uni_sul), 3).
-move(  (institutoLetras, uni_sul), (biblioteca, uni_sul), 1).
-move(  (institutoLetras, uni_sul), (complexoPedagogico2, uni_sul), 2).
-move(  (biblioteca, uni_sul), (complexoPedagogico2, uni_sul), 3).
-move(  (complexoPedagogico2, uni_sul), (complexoPedagogico3, uni_centro), 6).
-move(  (complexoPedagogico2, uni_sul), (educacao, uni_oeste), 22).
-move(  (complexoPedagogico2, uni_sul), (cienciasSociais, uni_oeste), 23).
-move(  (educacao, uni_oeste), (psicologia, uni_oeste), 4).
-move(  (psicologia, uni_oeste), (cienciasSociais, uni_oeste), 5).
-move(  (cienciasSociais, uni_oeste), (escolaEngenharia2, uni_oeste), 3).
-move(  (cienciasSociais, uni_oeste), (escolaDireito, uni_oeste), 7).
-move(  (escolaEngenharia2, uni_oeste), (escolaDireito, uni_oeste), 5).
-move(  (escolaDireito, uni_oeste), (bioSustentabilidade, uni_oeste), 2).
-move(  (escolaDireito, uni_oeste), (escolaEconomia, uni_centro), 16).
-move(  (escolaEconomia, uni_centro), (cantina, uni_norte), 3).
-move(  (cantina, uni_norte), (acaoSocial, uni_norte), 2).
-move(  (acaoSocial, uni_norte), (medicina, olimpo), 28).
-move(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25).
+move( (escolaEngenharia1, uni_centro), (cantina, uni_norte), 2).
+move( (cantina, uni_norte), ( escolaEconomia, uni_centro), 2).
+move( (escolaEconomia, uni_centro), (bioSustentabilidade, uni_norte), 4).
+move( (escolaEconomia, uni_centro), ( medicina, olimpo), 8).
+move( (bioSustentabilidade, uni_norte), (medicina, olimpo), 7).
+move( (bioSustentabilidade, uni_norte), (escolaDireito, uni_oeste), 1).
+move( (escolaDireito, uni_oeste), (escolaEngenharia2, uni_oeste), 2).
+move( (escolaEngenharia2, uni_oeste), (cienciasSociais, uni_oeste), 1).
+move( (cienciasSociais, uni_oeste), (escolaPsicologia, uni_oeste), 2).
+move( (escolaPsicologia, uni_oeste), (educacao, uni_oeste), 2).
+move( (educacao, uni_oeste), (complexoPedagogico2, uni_sul), 5).
+move( (complexoPedagogico2, uni_sul), (escolaEconomia, uni_centro), 5).
+move( (complexoPedagogico2, uni_sul), (escolaEngenharia1, uni_centro), 4).
+move( (complexoPedagogico2, uni_sul), (escolaPedagogico3, uni_centro), 3).
+move( (complexoPedagogico3, uni_centro), (escolaEngenharia1, uni_centro), 2).
+move( (complexoPedagogico2, uni_centro), (biblioteca, uni_sul), 2).
+move( (escolaEconomia, uni_centro), (acaoSocial, uni_norte), 2).
+move( (cantina, uni_norte), (acaoSocial, uni_norte), 3).
+move( (acaoSocial, uni_norte), (medicina, olimpo), 5).
+move( (escolaEngenharia1, uni_centro), (escolaCiencias, uni_centro), 3).
+move( (biblioteca, uni_sul), (institutoLetras, uni_sul), 1).
+move( (institutoLetras, uni_sul), (escolaCiencias, uni_centro), 2).
+move( (complexoPedagogico1, uni_este ), (complexoDesportivo, uni_este), 6).
+move( (complexoPedagogico1, uni_este), (escolaCiencias, uni_centro), 3).
+move( (complexoDesportivo, uni_este), (servicosTecnicos, uni_este), 2).
+move( (cantina, uni_norte), (servicosTecnicos, uni_este), 5).
+move( (bioSustentabilidade, uni_oeste), (cienciasSociais, uni_oeste), 2).
+move( (cienciasSociais, uni_oeste), (educacao, uni_oeste), 3).
+move( (cienciasSociais, uni_oeste), (complexoPedagogico3, uni_centro) , 6).
 
 
 %%--------------------------------------------
@@ -150,6 +160,33 @@ move(  (medicina, olimpo), (bioSustentabilidade, uni_oeste), 25).
 
 connected( A, B, C ) :- move( A, B, C).
 connected( A, B, C ) :- move( B, A, C).
+
+
+
+
+%--- HEURISTIC VALEUS ----%
+
+estima((complexoPedagogico1, uni_este), 3).         % 1
+estima((complexoPedagogico2, uni_sul), 3).          % 2
+estima((complexoPedagogico3, uni_centro), 4).       % 3
+estima((biblioteca, uni_sul), 1).                   % 4
+estima((institutoLetras, uni_sul), 2).              % 5
+estima((escolaCiencias, uni_centro), 8).            % 6
+estima((escolaEngenharia1, uni_centro), 0).         % 7
+estima((escolaEconomia, uni_centro), 14).           % 8
+estima((complexoDesportivo, uni_este), 1).          % 9
+estima((servicosTecnicos, uni_este), 3).            % 10
+estima((cantina, uni_norte), 5).                    % 11
+estima((acaoSocial, uni_norte), 4).                 % 12
+estima((educacao, uni_oeste), 3).                   % 13
+estima((escolaPsicologia, uni_oeste), 4).                 % 14
+estima((cienciasSociais, uni_oeste), 4).            % 15
+estima((escolaEngenharia2, uni_oeste), 2).          % 16
+estima((escolaDireito, uni_oeste), 5).              % 17
+estima((bioSustentabilidade, uni_oeste), 2).        % 18
+estima((medicina, olimpo), 12).                     % 19
+
+
 
 
 %----- "DEPTH FIRST SEARCH" -----------------------------------------------------------------------------
@@ -184,6 +221,13 @@ ida(PontoEntrega, CaminhoFinal, Custo) :-
   dfs([], (escolaEngenharia1, uni_centro), Caminho, Custo, PontoEntrega),
   reverse(Caminho, CaminhoFinal).
 
+
+idaAux(PontoPartida, PontoEntrega, Caminho, Custo) :-
+
+  dfs([], PontoPartida, Cam, Custo, PontoEntrega),
+  reverse(Cam, Caminho).
+
+
 %%----------------------------------------------------------------------
 % Volta : PontoInicial, Caminho, Custo                                  |
 % usage : volta( (rua,freguesia), Cam, Custo).                          |
@@ -210,6 +254,70 @@ dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
   dfs([Nodo | Visitados], NextNodo, Caminho, C2, PontoEntrega),
 
   Custo is C1 + C2.
+
+
+
+
+%-----"DFS com lista de packages"----------------------------
+
+
+%%----------------------------------------------------------------------------------------------
+% Recebe uma lista de IDs de packages para devolver uma lista com os addresses desses packages  |
+% list_addresses : List of PackageID, List of addresses                                         |
+% usage : list_addresses(packagesID,List).                                                      |
+%%----------------------------------------------------------------------------------------------
+
+list_addresses([PackageID],[L]) :-
+
+  package(PackageID,_,_,_,address(Rua,Freguesia),_,_),
+  L = (Rua,Freguesia).
+
+
+list_addresses([PackageID | Resto],ListDest) :-
+
+  package(PackageID,_,_,_,address(Rua,Freguesia),_,_),
+  L = [(Rua,Freguesia)],
+  list_addresses(Resto,ListFinal),
+  append(L,ListFinal,ListDest).
+
+
+%%---------------------------------------------------------
+% Calcula o circuito com DFS de uma lista de addresses     |
+% dfsl : Inicio, Destinos, Caminho, Distancia              |
+%%---------------------------------------------------------
+
+dfsl(LastDest,[],Caminho,Km) :-
+  volta(LastDest,Caminho,Km).
+
+dfsl(LastDest,[Dest | Resto], Caminho, Kms) :-
+
+  idaAux(LastDest,Dest,CaminhoAux,KmsAux),
+  dfsl(Dest,Resto,CaminhoAux2,KmsAux2),
+  tail(CaminhoAux2,Cam3),
+  append(CaminhoAux,Cam3,Caminho),
+  Kms is KmsAux2 + KmsAux.
+
+
+%%-------------------------------------------------------
+% circuitoDFSL : List of PackageID, Caminho, Distancia   |
+% usage : circuitoDFSL([packageID], Caminho, Distancia). |
+%%-------------------------------------------------------
+
+circuitoDFSL([PackageID | Resto],Caminho,Kms) :-
+  list_addresses([PackageID | Resto],List),
+  dfsl((escolaEngenharia1,uni_centro),List,Caminho,Kms).
+
+
+melhorSolucaoDFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
+  findall((Caminho, Custo),
+
+          (circuitoDFSL([PackageID | Resto], Caminho, Custo)),
+          List),
+
+  menorPL(List, (MelhorCaminho,MelhorCusto)).
+
+
+
 
 
 
@@ -282,6 +390,68 @@ distance([Inicio, Next | Resto], Km) :-
 
 
 
+%-----"DFS com lista de packages"----------------------------
+
+%%------------------------------------------------------------------------------
+% Calcula todos os caminhos que passam pela lista de destinos com o metodo bfs  |
+% bfsl_aux : inicio, [destinos], Caminho, Km                                    |
+% 
+%%------------------------------------------------------------------------------
+
+bfsl_aux(Inicio,[],Cam,Km) :-
+  bfs2((escolaEngenharia1, uni_centro),[[Inicio]],Cam),
+  distance(Cam,Km).
+
+
+bfsl_aux(Inicio,[Dest | Resto], Cam, Km) :-
+  
+  \+member(Dest,Cam),
+
+  bfs2(Dest,[[Inicio]],CamAux),
+  distance(CamAux,KmAux),
+
+  bfsl_aux(Dest,Resto,CamAux1,KmAux1),
+  tail(CamAux1,Cam2),
+  
+  append(CamAux,Cam2,Cam),
+  Km is KmAux + KmAux1.
+
+bfsl_aux(_,[Dest | Resto], Cam, Km) :-
+  
+  member(Dest,Cam),
+  bfsl_aux(Dest,Resto,Cam,Km).
+
+%%-----------------------------------------------------------
+% circuitoBFSL : packageIDs list, Caminho, Kms               |
+% usage : circuitoBFSL([packagesID],Caminho,Distancia).      |
+% 
+%%-----------------------------------------------------------
+
+circuitoBFSL([PackageID | Resto],Caminho,Custo) :-
+  
+  list_addresses([PackageID | Resto],List),
+  
+  bfsl_aux((escolaEngenharia1,uni_centro),List,Caminho,Custo).
+
+
+%%---------------------------
+%
+%
+%----------------------------
+
+melhorSolucaoBFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
+findall((Caminho, Custo),
+
+          (circuitoBFSL([PackageID | Resto], Caminho, Custo)),
+          List),
+
+  menorPL(List, (MelhorCaminho,MelhorCusto)).
+
+
+
+
+
+
   %----- "Iterative Deepening Search" -----------------------------------------------------------------------------
 
 /*
@@ -337,6 +507,55 @@ path(Inicio, Fim, Custo, [Fim | Path]) :-
   Custo is C1+C2.
 
 
+%%---------------------
+%
+%%----------------------
+
+idslAux(PontoPartida,[],Cam,Dist) :-
+  
+  path(PontoPartida,(escolaEngenharia1, uni_centro),Dist,CamAux),
+  reverse(CamAux,Cam).
+
+
+idslAux(PontoPartida,[Dest | Resto],Cam,Dist) :-
+  
+  path(PontoPartida,Dest,Dist1,Cam1),
+  
+  reverse(Cam1,Cam1Aux),
+
+  idslAux(Dest,Resto,Cam2,Dist2),
+  
+  tail(Cam2,Cam2Final),
+
+  append(Cam1Aux,Cam2Final,Cam),
+  
+  Dist is Dist1 + Dist2.
+
+%%---------------------
+%
+%%----------------------
+
+circuitoIDSL([PackageID | Resto],Caminho,Km) :-
+  
+  list_addresses([PackageID | Resto],List),
+  idslAux((escolaEngenharia1, uni_centro),List,Caminho,Km).
+
+
+%%---------------------
+%
+%%---------------------
+
+melhorSolucaoIDSL([PontoEntrega | R], MelhorCaminho, MelhorCusto) :-
+
+  circuitoIDSL([PontoEntrega | R], MelhorCaminho, MelhorCusto),
+  !.
+
+
+
+
+
+
+
 
 /*
 ------ Depth limited Search (teste)
@@ -353,6 +572,133 @@ dls(First, Last, [First | Resto], D) :-
   dls(Algo, Last, Resto, D1).
 
 */
+
+
+
+
+  %----- "Greedy Search" -----------------------------------------------------------------------------
+
+
+%%------------------------------
+% CircuitoGulosa
+%%------------------------------
+
+circuitoGulosa(Inicio, Caminho) :-
+
+  get_gulosa(Inicio).
+
+
+%%-------------------------------------------------
+% Get_Gulosa : Inicio                               |
+% Devolve o resultado de uma pesquisa gulosa        |
+% desde um estado inicial, até à central de pedidos |
+%%--------------------------------------------------
+
+get_gulosa(Inicio):-
+
+  findall(Caminho,resolve_gulosa(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
+  length(List, X),
+  gulosaEnd(List, Answer).
+
+%%-------------------------------------------------------------------
+% GulosaEnd : Lista de caminhos : Primeiro caminho correto           |
+% esta função procura todos os caminhos obtidos com o algoritmo de   |
+% pesquisa greedy, devolvendo o primeiro que apresente a completude  |
+% do caminho pretendido                                              |
+%%-------------------------------------------------------------------
+
+gulosaEnd( [A | _], Aaux) :-
+
+  getList(A, Aaux),
+
+  member((escolaEngenharia1, uni_centro), Aaux), !.
+
+gulosaEnd([_| R], Answer) :-
+  
+  gulosaEnd(R, Answer).
+
+
+
+%%-----------------------------------------------------------------------
+% GetList : List/something, List                                         |
+% Dada uma lista com algum tipo de par associado, devolve a lista no seu |
+% formato original                                                       |
+%%-----------------------------------------------------------------------
+
+getList(List/_, List).
+
+
+
+resolve_gulosa(Inicio, PontoEntrega, Caminho/Custo) :-
+
+  estima(Inicio, Estima),
+
+  agulosa( [ [Inicio]/0/Estima], InvCaminho/Custo/_, PontoEntrega),
+
+  reverse(InvCaminho, Caminho).
+
+
+agulosa(Caminhos, Caminho, PontoEntrega) :-
+  
+  obtem_melhor_gulosa(Caminhos, Caminho),
+
+  Caminho = [PontoEntrega | _]/_/_ .
+
+
+agulosa(Caminhos, SolucaoCaminho, _) :-
+
+  obtem_melhor_gulosa(Caminhos, MelhorCaminho),
+
+  seleciona(MelhorCaminho, Caminhos, OutrosCaminhos),
+
+  expande_gulosa(MelhorCaminho, ExpCaminhos),
+
+  append(OutrosCaminhos, ExpCaminhos, NovosCaminhos),
+
+  agulosa(NovosCaminhos, SolucaoCaminho, _).
+
+
+
+seleciona(E, [E|Xs], Xs).
+seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
+
+
+
+obtem_melhor_gulosa([Caminho], Caminho) :- !.
+
+obtem_melhor_gulosa([Caminho1/C1/Est1, _/_/Est2 | Caminhos], MelhorCaminho) :-
+
+  Est1 =< Est2, !,
+
+  obtem_melhor_gulosa([Caminho1/C1/Est1 | Caminhos], MelhorCaminho).
+
+obtem_melhor_gulosa([_ | Caminhos], MelhorCaminho) :-
+
+  obtem_melhor_gulosa(Caminhos, MelhorCaminho).
+
+
+expande_gulosa(Caminho, ExpCaminhos) :-
+
+  findall(NovoCaminho, adjacenteGulosa(Caminho, NovoCaminho), ExpCaminhos).
+
+
+adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/Est) :-
+
+  connected(Nodo, ProxNodo, PassoCusto),
+
+  \+member(ProxNodo, Caminho),
+
+  NovoCusto is Custo + PassoCusto,
+
+  estima(ProxNodo, Est).
+
+
+
+
+
+
+
+
 
 
 

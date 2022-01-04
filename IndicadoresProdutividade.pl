@@ -21,6 +21,7 @@ moreEcologicalTransportation([ A | B], Answer) :-
 
 
 
+
 %%---------------------------------------------------------------------
 % moreEcological : Transport, Transport, Transport                     |
 % Comparador de transportes, atentando o valor ecológico               |
@@ -58,6 +59,7 @@ moreEcological( (A), (_), (A)).
 % usage : getAllPossibleTransports(101, Km, List).                                                                  |
 %%------------------------------------------------------------------------------------------------------------------
 
+
 getAllPossibleTransports(PackageID, Km, List) :-
 
     package(PackageID, PWeight, _, _, _, _, _),
@@ -66,11 +68,14 @@ getAllPossibleTransports(PackageID, Km, List) :-
     getAllTransportsInfo(PWeight, Km, ListaTransportes),
 
     %%- filtrar quais serão aptos para transportar o package
-    possibleTransports(PackageID, ListaTransportes, List),
+    possibleTransports(PackageID, ListaTransportes, List).
 
-    %%- Só nos interessa a primeira opção da função anterior
-    !.
 
+getAllPossibleTransports(PackageID, Km, A) :-
+    
+    package(PackageID, Weight, _, _, _, _, _),
+
+    getTransportationINFO([transport('Carrinha', 600, 55, 0.07, 3)], Weight, Km, A).
 
 
 %%--------------------------------------------------------------------------------------------------------------------------------
@@ -80,7 +85,7 @@ getAllPossibleTransports(PackageID, Km, List) :-
 % Só a primeira opção interessa, pois contém todos os casos possíveis                                                             |
 %%--------------------------------------------------------------------------------------------------------------------------------
 
-possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)], [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)]) :-
+possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)], [(transport(A,TWeight,B,C,D), RealSpeed, DurationHours)]) :-
 
     RealSpeed > 0,
 
@@ -88,7 +93,10 @@ possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationT
 
     PWeight =< TWeight,
 
-    DurationTime =< TempoEspera.
+    DurationTime =< TempoEspera,
+
+    converterHoras(DurationTime, DurationHours)
+    .
 
 
 possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime) | Resto], Answer) :-
@@ -101,11 +109,14 @@ possibleTransports(PackageID, [(transport(A,TWeight,B,C,D), RealSpeed, DurationT
 
     DurationTime =< TempoEspera,
 
-    List1 = [(transport(A,TWeight,B,C,D), RealSpeed, DurationTime)],
+    converterHoras(DurationTime, DurationHours),
+
+    List1 = [(transport(A,TWeight,B,C,D), RealSpeed, DurationHours)],
 
     possibleTransports(PackageID, Resto, List2),
 
     append(List1, List2, Answer).
+
 
 possibleTransports(_, [], []).
 

@@ -61,6 +61,18 @@ menorP((_,C1), (Cam2,C2), (Cam2,C2)) :- C1 =\= C2, C2 < C1.
 menorP((Cam,C), (_,C), (Cam,C)).
 
 
+%-------------------------------------------------------------
+% MaiorPares : (Algo, Número), (Algo, Número), (Algo, Número) |
+%-------------------------------------------------------------
+
+maiorP((Cam1,C1), (_, C2), (Cam1,C1)) :- C1 =\= C2, C1 > C2.
+
+maiorP((_,C1), (Cam2,C2), (Cam2,C2)) :- C1 =\= C2, C2 > C1.
+
+%-- "por default, vai escoler sempre o primeiro"
+maiorP((Cam,C), (_,C), (Cam,C)).
+
+
 
 %--------------------------------------------
 % MenorParesList : PairsList, (Algo, Número) |
@@ -73,6 +85,21 @@ menorPL([(Cam,C) | R], Resposta) :-
   %% extender a lista toda e comparar um a um
   menorPL(R, (Cam2, C2)),
   menorP((Cam, C), (Cam2,C2), Resposta).
+
+
+
+%--------------------------------------------
+% MaiorParesList : PairsList, (Algo, Número) |
+%--------------------------------------------
+
+maiorPL([ (Cam, Custo) ], (Cam, Custo)).
+
+maiorPL([(Cam,C) | R], Resposta) :-
+
+  %% extender a lista toda e comparar um a um
+  maiorPL(R, (Cam2, C2)),
+  maiorP((Cam, C), (Cam2,C2), Resposta).
+
 
 
 %---------------------------------------------------------------------------------
@@ -96,8 +123,8 @@ menorTL([ (Cam, Ida, Custo) ], (Cam, Ida, Custo)).
 menorTL([(Cam,I,C) | R], Resposta) :-
 
   %% extender a lista toda e comparar um a um
-  menorPL(R, (Cam2,I2, C2)),
-  menorP((Cam, I, C), (Cam2,I2,C2), Resposta).
+  menorTL(R, (Cam2,I2, C2)),
+  menorT((Cam, I, C), (Cam2,I2,C2), Resposta).
 
 
 

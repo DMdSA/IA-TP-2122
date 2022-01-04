@@ -68,14 +68,14 @@ record(1000000, 10000, 1, date(11, 11, 2021, 16), 'Bicycle', 5).
 package(1000001, 3.3, 27, 32, address('medicina', 'olimpo'), date(11, 11, 2021, 8), 12).
 record(1000001, 10001, 1, date(11, 11, 2021, 20), 'Bicycle', 4). 
 
-package(1000002, 3.4, 20, 33, address('intitutoLetras', 'uni_sul'), date(11, 11, 2021, 17), 0).
-record(1000002, 10002, 1, date(11, 11, 2021, 18), 'Bicycle', 3). 
+package(1000002, 3.4, 20, 33, address('institutoLetras', 'uni_sul'), date(11, 11, 2021, 17), 0).
+record(1000002, 10002, 1, date(11, 11, 2021, 18), 'Carrinha', 3). 
 
 package(1000003, 5, 10, 15, address('escolaEngenharia2', 'uni_oeste'), date(12, 11, 2021, 11), 2).
-record(1000003, 10002, 1, date(13, 11, 2021, 11), 'Motorcycle', 1). 
+record(1000003, 10002, 1, date(13, 11, 2021, 11), 'Bicycle', 1). 
 
 package(1000004, 1, 5, 10, address('complexoPedagogico1', 'uni_este'), date(13, 11, 2021, 20), 24).
-record(1000004, 10003, 3, date(15, 11, 2021, 10), 'Car', 3).
+record(1000004, 10003, 3, date(15, 11, 2021, 10), 'Bicycle', 3).
 
 package(1000005, 0.988, 20, 876, address('servicosTecnicos', 'uni_este'), date(17,11,2021, 12), 72). 
 record(1000005, 10004, 3, date(18, 11, 2021, 19),'Car', 4).
@@ -84,22 +84,22 @@ package(1000006, 13, 102, 2.099, address('bioSustentabilidade', 'uni_oeste'), da
 record(1000006, 10005, 1, date(11, 11, 2021, 15), 'Bicycle', 5).
 
 package(1000007, 2.112, 122, 44.59, address('escolaEconomia', 'uni_centro'), date(03, 10, 2021, 8), 6).
-record(1000007, 10006, 1, date(03, 10, 2021, 20), 'Motorcycle', 2).
+record(1000007, 10006, 1, date(03, 10, 2021, 20), 'Bicycle', 2).
 
 package(1000008, 88, 122, 443, address('complexoPedagogico3', 'uni_centro'), date(03, 10, 2021, 20), 2).
 record(1000008, 10007, 4, date(04, 10, 2021, 8), 'Car', 3).
 
-package(1000009, 88, 122, 200, address('psicologia', 'uni_oeste'), date(03, 10, 2021, 21), 48).
+package(1000009, 88, 122, 200, address('escolaPsicologia', 'uni_oeste'), date(03, 10, 2021, 21), 48).
 record(1000009, 10008, 4, date(18, 10, 2021, 12), 'Car', 1).
 
 package(10000010, 28, 2, 67, address('cienciasSociais', 'uni_oeste'), date(23, 12, 2021, 15), 24).
-record(10000010, 10020, 2, date(24, 12, 2021, 17), 'Bicycle', 5).
+record(10000010, 10020, 2, date(24, 12, 2021, 17), 'Car', 5).
 
 package(1000011, 2300, 150, 120 , address('biblioteca', 'uni_sul'), date(13, 12, 2021, 15), 12).
 record(1000011, 10018, 4, date(16, 12, 2021, 17), 'Car', 2).
 
 package(1000012, 70, 0.2 , 0.4 , address('acaoSocial', 'uni_norte'), date(3, 9, 2021, 15), 12).
-record(1000012, 10003, 3, date(3, 9, 2021, 17), 'Bicycle', 5).
+record(1000012, 10003, 3, date(3, 9, 2021, 17), 'Car', 5).
 
 package(1000013, 5.6, 1, 2, address('medicina','olimpo'), date(2, 7, 2021, 15), 12).
 record(1000013, 10016, 1, date(2,7,2021, 17), 'Motorcycle', 4).
@@ -113,7 +113,7 @@ record(1000015, 10003, 2, date(1,10,2021, 17), 'Bicycle', 5).
 package(1000016, 45, 2, 3, address('servicosTecnicos','uni_este'), date(10, 3, 2021, 15), 6).
 record(1000016, 10012, 2, date(19,3,2021, 17), 'Car', 1).
 
-package(1000017, 5, 6, 3.2, address('escolaCienciass','uni_centro'), date(17, 7, 2021, 15), 0).
+package(1000017, 5, 6, 3.2, address('escolaCiencias','uni_centro'), date(17, 7, 2021, 15), 0).
 
 % evolucao(record(1000017, 10000, 4, date(18,7,2021,16),'Motorcycle', 1)).
 
@@ -129,60 +129,75 @@ package(1000017, 5, 6, 3.2, address('escolaCienciass','uni_centro'), date(17, 7,
 %%--------------------------------------------------------------
 
 
-%%- DFS, 8.25 km/h, 2.424242 Horas, 20 km
-estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000000], dfs).
+%%- DFS, 8.25 km/h, hour(0,14,32), 2/4 km
+estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000000], dfs).
 
 
-%%- BFS, 7.69 km/h, 10.403120936 Horas, 80 km
+%%- BFS, 7.69 km/h, hour(1, 18, 1), 10/20 km
 estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000001], bfs).
 
-%%- DFS, 28.5 km/h, 1.75438 Horas, 50 km
-estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000006], dfs).
+%%- DFS, 28.5 km/h, 0.350877 Horas, 10/20 km
+estafeta(1, transport('Motorcycle', 20, 35, 0.5, 1), [1000006], dfs).
 
-%%- NÃO CUMPRE REQUISITOS DE TEMPO
-% estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000003]).
+%%- IDS, 6.5 km/h, 1.3846 horas, 9/18 km 
+% estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000003], ids).
 
-%%- IDS, 8.5216 km/h, 1.64288 horas, 14 km
-estafeta(1, transport('Bicycle',5,10,0.7, 0), [1000007], ids).
+%%- IDS, 8.5216 km/h, 0.46939 horas, 4/8 km
+estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000007], ids).
 
-%%- IDS, 32.2 km/h, 2.7950310 horas, 90 km
-estafeta(1, transport('Motorcycle', 20, 35, 0.5, 1), [1000013], ids).
+%%- IDS, 32.2 km/h, 0.37267 horas, 12/24 km
+estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000013], ids).
 
-%%- BFS, 22.2 km/h, 2.702702 horas, 60 km
-estafeta(2, transport('Car', 100, 25, 0.1, 2), [10000010], bfs).
+%%- BFS, 22.2 km/h, 0.36036 horas, 8/16 km
+estafeta(2, transport('Car', 32, 25, 0.1, 2), [10000010], bfs).
 
-%%- NÃO CUMPRE REQUISITOS DE TEMPO
-% estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [1000002]).
+%%- DFS, 54.762 km/h, 0.091304 horas, 5/10 km
+% estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000002], dfs).
 
-%%- NÃO CUMPRE REQUISITOS (2000 KG) 
-% estafeta(2, transport('Bicycle', 3, 10, 0.7, 0), [1000015]).
+%%- IDS, 12.999 km/h, 0.69230 horas, 9/18 km
+% estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000015],ids).
 
-%%- DFS, 20.5 km/h, 2.4390 horas, 50 km
+%%- DFS, 20.5 km/h, 0.341463 horas, 7/14 km
 estafeta(2, transport('Car', 100, 25, 0.1, 2), [1000016], dfs).
 
-%%- BFS, 9.3 km/h, 2.36559 horas, 22 km
-estafeta(3, transport('Bicycle' , 5, 10, 0.7, 0), [1000004], bfs).
+%%- BFS, 9.3 km/h, hour(0,38,42), 6/12 km
+estafeta(3, transport('Bicycle' , 3, 10, 0.7, 0), [1000004], bfs).
 
-%%- DFS, 9.3084 km/h, 5.371492 horas, 50 km
-estafeta(3, transport('Bicycle', 5, 10, 0.7, 0), [1000005], dfs).
+%%- DFS, 9.3084 km/h, hour(0,45,7), 7/14 km
+estafeta(3, transport('Bicycle', 3, 10, 0.7, 0), [1000005], dfs).
 
-%%- IDS, 18 km/h, 1.3333 horas, 24 km
+%%- IDS, 18 km/h, hour(0,16,40), 5/10 km
 estafeta(3, transport('Car', 100, 25, 0.1, 2),[1000012], ids).
 
-%%- NÃO CUMPRE REQUISITOS TEMPO
-% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008]).
+%%- DFS, 16.2 km/h, hour(0,7,24), 2/4 km
+% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008], dfs).
 
-%%- NÃO CUMPRE REQUISITOS, > 2000 KG
-% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011]).
+%%- BFS, 1 km/h, 6 horas, 6/12 km
+% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011], bfs).
 
-%%- DFS, 19.4 km/h, 1.6494 horas, 32 km
+%%- DFS, 19.4 km/h, hour(0, 27, 50), 9/18 km
 estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000014], dfs).
 
-%%- BFS, 16.2 km/h, 4.320987 horas, 70 km
+%%- BFS, 16.2 km/h, hour(0, 37, 2), 10/20 km
 estafeta(4, transport('Car', 100, 25, 0.1, 2),[1000009], bfs).
 
-%%- NÃO CUMPRE REQUISITOS TEMPO
-% estafeta(4, transport('Motorcycle', 20, 35, 0.5, 1),[1000017]).
+%%- IDS, 54.65, 0.05 horas, 3/6 km
+estafeta(4, transport('Carrinha', 600, 55, 0.07, 3),[1000017], ids).
+
+
+
+
+
+maisEntregas(Answer) :-
+
+    findall((N,X), (estafeta(N,_,L,_), length(L,X)), Estafeta),
+
+    maiorPL(Estafeta, Answer).
+
+
+
+
+
 
 
 
@@ -296,7 +311,7 @@ address( complexoPedagogico1, uni_este).
 address( complexoPedagogico2, uni_sul).
 address( complexoPedagogico3, uni_centro).
 address( biblioteca, uni_sul).
-address( intitutoLetras, uni_sul).
+address( institutoLetras, uni_sul).
 address( escolaCiencias, uni_centro).
 address( escolaEngenharia1, uni_centro).
 address( escolaEconomia, uni_centro).
