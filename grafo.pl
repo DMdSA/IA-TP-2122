@@ -8,6 +8,7 @@
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
 :- consult('data_base.pl').
+:- consult('Util.pl').
 
 
 g( grafo(
