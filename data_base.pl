@@ -1,4 +1,5 @@
 :- set_prolog_flag(encoding, utf8) .
+:- consult('Invariants.pl').
 :- dynamic transport/4 .
 :- dynamic address/2 .
 :- dynamic client/2 .
@@ -7,6 +8,26 @@
 :- dynamic estafeta/3 .
 :- discontiguous package/7 .
 :- discontiguous record/6 .
+:- discontiguous address/2.
+:- discontiguous excecao/1.
+:- discontiguous transport/5.
+:- discontiguous (-)/1.
+:- discontiguous nulo/1.
+:- discontiguous estafeta/4.
+:- discontiguous client/2.
+
+
+
+nao(Q) :- Q, !, fail.
+nao(_).
+
+
+si(Q, verdadeiro) :- Q.
+si(Q, false) :- -Q.
+si(Q, desconhecido) :- nao(Q), nao(-Q).
+
+
+
 
 
 
@@ -30,6 +51,46 @@ transport('Carrinha', 500, 55, 0.07, 3).
 transport('Carrinha', 600, 55, 0.07, 3).
 
 
+-transport(A,B,C,D,E) :-
+    nao(transport(A,B,C,D,E)),
+    nao((excecao(transport(A,B,C,D,E)))).
+
+
+-transport('Bicycle', 20, 10, 0.7, 0).
+-transport('Avioneta', 150, 55, 0.09, 1).
+
+/*
+% conhecimento imperfeito incerto
+
+transport('Bicycle', capacidadeDesconhecida, 10, 0.7, 0).
+excecao(transport(A,_,C,D,E)) :- transport(A,capacidadeDesconhecida,C,D,E).
+
+
+% conhecimento imperfeito impreciso
+
+excecao(transport('Motorcycle', 21), 35, 0.5, 1).
+excecao(transport('Motorcycle', 30), 35, 0.5, 1).
+
+
+% conhecimento imperfeito interdito
+
+transport('Avioneta', capacidadeImpossivel, 55, 0.09, 1).
+excecao(transport(A,_,C,D,E)) :- transport(A, capacidadeImpossivel, C,D,E).
+nulo(capacidadeImpossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
+
+
++transport(A,B,C,D,E) :: (
+
+    solucoes( (A,B,C,D,E), ( transport('Avioneta', capacidadeImpossivel, 55, 0.09, 1), nao(nulo(capacidadeImpossivel)) ), List),
+    length(List, 0)
+    ).
+*/
+
+
+
 
 %%-------------------------------------------------
 % GetEcoValue : Transport, EcoValue                |
@@ -49,7 +110,7 @@ getEcoValue(transport(_,_,_,_,E), E).
 
 getAllTransports(Transports) :-
 
-    findall((transport(A,B,C,D,E)), transport(A,B,C,D,E), Transports).
+    findall((transport(A,B,C,D,E)), (transport(A,B,C,D,E)), Transports).
 
 
 
@@ -114,6 +175,88 @@ record(1000016, 10012, 2, date(19,3,2021, 17), 'Car', 1).
 package(1000017, 5, 6, 3.2, address('escolaCiencias','uni_centro'), date(17, 7, 2021, 15), 0).
 
 % evolucao(record(1000017, 10000, 4, date(18,7,2021,16),'Motorcycle', 1)).
+
+
+
+
+-package(A,B,C,D,E,F,G) :-
+    
+    nao(package(A,B,C,D,E,F,G)),
+    nao(excecao(package(A,B,C,D,E,F,G))).
+
+-package(0, 0, 0, address(escolaEngenharia2, uni_oeste), date(5, 1, 2022, 20), 10).
+-package(1, 32, 10, address(escolaCiencias, uni_centro), date(1, 1, 2022, 0), 3).
+
+
+/*
+% conhecimento imperfeito incerto
+
+package(1000020, 100, 32, 99, address(escolaEngenharia1, uni_centro), date(29, 12, 2021, 23), horasEsperaDesconhecidas).
+excecao(package(A,B,C,D,E,F,_)) :- package(A,B,C,D,E,F, horasEsperaDesconhecidas).
+
+
+% conhecimento imperfeito impreciso
+
+excecao(package(1000021, 12, 7, 25, address(medicina, olimpo), date(5,1,2022,21), 3)).
+excecao(package(1000021, 12, 7, 25, address(medicina, olimpo), date(5,1,2022,21), 1)).
+
+
+% conhecimento imperfeito interdito
+
+package(1000022, 30, 30, 76, address(cantina, uni_norte), date(5,1,2021,14), horasEsperaImpossivel).
+excecao(package(A,B,C,D,E,F,_)) :- package(A,B,C,D,E,F,horasEsperaImpossivel).
+nulo(horasEsperaImpossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
++package(A,B,C,D,E,F,G) :: (
+
+    solucoes((A,B,C,D,E,F,G), ( package(1000022, 30, 30, 76, address(cantina, uni_norte), date(5,1,2021,14), horasEsperaImpossivel), nao(nulo(horasEsperaImpossivel)) ), List),
+    length(List, 0)
+    ).
+*/
+
+
+
+
+
+-record(A,B,C,D,E,F) :-
+    
+    nao(record(A,B,C,D,E,F)),
+    nao(excecao(record(A,B,C,D,E,F))).
+
+
+-record(1000016, 10001, 4, address('escolaCiencias', 'uni_centro'), date(17,7.2021,15), 0).
+-record(1000018, 2020, 4, address('escolaCiencias', 'uni_centro'), date(13,3.2021,15), 5).
+
+
+/*
+% conhecimento imperfeito incerto
+
+record(1000019, 30000, 6, date(1,12,2021, 23), 'Bicycle', notaDesconhecida).
+excecao(record(A,B,C,D,E,_)) :- record(A,B,C,D,E, notaDesconhecida).
+
+
+% conhecimento imperfeito impreciso
+
+excecao(record(1000021, 30001, 7, date(3,1,2022, 5), 'Bicycle', 1)).
+excecao(record(1000021, 30001, 7, date(3,1,2022, 5), 'Bicycle', 3)).
+
+
+% conhecimento imperfeito interdito
+
+record(1000022, 30002, date(5,1,2022, 12), 'Motorcycle', notaImpossivel).
+excecao(record(A,B,C,D,E,_)) :- record(A,B,C,D,E,notaImpossivel).
+nulo(notaImpossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
++record(A,B,C,D,E,F) :: (
+
+    solucoes((A,B,C,D,E,F), ( record(1000022, 30002, date(5,1,2022, 12), 'Motorcycle', notaImpossivel), nao(nulo(notaImpossivel)) ), List),
+    length(List, 0)
+    ).
+*/
 
 
 
@@ -197,13 +340,45 @@ estafeta(4, transport('Carrinha', 600, 55, 0.07, 3),[1000017], ids).
 
 
 
+% conhecimento perfeito negativo
+
+-estafeta(A,B,C,D) :-
+    
+    nao(estafeta(A,B,C,D)),
+    nao(excecao(estafeta(A,B,C,D))).
 
 
+-estafeta(4, transport('Bicycle', 3, 10, 0.7, 0), [1000017], dfs).
+-estafeta(0, transport('Car', 100, 25, 0.1, 2), [0101], dfs).
+
+/*
+% conhecimento imperfeito incerto
+
+estafeta(estafetaDesconhecido, transport('Motorcycle', 12, 35, 0.5, 1), [1000020], dfs).
+excecao(estafeta(_,B,C,D)) :- transport(estafetaDesconhecido, B,C,D).
 
 
+% conhecimento imperfeito impreciso
+
+excecao(estafeta(5, transport('Motorcycle', 12, 35, 0.5, 1), [10000021])).
+excecao(estafeta(6, transport('Motorcycle', 12, 35, 0.5, 1), [10000021])).
 
 
+% conhecimento imperfeito interdito
 
+estafeta(estafetaImpossivel, transport('Bicycle', 5, 10, 0.7, 0), [10000022]).
+excecao(estafeta(_,B,C,D)) :- transport(estafetaImpossivel, B,C,D).
+nulo(estafetaImpossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
++estafeta(A,B,C,D) :: (
+
+    solucoes((A,B,C,D), ( estafeta(estafetaImpossivel, transport('Bicycle', 5, 10, 0.7, 0), [10000022]), nao(nulo(estafetaImpossivel)) ), List),
+    length(List, 0)
+    ).
+
+*/
 
 
 
@@ -305,6 +480,43 @@ client(10027, 'Simão Cunha').
 client(10028, 'Tiago Silva').
 
 
+-client(A,B) :-
+
+    nao(client(A,B)),
+    nao(excecao(cliente(A,B))).
+
+
+-client(0, 'Admin').
+-client(1, 'Co-Worker').
+
+/*
+% conhecimento imperfeito incerto
+
+client(2, nomeDesconhecido).
+excecao(client(A,_)) :- client(A,nomeDesconhecido).
+
+
+% conhecimento imperfeito impreciso
+
+excecao(client(3, 'Paulo Araújo')).
+excecao(client(4, 'Paulo Silva')).
+
+
+% conhecimento imperfeito interdito
+
+client(5, nomeImpossivel).
+excecao(client(A,_)) :- client(A, nomeImpossivel).
+nulo(nomeImpossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
++client(A,B) :: (
+
+    solucoes((A,B), ( client(5,nomeImpossivel), nao(nulo(nomeImpossivel)) ), List),
+    length(List, 0)
+    ).
+
+*/
 
 %%-----------------------------------
 % Address                            |
@@ -331,6 +543,45 @@ address( escolaDireito, uni_oeste).
 address( bioSustentabilidade, uni_oeste) .
 address( medicina, olimpo).
 
+
+-address(A,B) :-(
+
+    nao(address(A,B)),
+    nao(excecao(address(A,B)))).
+
+
+-address(ruaDeSouto, saoJoaoDoSouto).
+-address(avenidaLiberdade, saoJoseSaoLazaro).
+
+
+/*
+% conhecimento imperfeito incerto
+
+address(populo, freguesia_desconhecida).
+excecao(address(A,_)) :- address(A,freguesia_desconhecida).
+
+
+% conhecimento imperfeito impreciso
+
+excecao(address(ruaDaUniversidade, gualtar)).
+excecao(address(ruaDaUniversidade, lamacaes)).
+
+
+% conhecimento imperfeito interdito
+
+address(ruaConegoDoutorFaria, freguesia_impossivel).
+excecao(address(A,_)) :- address(A, freguesia_impossivel).
+nulo(freguesia_impossivel).
+
+% invariante associado ao conhecimento imperfeito interdito
+
++address(A,B) :: (
+
+    solucoes((A,B), ( address(ruaConegoDoutorFaria,freguesia_impossivel), nao(nulo(freguesia_impossivel)) ), List),
+    length(List, 0)
+    ).
+
+*/
 
 %%----------------------------------------
 % Address Auxiliar                        |

@@ -418,8 +418,9 @@ bfsl_aux(Inicio,[Dest | Resto], Cam, Km) :-
 
 bfsl_aux(_,[Dest | Resto], Cam, Km) :-
   
-  member(Dest,Cam),
   bfsl_aux(Dest,Resto,Cam,Km).
+
+
 
 %%-----------------------------------------------------------
 % circuitoBFSL : packageIDs list, Caminho, Kms               |
@@ -437,7 +438,7 @@ circuitoBFSL([PackageID | Resto],Caminho,Custo) :-
 %%---------------------------
 %
 %
-%----------------------------
+%%---------------------------
 
 melhorSolucaoBFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
 findall((Caminho, Custo),

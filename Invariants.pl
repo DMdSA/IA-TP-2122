@@ -1,5 +1,5 @@
 :- op( 900,xfy,'::' ).
-
+:- discontiguous (::)/2.
 
 %----------------------------------------
 % Funções de suporte 
@@ -194,27 +194,28 @@ testI([H | T]) :- H, testI(T).
 
 %---- Tipo do facto
 
-+estafeta(ID, T, Pkgs) :: (
++estafeta(ID, T, Pkgs, Alg) :: (
 
 	integer(ID),
 	validate_transp(T),
 	T,
-	is_list(Pkgs)
+	is_list(Pkgs),
+	member(Alg, [dfs,bfs,ids,greedy,astar])
 ).
 
 
 %---- Unicidade
 
-+estafeta(ID, _, _) :: (
++estafeta(ID, _, _,_) :: (
 
-	solucoes(ID, estafeta(ID,_,_), L),
+	solucoes(ID, estafeta(ID,_,_,_), L),
 	length(L,1)
 ).
 
 
 %---- Verificação lista encomendas
 
-+estafeta(_,_,Pkgs) :: (
++estafeta(_,_,Pkgs,_) :: (
 
 	sort(Pkgs, Ps),						%% remover duplicados
 	validate_pkg_unicity(Ps),			%% verificar que existem, pelo menos
@@ -224,25 +225,25 @@ testI([H | T]) :- H, testI(T).
 
 %---- Só pode adicionar uma lista de encomendas se o peso de cada uma delas for suportado pelo transporte associado
 
-+estafeta(_, transport(_,W,_,_,_), Pkgs) :: (
++estafeta(_, transport(_,W,_,_,_), Pkgs, _) :: (
 
-	solucoes(Weight, (member(ID, Pkgs), package(ID, Weight,_,_,_,_,_)), List),
+	solucoes(Weight, (member(ID, Pkgs), package(ID, Weight,_,_,_,_,_,_)), List),
 	verify_possible_weight(List, W)
 ).
 
 
 %---- Posso remover um estafeta se não houver nenhum record sobre ele
 
--estafeta(ID,_,_) :: (
+-estafeta(ID,_,_,_) :: (
 
-	solucoes(ID, record(ID,_,_,_,_,_),N),
+	solucoes(ID, record(ID,_,_,_,_,_,_),N),
 	length(N,0)
 ).
 
 
 %---- Posso remover um estafeta se não tiver nenhum package para/por entregar
 
--estafeta(_,_,Pkgs) :: (
+-estafeta(_,_,Pkgs,_) :: (
 
 	length(Pkgs, 0)
 ).

@@ -23,6 +23,8 @@ validate_transp(transport('Car',W, 25, 0.1, 2)) :-
 validate_transp(transport('Motorcycle',W,35, 0.5, 1)) :- 
         (W > 0, W =< 20).
 
+validate_transp(transport('Carrinha',W, 55, 0.07, 3)) :- 
+        (W > 0, W =< 600).
 
 
 /*

@@ -113,7 +113,7 @@ info(PackageID, Estafeta, Caminho, CustoIda, Custo) :-
 
 
 
-
+/*
 maisEntregas(L) :-
 
     findall((ListAux,Alg), (estafeta(_,_,ListAux,Alg)), EstafetaAux),
@@ -121,56 +121,12 @@ maisEntregas(L) :-
     write(EstafetaAux),
 
     todosCaminhos(EstafetaAux,L), !.
-
+*/
 
 /*
-
     pares ( Caminho, Ocurrencia )
-
-
-
-
-    
-
 */
 
 
 
-todosCaminhos([Ids],[CamAux]) :-
 
-    create_caminho(Ids,CamAux), !.
-
-
-todosCaminhos([Ids | Resto], TodosCams) :-
-    
-    create_caminho(Ids,Cam),
-
-    todosCaminhos(Resto,TodosCamsAux),
-    
-    append([Cam],TodosCamsAux,TodosCams).
-
-
-comparaCaminhos(List1, List2) :-
-    (List1 = List2).
-
-
-
-% Apartir de uma lista de packages e um algoritmo faz o caminho
-
-create_caminho((L,Alg),Caminho) :-
-    
-    Alg = dfs,
-    %circuitoDFSL(L,Caminho,_).
-    melhorSolucaoDFSL(L,Caminho,_).
-
-create_caminho((L,Alg),Caminho) :-
-    
-    Alg = bfs,
-    circuitoBFSL(L,Caminho,_).              % "cuidado"
-    %melhorSolucaoBFSL(L,Caminho,_).
-
-create_caminho((L,Alg),Caminho) :-
-    
-    Alg = ids,
-    %circuitoIDSL(L,Caminho,_).
-    melhorSolucaoIDSL(L,Caminho,_).
