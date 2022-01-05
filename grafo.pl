@@ -701,59 +701,39 @@ adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/E
 
 %----- "A*" --------------------------------------------------------------------------------------
 
-/*
 circuitoAEstreal(Inicio, Caminho) :-
-
   get_AEstrela(Inicio).
 
 
-
-
-
-
 get_AEstrela(Inicio):-
-
-  findall(Caminho,resolve_gulosa(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
+  findall(Caminho,resolve_aestrela(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
   length(List, X),
-  gulosaEnd(List, Answer).
+  aestrelaEnd(List, Answer).
 
 
-
-
-
-gulosaEnd( [A | _], Aaux) :-
-
+aestrelaEnd( [A | _], Aaux) :-
   getList(A, Aaux),
-
   member((escolaEngenharia1, uni_centro), Aaux), !.
 
-gulosaEnd([_| R], Answer) :-
-  
-  gulosaEnd(R, Answer).
+aestrelaEnd([_| R], Answer) :-
+  aestrelaEnd(R, Answer).
 
 
-
-*/
-
-
-
-resolve_aestrela(Nodo, Caminho/Custo) :-
-  aestrela([[Nodo]/0/0], InvCaminho/Custo/_),
+resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
+  aestrela([[Nodo]/0/0], InvCaminho/Custo/_, PontoEntrega),
   reverse(InvCaminho, Caminho).
 
 
-aestrela(Caminhos, Caminho) :-
+aestrela(Caminhos, Caminho, PontoEntrega) :-
   obtem_melhor(Caminhos, Caminho),
-  Caminho = [Nodo|_]/_/_,
-  goal(Nodo).
+  Caminho = [PontoEntrega|_]/_/_.
 
-
-aestrela(Caminhos, SolucaoCaminho) :-
+aestrela(Caminhos, SolucaoCaminho,_) :-
   obtem_melhor(Caminhos, MelhorCaminho),
   select(MelhorCaminho, Caminhos, OutrosCaminhos),
   expande_aestrela(MelhorCaminho, ExpCaminhos),
   append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
-  aestrela(NovoCaminhos, SolucaoCaminho).
+  aestrela(NovoCaminhos, SolucaoCaminho,_).
 
 
 obtem_melhor([Caminho], Caminho) :- !.
@@ -774,12 +754,6 @@ adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est)
   \+member(ProxNodo, Caminho),
   NovoCusto is Custo + PassoCusto,
   calculaValorNodo( ProxNodo , aresta( Nodo,ProxNodo,X ) , Est ).
-
-
-
-
-
-
 
 
 
