@@ -576,36 +576,75 @@ dls(First, Last, [First | Resto], D) :-
 
 
 
-  %----- "Greedy Search" -----------------------------------------------------------------------------
+
+%----- "Pesquisas Informadas" -----------------------------------------------------------------------------
 
 
-calculaValorNodo( adress(_,F) , aresta( _,adress(_,Freguesia),X ) , ValorEstimado ):- 
+%%---------------------------------
+% CalculaEstima
+% ??
+%%---------------------------------
+
+calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):- 
   
-  findall( Rua, adress(Rua,Freguesia), List ),
+  connected( (Rua2,Freguesia2),(Rua1,Freguesia1), X),
+
+  findall( Rua, address(Rua,Freguesia1), List ),
+  
   length( List, V ),
-  ValorEstimado is V*X.
+  
+  ValorEstimado is V * X.
+
+
+
+
+
+
+%----- "Greedy Search" -----------------------------------------------------------------------------
 
 
 %%------------------------------
-% CircuitoGulosa
+% CircuitoGreedy
+% CircuitoGreedy : PontoEntrega, Caminho
 %%------------------------------
 
-circuitoGulosa(Inicio, Caminho) :-
+circuitoGreedy(PontoEntrega, Caminho, KmIda, Km) :-
 
-  get_gulosa(Inicio).
+%%- procura o caminho desde o ponto de entrega até à base
+
+  get_gulosa(PontoEntrega, Cam, KmIda),
+
+  Km is (KmIda * 2),
+
+%%- aproveita a cauda dessa lista para fazer a volta
+
+  tail(Cam, Cam1),
+
+%%- inverte o caminho para representar a ida
+
+  reverse(Cam, Ida),
+
+%%- dá append da ida (caminho original invertido) com a cauda (caminho original)
+
+  append(Ida, Cam1, Caminho).
 
 
-%%-------------------------------------------------
-% Get_Gulosa : Inicio                               |
-% Devolve o resultado de uma pesquisa gulosa        |
-% desde um estado inicial, até à central de pedidos |
-%%--------------------------------------------------
 
-get_gulosa(Inicio):-
+%%------------------------------------------------------------------
+% Get_Gulosa : Inicio                                               |
+% Devolve o resultado de uma pesquisa gulosa                        |
+% desde um estado inicial, até à central de pedidos                 |
+% Como o resultado da gulosa não é apresentado na primeira solução, |
+% procuramos a primeira solução que contém o ponto da base a que    |
+% pretendemos chegar                                                |
+%%------------------------------------------------------------------
+
+get_gulosa(Inicio, Answer, Km):-
 
   findall(Caminho,resolve_gulosa(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
-  length(List, X),
-  gulosaEnd(List, Answer).
+  gulosaEnd(List, Answer, Km).
+
+
 
 %%-------------------------------------------------------------------
 % GulosaEnd : Lista de caminhos : Primeiro caminho correto           |
@@ -614,15 +653,17 @@ get_gulosa(Inicio):-
 % do caminho pretendido                                              |
 %%-------------------------------------------------------------------
 
-gulosaEnd( [A | _], Aaux) :-
+gulosaEnd( [A/C | _], Aaux, C) :-
 
-  getList(A, Aaux),
+  getList(A/C, Aaux),
 
-  member((escolaEngenharia1, uni_centro), Aaux), !.
+  member((escolaEngenharia1, uni_centro), Aaux), 
 
-gulosaEnd([_| R], Answer) :-
+  !.
+
+gulosaEnd([_| R], Answer, C) :-
   
-  gulosaEnd(R, Answer).
+  gulosaEnd(R, Answer, C).
 
 
 
@@ -636,12 +677,23 @@ getList(List/_, List).
 
 
 
-resolve_gulosa(Inicio, PontoEntrega, Caminho/Custo) :-
+%%---------------------------------------------------------------
+% Resolve_Gulosa : PontoInicial, PontoEntrega, Caminho/Custo     |
+% Utiliza o algoritmo greedy search para encontrar um caminho    |
+%%---------------------------------------------------------------
 
+resolve_gulosa(Inicio, PontoEntrega, Caminho/Custo) :-
+  
   agulosa( [ [Inicio]/0/0], InvCaminho/Custo/_, PontoEntrega),
 
   reverse(InvCaminho, Caminho).
 
+
+
+%%----------------------------------------------------
+% Agulosa : CaminhosPossiveis, Caminho, PontoEntrega  |
+% Algoritmo de pesquisa "greedy"                      |
+%%----------------------------------------------------
 
 agulosa(Caminhos, Caminho, PontoEntrega) :-
   
@@ -663,11 +715,19 @@ agulosa(Caminhos, SolucaoCaminho, _) :-
   agulosa(NovosCaminhos, SolucaoCaminho, _).
 
 
-
+%%---------------------------------------------------------
+% Agulosa Auxiliar
+% Seleciona : MelhorCaminho, Caminhos, OutrosCaminhos
+% ??
+%%---------------------------------------------------------
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
 
 
+%%-------------------------------------------------
+% Obtem_Melhor_Gulosa : Caminhos, Caminho
+% ??
+%%-------------------------------------------------
 
 obtem_melhor_gulosa([Caminho], Caminho) :- !.
 
@@ -682,10 +742,21 @@ obtem_melhor_gulosa([_ | Caminhos], MelhorCaminho) :-
   obtem_melhor_gulosa(Caminhos, MelhorCaminho).
 
 
+%%--------------------------------------------------------
+% Expande_Gulosa : Caminho, CaminhosExpandidos
+% ??
+%%--------------------------------------------------------
+
 expande_gulosa(Caminho, ExpCaminhos) :-
 
   findall(NovoCaminho, adjacenteGulosa(Caminho, NovoCaminho), ExpCaminhos).
 
+
+%%------------------------------------------------------------
+% Expande_Gulosa Auxiliar
+% AdjacenteGulosa : Caminho, NovoCaminho
+% ???
+%%------------------------------------------------------------
 
 adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/Est) :-
 
@@ -695,33 +766,71 @@ adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/E
 
   NovoCusto is Custo + PassoCusto,
 
-  calculaValorNodo( ProxNodo , aresta( Nodo,ProxNodo,X ) , Est ).
+  calculaEstima( ProxNodo , Nodo , Est ).
+
 
 
 
 %----- "A*" --------------------------------------------------------------------------------------
 
-circuitoAEstreal(Inicio, Caminho) :-
-  get_AEstrela(Inicio).
 
 
-get_AEstrela(Inicio):-
+%%----------------------------------------------
+%
+%%----------------------------------------------
+
+circuitoAEstrela(Inicio, Caminho, KmIda, Km) :-
+
+  get_AEstrela(Inicio, Cam, KmIda),
+
+  Km is KmIda * 2,
+
+  tail(Cam, Cam1),
+  
+  reverse(Cam, Ida),
+  
+  append(Ida, Cam1, Caminho).
+
+
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
+
+get_AEstrela(Inicio, Answer, KmIda):-
+  
   findall(Caminho,resolve_aestrela(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
-  length(List, X),
-  aestrelaEnd(List, Answer).
+  aestrelaEnd(List, Answer, KmIda).
 
 
-aestrelaEnd( [A | _], Aaux) :-
-  getList(A, Aaux),
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
+
+aestrelaEnd( [A/C | _], Aaux, C) :-
+
+  getList(A/C, Aaux),
   member((escolaEngenharia1, uni_centro), Aaux), !.
 
-aestrelaEnd([_| R], Answer) :-
-  aestrelaEnd(R, Answer).
+aestrelaEnd([_| R], Answer, C) :-
+  aestrelaEnd(R, Answer, C).
 
+
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
 
 resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
   aestrela([[Nodo]/0/0], InvCaminho/Custo/_, PontoEntrega),
   reverse(InvCaminho, Caminho).
+
+
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
 
 
 aestrela(Caminhos, Caminho, PontoEntrega) :-
@@ -736,6 +845,11 @@ aestrela(Caminhos, SolucaoCaminho,_) :-
   aestrela(NovoCaminhos, SolucaoCaminho,_).
 
 
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
+
 obtem_melhor([Caminho], Caminho) :- !.
 obtem_melhor([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :- 
   Custo1 + Est1 =< Custo2 + Est2, !,
@@ -745,15 +859,33 @@ obtem_melhor([_|Caminhos], MelhorCaminho) :-
   obtem_melhor(Caminhos, MelhorCaminho).
 
 
-expande_aestrela(Caminho, ExpCaminhos) :-
-  findall(NovoCaminho, adjacente2(Caminho,NovoCaminho), ExpCaminhos).
 
+%%----------------------------------------------
+%
+%%----------------------------------------------
+
+expande_aestrela(Caminho, ExpCaminhos) :-
+  findall(NovoCaminho, adjacenteAEsterla(Caminho,NovoCaminho), ExpCaminhos).
+
+
+
+%%----------------------------------------------
+%
+%%----------------------------------------------
 
 adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est) :-
-  aresta(Nodo, ProxNodo, PassoCusto),
+  connected(Nodo, ProxNodo, PassoCusto),
   \+member(ProxNodo, Caminho),
   NovoCusto is Custo + PassoCusto,
-  calculaValorNodo( ProxNodo , aresta( Nodo,ProxNodo,X ) , Est ).
+  calculaEstima( ProxNodo , Nodo , Est ).
+
+
+
+
+
+
+
+
 
 
 

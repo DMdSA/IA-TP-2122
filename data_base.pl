@@ -1,12 +1,10 @@
-:- set_prolog_flag(encoding, utf8).
-
+:- set_prolog_flag(encoding, utf8) .
 :- dynamic transport/4 .
 :- dynamic address/2 .
 :- dynamic client/2 .
 :- dynamic package/7 .
 :- dynamic record/6 .
 :- dynamic estafeta/3 .
-
 :- discontiguous package/7 .
 :- discontiguous record/6 .
 
@@ -28,7 +26,6 @@ transport('Motorcycle', 20, 35, 0.5, 1).
 transport('Car', 32, 25, 0.1, 2).
 transport('Car', 100, 25, 0.1, 2).
 
-
 transport('Carrinha', 500, 55, 0.07, 3).
 transport('Carrinha', 600, 55, 0.07, 3).
 
@@ -43,6 +40,7 @@ transport('Carrinha', 600, 55, 0.07, 3).
 getEcoValue(transport(_,_,_,_,E), E).
 
 
+
 %%----------------------------------------------------
 % GetAllTransports : Transports                       |
 % Junta, numa lista, todos os transportes disponíveis |
@@ -54,13 +52,13 @@ getAllTransports(Transports) :-
     findall((transport(A,B,C,D,E)), transport(A,B,C,D,E), Transports).
 
 
+
 %%-------------------------------------------------------------------------------------------
 % Package                                                                                    |
 % package : Codigo, Peso, Volume, Valor, Morada, DataCriacao, TempoEspera -> {V,F}           |
 % Record                                                                                     |
 % record : PackageID, ClientID, EstafetaID, DeliverDate, TransportName, DeliverRate -> {V,F} |
 %%-------------------------------------------------------------------------------------------
-
 
 package(1000000, 2.5, 25 , 30 , address('cantina','uni_norte'), date(11, 11, 2021, 12), 6).
 record(1000000, 10000, 1, date(11, 11, 2021, 16), 'Bicycle', 5).
@@ -121,13 +119,10 @@ package(1000017, 5, 6, 3.2, address('escolaCiencias','uni_centro'), date(17, 7, 
 
 
 
-
-
 %%--------------------------------------------------------------
 % Estafeta                                                      |
 % estafeta : ID, MeioTransporte, [Encomendas], AlgoritmoCaminho |
 %%--------------------------------------------------------------
-
 
 %%- DFS, 8.25 km/h, hour(0,14,32), 2/4 km
 estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000000], dfs).
@@ -136,63 +131,72 @@ estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000000], dfs).
 %%- BFS, 7.69 km/h, hour(1, 18, 1), 10/20 km
 estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000001], bfs).
 
+
 %%- DFS, 28.5 km/h, 0.350877 Horas, 10/20 km
 estafeta(1, transport('Motorcycle', 20, 35, 0.5, 1), [1000006], dfs).
+
 
 %%- IDS, 6.5 km/h, 1.3846 horas, 9/18 km 
 % estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000003], ids).
 
+
 %%- IDS, 8.5216 km/h, 0.46939 horas, 4/8 km
 estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000007], ids).
+
 
 %%- IDS, 32.2 km/h, 0.37267 horas, 12/24 km
 estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000013], ids).
 
+
 %%- BFS, 22.2 km/h, 0.36036 horas, 8/16 km
 estafeta(2, transport('Car', 32, 25, 0.1, 2), [10000010], bfs).
+
 
 %%- DFS, 54.762 km/h, 0.091304 horas, 5/10 km
 % estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000002], dfs).
 
+
 %%- IDS, 12.999 km/h, 0.69230 horas, 9/18 km
 % estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000015],ids).
+
 
 %%- DFS, 20.5 km/h, 0.341463 horas, 7/14 km
 estafeta(2, transport('Car', 100, 25, 0.1, 2), [1000016], dfs).
 
+
 %%- BFS, 9.3 km/h, hour(0,38,42), 6/12 km
 estafeta(3, transport('Bicycle' , 3, 10, 0.7, 0), [1000004], bfs).
+
 
 %%- DFS, 9.3084 km/h, hour(0,45,7), 7/14 km
 estafeta(3, transport('Bicycle', 3, 10, 0.7, 0), [1000005], dfs).
 
+
 %%- IDS, 18 km/h, hour(0,16,40), 5/10 km
 estafeta(3, transport('Car', 100, 25, 0.1, 2),[1000012], ids).
+
 
 %%- DFS, 16.2 km/h, hour(0,7,24), 2/4 km
 % estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008], dfs).
 
+
 %%- BFS, 1 km/h, 6 horas, 6/12 km
 % estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011], bfs).
+
 
 %%- DFS, 19.4 km/h, hour(0, 27, 50), 9/18 km
 estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000014], dfs).
 
+
 %%- BFS, 16.2 km/h, hour(0, 37, 2), 10/20 km
 estafeta(4, transport('Car', 100, 25, 0.1, 2),[1000009], bfs).
+
 
 %%- IDS, 54.65, 0.05 horas, 3/6 km
 estafeta(4, transport('Carrinha', 600, 55, 0.07, 3),[1000017], ids).
 
 
 
-
-
-maisEntregas(Answer) :-
-
-    findall((N,X), (estafeta(N,_,L,_), length(L,X)), Estafeta),
-
-    maiorPL(Estafeta, Answer).
 
 
 
