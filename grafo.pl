@@ -579,6 +579,13 @@ dls(First, Last, [First | Resto], D) :-
   %----- "Greedy Search" -----------------------------------------------------------------------------
 
 
+calculaValorNodo( adress(_,F) , aresta( _,adress(_,Freguesia),X ) , ValorEstimado ):- 
+  
+  findall( Rua, adress(Rua,Freguesia), List ),
+  length( List, V ),
+  ValorEstimado is V*X.
+
+
 %%------------------------------
 % CircuitoGulosa
 %%------------------------------
@@ -631,9 +638,7 @@ getList(List/_, List).
 
 resolve_gulosa(Inicio, PontoEntrega, Caminho/Custo) :-
 
-  estima(Inicio, Estima),
-
-  agulosa( [ [Inicio]/0/Estima], InvCaminho/Custo/_, PontoEntrega),
+  agulosa( [ [Inicio]/0/0], InvCaminho/Custo/_, PontoEntrega),
 
   reverse(InvCaminho, Caminho).
 
@@ -690,9 +695,85 @@ adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/E
 
   NovoCusto is Custo + PassoCusto,
 
-  estima(ProxNodo, Est).
+  calculaValorNodo( ProxNodo , aresta( Nodo,ProxNodo,X ) , Est ).
 
 
+
+%----- "A*" --------------------------------------------------------------------------------------
+
+/*
+circuitoAEstreal(Inicio, Caminho) :-
+
+  get_AEstrela(Inicio).
+
+
+
+
+
+
+get_AEstrela(Inicio):-
+
+  findall(Caminho,resolve_gulosa(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
+  length(List, X),
+  gulosaEnd(List, Answer).
+
+
+
+
+
+gulosaEnd( [A | _], Aaux) :-
+
+  getList(A, Aaux),
+
+  member((escolaEngenharia1, uni_centro), Aaux), !.
+
+gulosaEnd([_| R], Answer) :-
+  
+  gulosaEnd(R, Answer).
+
+
+
+*/
+
+
+
+resolve_aestrela(Nodo, Caminho/Custo) :-
+  aestrela([[Nodo]/0/0], InvCaminho/Custo/_),
+  reverse(InvCaminho, Caminho).
+
+
+aestrela(Caminhos, Caminho) :-
+  obtem_melhor(Caminhos, Caminho),
+  Caminho = [Nodo|_]/_/_,
+  goal(Nodo).
+
+
+aestrela(Caminhos, SolucaoCaminho) :-
+  obtem_melhor(Caminhos, MelhorCaminho),
+  select(MelhorCaminho, Caminhos, OutrosCaminhos),
+  expande_aestrela(MelhorCaminho, ExpCaminhos),
+  append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
+  aestrela(NovoCaminhos, SolucaoCaminho).
+
+
+obtem_melhor([Caminho], Caminho) :- !.
+obtem_melhor([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :- 
+  Custo1 + Est1 =< Custo2 + Est2, !,
+  obtem_melhor([Caminho1/Custo1/Est1|Caminhos], MelhorCaminho).
+
+obtem_melhor([_|Caminhos], MelhorCaminho) :-
+  obtem_melhor(Caminhos, MelhorCaminho).
+
+
+expande_aestrela(Caminho, ExpCaminhos) :-
+  findall(NovoCaminho, adjacente2(Caminho,NovoCaminho), ExpCaminhos).
+
+
+adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est) :-
+  aresta(Nodo, ProxNodo, PassoCusto),
+  \+member(ProxNodo, Caminho),
+  NovoCusto is Custo + PassoCusto,
+  calculaValorNodo( ProxNodo , aresta( Nodo,ProxNodo,X ) , Est ).
 
 
 
