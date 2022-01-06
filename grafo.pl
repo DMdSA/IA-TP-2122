@@ -164,21 +164,49 @@ connected( A, B, C ) :- move( B, A, C).
 
 
 
+%--- HEURISTIC VALEUS ----%
+
+estima((complexoPedagogico1, uni_este), 3).         % 1
+estima((complexoPedagogico2, uni_sul), 3).          % 2
+estima((complexoPedagogico3, uni_centro), 4).       % 3
+estima((biblioteca, uni_sul), 1).                   % 4
+estima((institutoLetras, uni_sul), 2).              % 5
+estima((escolaCiencias, uni_centro), 8).            % 6
+estima((escolaEngenharia1, uni_centro), 0).         % 7
+estima((escolaEconomia, uni_centro), 14).           % 8
+estima((complexoDesportivo, uni_este), 1).          % 9
+estima((servicosTecnicos, uni_este), 3).            % 10
+estima((cantina, uni_norte), 5).                    % 11
+estima((acaoSocial, uni_norte), 4).                 % 12
+estima((educacao, uni_oeste), 3).                   % 13
+estima((escolaPsicologia, uni_oeste), 4).                 % 14
+estima((cienciasSociais, uni_oeste), 4).            % 15
+estima((escolaEngenharia2, uni_oeste), 2).          % 16
+estima((escolaDireito, uni_oeste), 5).              % 17
+estima((bioSustentabilidade, uni_oeste), 2).        % 18
+estima((medicina, olimpo), 12).                     % 19
+
+
+
+
 %----- "DEPTH FIRST SEARCH" -----------------------------------------------------------------------------
 
-%%------------------
-% "Algoritmo DFS"   |
-%%------------------
+%%------------------------------------------------------------------
+% CircuitoDFS : (Rua, Freguesia), Caminho, CustoIda, Custo)         |
+% usage : circuitoDFS((rua, freguesia), Cam, CustoIda, CustoFinal). |
+%%------------------------------------------------------------------
 
-dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
+circuitoDFS(PontoEntrega, CaminhoFinal, CustoIDA, CustoFinal) :-
 
-dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
+  ida(PontoEntrega, Caminho1Aux, CustoIDA),
 
-  connected(Nodo, NextNodo, C1),
-  \+member(NextNodo, Visitados),
-  dfs([Nodo | Visitados], NextNodo, Caminho, C2, PontoEntrega),
+  volta(PontoEntrega, Caminho2Aux, Custo2),
 
-  Custo is C1 + C2.
+  tail(Caminho2Aux, Caminho2),
+
+  append(Caminho1Aux, Caminho2, CaminhoFinal),
+
+  CustoFinal is CustoIDA + Custo2.
 
 
 %%-----------------------------------------------------------------------------
@@ -211,6 +239,21 @@ volta(Inicio, Caminho, Custo) :-
 
   dfs([], Inicio, CaminhoAux, Custo, (escolaEngenharia1, uni_centro)),
   reverse(CaminhoAux, Caminho).
+
+
+%%------------------
+% "Algoritmo DFS"   |
+%%------------------
+
+dfs(Visitados, PontoEntrega, [PontoEntrega | Visitados], 0, PontoEntrega).
+
+dfs(Visitados, Nodo, Caminho, Custo, PontoEntrega) :-
+
+  connected(Nodo, NextNodo, C1),
+  \+member(NextNodo, Visitados),
+  dfs([Nodo | Visitados], NextNodo, Caminho, C2, PontoEntrega),
+
+  Custo is C1 + C2.
 
 
 
@@ -255,10 +298,15 @@ dfsl(LastDest,[Dest | Resto], Caminho, Kms) :-
   Kms is KmsAux2 + KmsAux.
 
 
+%%-------------------------------------------------------
+% circuitoDFSL : List of PackageID, Caminho, Distancia   |
+% usage : circuitoDFSL([packageID], Caminho, Distancia). |
+%%-------------------------------------------------------
 
-%%-
-% comments
-%%-
+circuitoDFSL([PackageID | Resto],Caminho,Kms) :-
+  list_addresses([PackageID | Resto],List),
+  dfsl((escolaEngenharia1,uni_centro),List,Caminho,Kms).
+
 
 melhorSolucaoDFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
   findall((Caminho, Custo),
@@ -275,6 +323,29 @@ melhorSolucaoDFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
 
   %----- "BREADTH FIRST SEARCH" -----------------------------------------------------------------------------
  
+%%------------------------------------------------------------------
+% Circuito : Destino, Caminho, CustoIda, CustoFinal                 |
+% usage : circuitoBFS((rua, freguesia), Cam, CustoIda, CustoFinal). |
+%%------------------------------------------------------------------
+
+circuitoBFS(Dest,Caminho, CustoIDA, Custo):-
+  
+  %%- ida
+  bfs2(Dest,[[(escolaEngenharia1, uni_centro)]], Cam1),
+
+  %%- volta
+  bfs2((escolaEngenharia1, uni_centro), [[Dest]], Cam2),
+
+  distance(Cam1, CustoIDA),
+
+  distance(Cam2, Custo2),
+
+  tail(Cam2, Cam2Aux),
+
+  append(Cam1, Cam2Aux, Caminho),
+
+  Custo is CustoIDA + Custo2.
+
 
 %%-----------------------------------------------------------------------------
 % BFS2 : a partir de um destino, procura um caminho por breadth first search a |
@@ -351,6 +422,18 @@ bfsl_aux(_,[Dest | Resto], Cam, Km) :-
 
 
 
+%%-----------------------------------------------------------
+% circuitoBFSL : packageIDs list, Caminho, Kms               |
+% usage : circuitoBFSL([packagesID],Caminho,Distancia).      |
+% 
+%%-----------------------------------------------------------
+
+circuitoBFSL([PackageID | Resto],Caminho,Custo) :-
+  
+  list_addresses([PackageID | Resto],List),
+  
+  bfsl_aux((escolaEngenharia1,uni_centro),List,Caminho,Custo).
+
 
 %%---------------------------
 %
@@ -385,6 +468,24 @@ does not terminate, even if the state space is finite.
 
 */
 
+%%--------------------------------------------------------------------
+% CircuitoIDS : PontoEntrega, Caminho, CustoIda, Custo                |
+% realiza um circuito completo desde um ponto inicial pré-definido    |
+% (no corpo da regra), até um ponto de entrega pedido                 |
+% usage : circuitoIDS((rua, freguesia), Cam, CustoIda, CustoFinal).   |
+%%--------------------------------------------------------------------
+
+circuitoIDS(PontoEntrega, CaminhoFinal, CustoIda, CustoFinal) :-
+
+  path((escolaEngenharia1, uni_centro), PontoEntrega, CustoIda, Caminho1),
+  reverse(Caminho1, Caminho1Final),
+
+  path(PontoEntrega, (escolaEngenharia1, uni_centro), Custo2, Caminho2),
+  reverse(Caminho2, Caminho2Aux),
+  tail(Caminho2Aux, Caminho2Final),
+
+  append(Caminho1Final, Caminho2Final, CaminhoFinal),
+  CustoFinal is CustoIda + Custo2.
 
 
 %%-------------------------------------------------------------------------
@@ -431,8 +532,14 @@ idslAux(PontoPartida,[Dest | Resto],Cam,Dist) :-
   
   Dist is Dist1 + Dist2.
 
+%%---------------------
+%
+%%----------------------
 
-
+circuitoIDSL([PackageID | Resto],Caminho,Km) :-
+  
+  list_addresses([PackageID | Resto],List),
+  idslAux((escolaEngenharia1, uni_centro),List,Caminho,Km).
 
 
 %%---------------------
@@ -474,10 +581,13 @@ dls(First, Last, [First | Resto], D) :-
 %----- "Pesquisas Informadas" -----------------------------------------------------------------------------
 
 
-%%---------------------------------
-% CalculaEstima
-% ??
-%%---------------------------------
+%%-----------------------------------------------------------------
+% CalculaEstima : ProxNodo, NodoAtual, ValorEstimado               |
+% Calcula o quão vantajoso é seguir determinado caminho recebendo  |
+% o Nodo que queremos atingir e o nodo onde nos encontramos e      |
+% calculando o seu valor a partir de determinada heuristica.       |
+% usage : calculaEstima((rua, freguesia), (rua,freguesia), Valor)  |
+%%-----------------------------------------------------------------
 
 calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):- 
   
@@ -495,6 +605,32 @@ calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):-
 
 
 %----- "Greedy Search" -----------------------------------------------------------------------------
+
+
+%%------------------------------
+% CircuitoGreedy
+% CircuitoGreedy : PontoEntrega, Caminho
+%%------------------------------
+
+circuitoGreedy(PontoEntrega, Caminho, KmIda, Km) :-
+
+%%- procura o caminho desde o ponto de entrega até à base
+
+  get_gulosa(PontoEntrega, Cam, KmIda),
+
+  Km is (KmIda * 2),
+
+%%- aproveita a cauda dessa lista para fazer a volta
+
+  tail(Cam, Cam1),
+
+%%- inverte o caminho para representar a ida
+
+  reverse(Cam, Ida),
+
+%%- dá append da ida (caminho original invertido) com a cauda (caminho original)
+
+  append(Ida, Cam1, Caminho).
 
 
 
@@ -515,7 +651,7 @@ get_gulosa(Inicio, Answer, Km):-
 
 
 %%-------------------------------------------------------------------
-% GulosaEnd : Lista de caminhos : Primeiro caminho correto           |
+% GulosaEnd : Lista de caminhos, Primeiro caminho correto            |
 % esta função procura todos os caminhos obtidos com o algoritmo de   |
 % pesquisa greedy, devolvendo o primeiro que apresente a completude  |
 % do caminho pretendido                                              |
@@ -642,23 +778,46 @@ adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/E
 %----- "A*" --------------------------------------------------------------------------------------
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%---------------------------------------------------------
+% circuitoAEstrela : PontoEntrega, Caminho, KmIda, Km      |
+% Método aestrela.                                         |
+% usage : circuitoAEstrela((Rua,Freguesia),List,KmIda,Km)  |
+%%---------------------------------------------------------
+
+circuitoAEstrela(Inicio, Caminho, KmIda, Km) :-
+  get_AEstrela(Inicio, Cam, KmIda),
+  Km is KmIda * 2,
+  tail(Cam, Cam1),
+  reverse(Cam, Ida),
+  append(Ida, Cam1, Caminho).
+
+
+
+%%-------------------------------------------------------------------
+% get_AEstrela : Inicio, Answer, Km                                  |
+% Devolve o resultado de uma pesquisa aestrela desde um estado       |
+% inicial, até à central de pedidos.                                 |
+% Como o resultado da aestrela não é apresentado na primeira solução,|
+% procuramos a primeira solução que contém o ponto da base a que     |
+% pretendemos chegar                                                 |
+% usage : get_AEstrela(NodoAtual, naswer,KmIda)                      |
+%%-------------------------------------------------------------------
 
 get_AEstrela(Inicio, Answer, KmIda):-
-  
   findall(Caminho,resolve_aestrela(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
   aestrelaEnd(List, Answer, KmIda).
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%--------------------------------------------------------------------
+% aestrelaEnd : ListaCaminhos,ListaAuxiliar,Valor                     |
+% Esta função procura todos os caminhos obtidos com o algoritmo de    |
+% pesquisa aestrela, devolvendo o primeiro que apresente a completude |
+% do caminho pretendido.                                              |
+% usage : aestrelaEnd(List,VariavelAux,Valor)                         |
+%%--------------------------------------------------------------------
 
 aestrelaEnd( [A/C | _], Aaux, C) :-
-
   getList(A/C, Aaux),
   member((escolaEngenharia1, uni_centro), Aaux), !.
 
@@ -667,9 +826,11 @@ aestrelaEnd([_| R], Answer, C) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%-------------------------------------------------------------------
+% resolve_aestrela : PontoInicial, PontoEntrega, Caminho/Custo       |
+% Utiliza o algoritmo aestrela para encontrar um caminho.            |
+% usage : resolve_aestrela(NodoInicial, PontoEntrega, Caminho/Custo) |
+%%-------------------------------------------------------------------
 
 resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
   aestrela([[Nodo]/0/0], InvCaminho/Custo/_, PontoEntrega),
@@ -677,9 +838,11 @@ resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%----------------------------------------------------
+% aestrela : CaminhosPossiveis, Caminho, PontoEntrega |
+% Algoritmo de pesquisa "A*".                         |
+% usage : aestrela(List,Caminho,PontoEntrega)         |
+%%----------------------------------------------------
 
 
 aestrela(Caminhos, Caminho, PontoEntrega) :-
@@ -695,9 +858,11 @@ aestrela(Caminhos, SolucaoCaminho,_) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%------------------------------------------------------
+% obtem_melhor : ListaCaminhos, Caminho                 |
+% Obtem o melhor caminho baseando-se no valor do custo. |
+% usage : obtem_melhor(ListaCaminhos,Caminho)           |
+%%------------------------------------------------------
 
 obtem_melhor([Caminho], Caminho) :- !.
 obtem_melhor([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :- 
@@ -709,24 +874,34 @@ obtem_melhor([_|Caminhos], MelhorCaminho) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%---------------------------------------------------
+% expande_aestrela : Caminho,ListaCaminhos           |
+% Cria uma lista com todos os caminhos adjacentes ao |
+% ponto em que nos encontramos.                      |
+% usage : expande_aestrela(Caminho,ListaCaminhos)    |
+%%---------------------------------------------------
 
 expande_aestrela(Caminho, ExpCaminhos) :-
   findall(NovoCaminho, adjacenteAEsterla(Caminho,NovoCaminho), ExpCaminhos).
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%--------------------------------------------------
+% adjacenteAEsterla : Caminho,NovoCaminho           |
+& Determina as caracteristicas do caminho adjacente |
+% ao nodo em que nos encontramos.                   |
+% usage : adjacenteAEsterla(Caminho,NovoCaminho)    |
+%%--------------------------------------------------
 
 adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est) :-
   connected(Nodo, ProxNodo, PassoCusto),
   \+member(ProxNodo, Caminho),
   NovoCusto is Custo + PassoCusto,
   calculaEstima( ProxNodo , Nodo , Est ).
+
+
+
+
 
 
 
