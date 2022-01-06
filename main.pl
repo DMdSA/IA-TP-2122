@@ -11,6 +11,7 @@ cls :- write('\e[H\e[2J').
 :- consult('Auxiliares.pl').
 :- consult('Invariants.pl').
 :- consult('texts.pl').
+:- consult('Util.pl').
 
 :- discontiguous q5/3 .
 :- discontiguous q4/2 .
@@ -45,7 +46,7 @@ Query1,  Estafeta que usou (+) vezes um meio de transporte (+) ecológico.
 
 q1(ID, Meio, Answer) :- 
         
-        findall((ID,N), (estafeta(ID,Meio,Pkgs), length(Pkgs,N)),X),
+        findall((ID,N), (estafeta(ID,Meio,Pkgs,_), length(Pkgs,N)),X),
         max_couple(X, Answer), writeq1(Answer).
 
 
@@ -56,7 +57,7 @@ q1(ID, Meio, Answer) :-
 q1(ID, M, A) :-
         
         transport(M,_,_,_),!,
-        findall((ID,N), (estafeta(ID,transport(M,_,_,_),Pkgs), length(Pkgs,N)), X),
+        findall((ID,N), (estafeta(ID,transport(M,_,_,_),Pkgs,_), length(Pkgs,N)), X),
         max_couple(X, A), writeq1(A).
 
 
@@ -569,7 +570,7 @@ Q10 - Calcular o PESO TOTAL transportado por UM estafeta NUM determinado dia.
 q10(EstafetaID, date(D,M,Y,_), Peso) :-
         
         date(D,M,Y,0),
-        estafeta(EstafetaID,_,_),
+        estafeta(EstafetaID,_,_,_),
         findall(ID, record(ID,_,EstafetaID, date(D,M,Y,_),_,_), ListaPackage),
         findall(P,(member(ID, ListaPackage), package(ID, P,_,_,_,_,_)), ListaPeso),
         sum_list(ListaPeso, Peso),!.
@@ -582,7 +583,7 @@ q10(EstafetaID, date(D,M,Y,_), Peso) :-
 
 q10(Date, Answer) :- 
 
-        findall(E, estafeta(E,_,_), X), sort(X,A),
+        findall(E, estafeta(E,_,_,_), X), sort(X,A),
         q10aux(Date, A, Answer),
                 writeq10(Answer).
 

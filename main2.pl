@@ -2,6 +2,7 @@
 % File written by------
 % ---------------G28---
 %----------------------
+
 cls :- write('\e[H\e[2J').
 % make. to reload
 
@@ -10,6 +11,7 @@ cls :- write('\e[H\e[2J').
 :- consult('data_base.pl').
 :- consult('grafo.pl').
 :- consult('IndicadoresProdutividade.pl').
+:- discontiguous indicadorProdutividadeGreedy/5.
  
 
 
@@ -269,7 +271,7 @@ circuitoAEstrela(Inicio, Caminho, KmIda, Km) :-
 % Indicador de produtividade que devolve o melhor caminho associado ao transporte mais ecológico que este pode tomar     |
 %%-----------------------------------------------------------------------------------------------------------------------
 
-indicadorProdutividadeGreedy(PackageID, EcoTransportation, Caminho, Ida, Km) :-
+indicadorProdutividadeAEstrela(PackageID, EcoTransportation, Caminho, Ida, Km) :-
 
     package(PackageID, _, _, _, address(Rua, Freguesia), _, _),
 
@@ -278,10 +280,6 @@ indicadorProdutividadeGreedy(PackageID, EcoTransportation, Caminho, Ida, Km) :-
     getAllPossibleTransports(PackageID, Ida, List),
 
     moreEcologicalTransportation(List, EcoTransportation).
-
-
-
-
 
 
 
@@ -301,8 +299,3 @@ info(PackageID, Estafeta, Caminho, CustoIda, Custo) :-
     findall((estafeta(A,B,C)), (estafeta(A,B,C), member(PackageID, C)), Estafeta),
 
     indicadorProdutividadeBFS(PackageID, _, Caminho, CustoIda, Custo).
-
-
-
-
-
