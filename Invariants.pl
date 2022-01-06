@@ -131,7 +131,6 @@ testI([H | T]) :- H, testI(T).
 % RECORD
 %----------------------------------------
 
-
 %---- Tipo do facto
 
 +record(Pid, Cid, Eid, Ddate, TName, Drate) :: (
