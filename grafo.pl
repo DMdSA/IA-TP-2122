@@ -500,6 +500,27 @@ calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):-
 
 %----- "Greedy Search" -----------------------------------------------------------------------------
 
+%%-------------------------------------------------------------------------
+% circuito_gulosa : [PackagedID]                                            |
+% ex: circuito_gulosa([1000000, 1000001], Caminho, Km).                    |
+% Devolve o resultado de uma pesquisa gulosa a partir de uma lista de         |
+% packagedID.                                                                 |
+%%-------------------------------------------------------------------------
+circuito_gulosa([PackageID | Resto], Caminho, Km) :-
+    list_addresses([PackageID | Resto], List),
+    gulosaList((escolaEngenharia1, uni_centro), List, Caminho, Km).
+    
+gulosaList(PontoPartida, [], Cam, Dist) :-
+    get_gulosa2(PontoPartida, (escolaEngenharia1, uni_centro), Cam1, Dist),
+    reverse(Cam1, Cam).
+    
+gulosaList(Inicio, [Dest | Resto], Cam, Dist) :-
+    get_gulosa2(Inicio, Dest, Cam1, Dist1),
+    reverse(Cam1, Cam1Final),
+    gulosaList(Dest, Resto, Cam2, Dist2),
+    tail(Cam2, Cam2Final),
+    append(Cam1Final, Cam2Final, Cam),
+    Dist is Dist1 + Dist2.
 
 
 %%------------------------------------------------------------------
@@ -516,7 +537,9 @@ get_gulosa(Inicio, Answer, Km):-
   findall(Caminho,resolve_gulosa(Inicio, (escolaEngenharia1, uni_centro), Caminho), List),
   gulosaEnd(List, Answer, Km).
 
-
+get_gulosa2(Inicio, Intermedio, Answer, Km) :-
+    findall(Caminho,resolve_gulosa(Intermedio, Inicio, Caminho), List),
+    gulosaEndAux(List, Answer, Km, Inicio, Intermedio).
 
 %%-------------------------------------------------------------------
 % GulosaEnd : Lista de caminhos : Primeiro caminho correto           |
@@ -537,7 +560,13 @@ gulosaEnd([_| R], Answer, C) :-
   
   gulosaEnd(R, Answer, C).
 
-
+gulosaEndAux([A/C | _], Aaux, C, Inicio, PontoEntrega) :-
+    getList(A/C, Aaux),
+    member(PontoEntrega, Aaux),
+    member(Inicio, Aaux), !.
+    
+gulosaEndAux([_|R], Answer, C, Inicio, PontoEntrega) :-
+    gulosaEndAux(R, Answer, C, Inicio, PontoEntrega). 
 
 %%-----------------------------------------------------------------------
 % GetList : List/something, List                                         |
@@ -747,7 +776,6 @@ aEstrelaList(Inicio, [Dest | Resto], Cam, Dist) :-
   tail(Cam2,Cam2Final),
   append(Cam1Final,Cam2Final,Cam),
   Dist is Dist1 + Dist2.
-
 
 
 %%------------------------------------------------------
