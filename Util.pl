@@ -106,6 +106,8 @@ maiorPL([(Cam,C) | R], Resposta) :-
 % MenorTriplos : (Algo, Algo, Número), (Algo, Algo, Número), (Algo, Algo, Número) |
 %---------------------------------------------------------------------------------
 
+%%- "Versão em que o valor de comparação é o último do triplo"
+
 menorT((Cam1,I1, C1), (_,_, C2), (Cam1,I1,C1)) :- C1 =\= C2, C1 =< C2.
 
 menorT((_,_,C1), (Cam2,I2,C2), (Cam2,I2,C2)) :- C1 =\= C2, C2 < C1.
@@ -114,9 +116,24 @@ menorT((_,_,C1), (Cam2,I2,C2), (Cam2,I2,C2)) :- C1 =\= C2, C2 < C1.
 menorT((Cam,I1,C), (_,_,C), (Cam,I1,C)).
 
 
+%%- "Versão em que o valor de comparação é o último do triplo"
+menorT2((C1, A, B), (C2, _, _), (C1,A,B)) :- C1 =\= C2, C1 =< C2.
+
+menorT2((C1, _, _), (C2, A , B), (C2, A, B)) :- C1 =\= C2, C2 < C1.
+
+%-- "por default, vai escoler sempre o primeiro"
+menorT2((C, A, B), (C, _, _), (C, A, B)).
+
+
+
+
+
+
 %------------------------------------------------------
 % MenorTriplosList : TriplosList, (Algo, Algo, Número) |
 %------------------------------------------------------
+
+%%- "Versão em que o valor de comparação é o último do triplo"
 
 menorTL([ (Cam, Ida, Custo) ], (Cam, Ida, Custo)).
 
@@ -126,6 +143,16 @@ menorTL([(Cam,I,C) | R], Resposta) :-
   menorTL(R, (Cam2,I2, C2)),
   menorT((Cam, I, C), (Cam2,I2,C2), Resposta).
 
+%%- "Versão em que o valor de comparação é o último do triplo"
+
+menorTL2([ (C, O1, O2) ], (C, O1, O2)).
+
+menorTL2([(C,O1,O2) | R], Resposta) :-
+
+  %% extender a lista toda e comparar um a um
+  menorTL2(R, (C2, O3, O4)),
+  
+  menorT2((C, O1, O2), (C2,O3,O4), Resposta).
 
 
 

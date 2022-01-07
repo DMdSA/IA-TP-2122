@@ -21,18 +21,18 @@ cls :- write('\e[H\e[2J').
 
 newClient(ID, NAME) :- evolucao(client(ID,NAME)).
 newAddress(RUA, FREGUESIA) :- evolucao(address(RUA, FREGUESIA)).
-newEstafeta(ID, TRANSPORT, LIST) :- evolucao(estafeta(ID, TRANSPORT, LIST, METOD)).
+newEstafeta(ID, TRANSPORT, LIST) :- evolucao(estafeta(ID, TRANSPORT, LIST)).
 newRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- evolucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 newPackage(ID, W, V, P, ADD, DATE, HOURS) :- evolucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-newTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
+newTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
 
 remClient(ID, NAME) :- involucao(client(ID,NAME)).
 remAddress(RUA, FREGUESIA) :- involucao(address(RUA, FREGUESIA)).
-remEstafeta(ID, TRANSPORT, LIST) :- involucao(estafeta(ID, TRANSPORT, LIST, METOD)).
+remEstafeta(ID, TRANSPORT, LIST) :- involucao(estafeta(ID, TRANSPORT, LIST)).
 remRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- involucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 remPackage(ID, W, V, P, ADD, DATE, HOURS) :- involucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-remTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
+remTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE)).
 
 /*
 ---------------------
@@ -41,7 +41,7 @@ Query1,  Estafeta que usou (+) vezes um meio de transporte (+) ecológico.
 */
 
 
-% V1 -> q1 : EstafetaID, Transport(_,_,_,_,_), Count -> {V,F}
+% V1 -> q1 : EstafetaID, Transport(_,_,_,_), Count -> {V,F}
 % ---------------------------------------------------------
 
 q1(ID, Meio, Answer) :- 
@@ -56,8 +56,8 @@ q1(ID, Meio, Answer) :-
 
 q1(ID, M, A) :-
         
-        transport(M,_,_,_,_),!,
-        findall((ID,N), (estafeta(ID,transport(M,_,_,_,_),Pkgs,_), length(Pkgs,N)), X),
+        transport(M,_,_,_),!,
+        findall((ID,N), (estafeta(ID,transport(M,_,_,_),Pkgs,_), length(Pkgs,N)), X),
         max_couple(X, A), writeq1(A).
 
 
@@ -100,7 +100,7 @@ q2(Client, List) :-
 q2(Client, Estafeta, Encomendas) :-
 
         verify_client(Client),
-        estafeta(Estafeta, _, _, _),
+        estafeta(Estafeta, _, _),
         clientID(Client, Aux),
         findall(Enc, record(Enc, Aux, Estafeta,_,_,_), Encomendas),nl,
         writeq2_1(Encomendas), !.
@@ -176,14 +176,14 @@ q3(Client, Answer) :-
 
 write_q3(Estafeta, [H]):-
 
-        estafeta(Estafeta, _,_,_),
+        estafeta(Estafeta, _,_),
         write("Client: "), write(H), write(" "),
         client(H,X), write(X),nl,nl,
         write("Estafeta: "), write(Estafeta),nl,!.
 
 write_q3(E, [H|T]) :-
 
-        estafeta(E,_,_,_),
+        estafeta(E,_,_),
         write("Client: "), write(H), write(" "),
         client(H,X), write(X), nl,
         write_q3(E,T).
@@ -344,7 +344,7 @@ Query6 - Calcular a classificação média de satisfação de cliente para um de
 
 q6(Estafeta, Value) :-
             
-        estafeta(Estafeta, _, _,_),
+        estafeta(Estafeta, _, _),
         findall(X, record(_,_,Estafeta,_, _,X), L),!,
         average(L,Value),
         writeq6(Estafeta, Value),!.

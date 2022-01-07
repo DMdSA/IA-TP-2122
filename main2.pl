@@ -299,3 +299,170 @@ info(PackageID, Estafeta, Caminho, CustoIda, Custo) :-
     findall((estafeta(A,B,C)), (estafeta(A,B,C), member(PackageID, C)), Estafeta),
 
     indicadorProdutividadeBFS(PackageID, _, Caminho, CustoIda, Custo).
+
+
+
+
+
+
+
+
+
+
+
+
+
+%    - Identificar quais os circuitos com maior número de entregas (por volume e peso);
+
+
+
+
+%%---------------------------------------------------------------------------------------------------------------
+% ListagemCircuitos : Listagem                                                                                   |
+% Após recolher todos os estafetas presentes na base de conhecimento, organiza cada circuito                     |
+% que efetuou agrupando, em triplos, o n.º de packages levados no circuito, os addresses que teve                |
+% de visitar, assim como o algoritmo utilizado para calcular o mesmo : (Npackages, [Addresses], Algoritmo)       |
+% Por fim, utiliza o algoritmo de ordenação merge_sort aplicado a triplos, para devolver uma lista ordenada      |
+% do circuito que mais vezes foi utilizado para entregar encomendas, ao que menos foi utilizado.                 |
+%%---------------------------------------------------------------------------------------------------------------
+
+listagemCircuitos(Listagem) :-
+
+  findall((C,D), estafeta(_,_,C,D), Estafetas),
+
+  constroiCaminho(Estafetas, L),
+
+  merge_sort(L, SortedList),
+
+  reverse(SortedList, Listagem).
+
+
+
+%%---------------------------------------------------------------
+% Merge Sort, auxiliar de ordenação de uma lista com triplos     |
+%%---------------------------------------------------------------
+
+merge_sort([],[]).     % Uma lista vazia já se encontra ordenada
+
+merge_sort([X],[X]).   % Uma linha que contenha um único elemento já se encontra ordenada
+
+merge_sort(List,Sorted):-
+
+  List=[_,_|_], split(List,L1,L2),     % Lista com pelo menos 2 elementos é dividida em dois
+
+  merge_sort(L1,Sorted1), merge_sort(L2,Sorted2),  % then each part is sorted
+
+  merge(Sorted1, Sorted2, Sorted).                  % and sorted parts are merged
+
+
+%%----------------
+% Merge two lists |
+%%----------------
+
+merge([],L,L).
+
+merge(L,[],L):- L\= [].
+
+merge([(X,A,B)|T1],[(Y,C,D)|T2],[(X,A,B)|T]):- X =< Y, merge(T1,[(Y,C,D)|T2],T).
+
+merge([(X,C,D)|T1],[(Y,A,B)|T2],[(Y,A,B)|T]):- X > Y, merge([(X,C,D)|T1],T2,T).
+
+%%--------
+% Split   |
+%%--------
+
+split([], [], []).
+split([A], [A], []).
+split([A, B | C], [A | D], [B | E]) :-
+
+  split(C, D, E).
+
+
+
+%%--------------------------------------------------------------------------------------------------
+% ConstroiCaminho : [ (ListaPackages, Algoritmo) ], [ (Npackages, Address) ]                        |
+%                                                                                                   |
+% Recebendo uma lista de packages que um estafeta possa ter levado, e o algoritmo associado         |
+% a esse circuito que efetuou, consegue agrupar numa lista de pares o n.º de packages associado     |
+% a cada address que tenha sido entregue                                                            |
+%%---------------------------------------------------------------------------------------------------
+
+
+constroiCaminho([], []).
+
+constroiCaminho( [ (ListaPackages, Algoritmo) | Resto ], Addresses) :-
+
+  getPackagesAddresses(ListaPackages, (N, Ruas)),
+
+  constroiCaminho(Resto, Addresses2),
+
+  updateTripletList((N,Ruas, Algoritmo), Addresses2, Addresses), !.
+
+
+
+%%-------------------------------------------------------------------------------
+% GetPackagesAddresses : PackageIDS, NumeroDePackages, ListaDeAddresses          |
+% Dada uma lista de id´s de packages, devolve o número de packages dessa lista   |
+% e ainda a lista com os addresses associados a cada um                          |
+%%-------------------------------------------------------------------------------
+
+getPackagesAddresses( [PackageID], (Number, [(Rua,Freguesia)])) :-
+
+  package(PackageID, _, _, _, address(Rua,Freguesia), _, _),
+
+  Number is 1 .
+
+
+getPackagesAddresses([PackageID | Resto], (Number, Ruas)) :-
+
+  package(PackageID, _, _, _, address(Rua,Freguesia), _, _),
+
+  This = [(Rua,Freguesia)],
+
+  getPackagesAddresses(Resto, (Number1, That)),
+
+  append(This, That, Ruas),
+
+  Number is 1 + Number1.
+
+%%%%%%- atenção: retirar repeticoes ? 
+
+
+
+
+%%---------------------------------------------------------------------------------------
+% UpdateTripletList : (Number, Object1, Object2), List, UpdatedList                      |
+% usage : updatePairList( (1,a,aa), [(1,a,aa),(2,b,c)], [(2,a,a), (2,b,c)]).             |
+%                                                                                        |
+% Dada uma lista de triplos (tem de estar sempre inicializada), agrupa os elementos      |
+% iguais e adiciona os membros novos                                                     |
+%%---------------------------------------------------------------------------------------
+
+
+updateTripletList( (N,O), [], [(N,O)]).
+
+updateTripletList( (Number, Object1, Object2), [ (N, Object1, Object2) | Resto], ListaAtualizada) :-
+
+  Object1 = Object1,
+  Object2 = Object2,
+
+  Number1 is Number + N,
+
+  ListaAtualizada = [ (Number1, Object1, Object2) | Resto ].
+
+
+updateTripletList( (Number, Object11, Object12), [ (A, Object21, Object22) | Resto], ListaAtualizada) :-
+
+  (Object11 \== Object21 ; Object12 \== Object22),
+
+  updateTripletList( (Number, Object11, Object12), Resto, Lista),
+
+  append( [(A,Object21, Object22)], Lista, ListaAtualizada).
+
+
+
+
+
+
+
+
