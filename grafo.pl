@@ -780,7 +780,7 @@ expande_aestrela(Caminho, ExpCaminhos) :-
 
 %%--------------------------------------------------
 % adjacenteAEsterla : Caminho,NovoCaminho           |
-& Determina as caracteristicas do caminho adjacente |
+% Determina as caracteristicas do caminho adjacente |
 % ao nodo em que nos encontramos.                   |
 % usage : adjacenteAEsterla(Caminho,NovoCaminho)    |
 %%--------------------------------------------------
