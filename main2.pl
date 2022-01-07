@@ -261,6 +261,19 @@ circuitoAEstrela(Inicio, Caminho, KmIda, Km) :-
   reverse(Cam, Ida),
   
   append(Ida, Cam1, Caminho).
+  
+  
+%%----------------------------------------------------------
+% "A* com lista de packages"                                |
+% circuitoAEstrelaL : List of PackageID, Caminho, Distancia |
+% usage : circuitoDFSL([packageID], Caminho, Distancia).    |
+%%----------------------------------------------------------
+  
+circuitoAEstrelaL([PackageID | Resto],Caminho,Km) :-
+  
+  list_addresses([PackageID | Resto],List),
+  
+  aEstrelaList((escolaEngenharia1, uni_centro), List, Caminho, Km).
 
 
 %%-----------------------------------------------------------------------------------------------------------------------
