@@ -475,10 +475,13 @@ dls(First, Last, [First | Resto], D) :-
 %----- "Pesquisas Informadas" -----------------------------------------------------------------------------
 
 
-%%---------------------------------
-% CalculaEstima
-% ??
-%%---------------------------------
+%%-----------------------------------------------------------------
+% CalculaEstima : ProxNodo, NodoAtual, ValorEstimado               |
+% Calcula o quão vantajoso é seguir determinado caminho recebendo  |
+% o Nodo que queremos atingir e o nodo onde nos encontramos e      |
+% calculando o seu valor a partir de determinada heuristica.       |
+% usage : calculaEstima((rua, freguesia), (rua,freguesia), Valor)  |
+%%-----------------------------------------------------------------
 
 calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):- 
   
@@ -652,56 +655,42 @@ circuitoAEstrelaL([PackageID | Resto],Caminho,Km) :-
 
 
 
-aEstrelaList(PontoPartida,[], Cam, Dist) :-
-  
-  get_AEstrela2(PontoPartida, (escolaEngenharia1, uni_centro), Cam1, Dist),
 
-  reverse(Cam1, Cam).
-
-
-aEstrelaList(Inicio, [Dest | Resto], Cam, Dist) :-
-  
-  get_AEstrela2(Inicio, Dest, Cam1, Dist1),
-  
-  reverse(Cam1, Cam1Final),
-
-  aEstrelaList(Dest,Resto,Cam2,Dist2),
-  
-  tail(Cam2,Cam2Final),
-
-  append(Cam1Final,Cam2Final,Cam),
-  
-  Dist is Dist1 + Dist2.
-
-
-
-
-
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%-------------------------------------------------------------------
+% get_AEstrela : Inicio, Answer, Km                                  |
+% Devolve o resultado de uma pesquisa aestrela desde um estado       |
+% inicial, até à central de pedidos.                                 |
+% Como o resultado da aestrela não é apresentado na primeira solução,|
+% procuramos a primeira solução que contém o ponto da base a que     |
+% pretendemos chegar                                                 |
+% usage : get_AEstrela(NodoAtual, naswer,KmIda)                      |
+%%-------------------------------------------------------------------
 
 get_AEstrela(PontoEntrega, Answer, KmIda):-
-  
   findall(Caminho,resolve_aestrela(PontoEntrega, (escolaEngenharia1, uni_centro), Caminho), List),
   aestrelaEnd(List, Answer, KmIda).
 
 
 
-get_AEstrela2(Inicio, Intermedio, Answer, KmIda) :-
 
+
+
+get_AEstrela2(Inicio, Intermedio, Answer, KmIda) :-
   findall(Caminho, resolve_aestrela(Intermedio, Inicio, Caminho), List),
   aestrelaEndAux(List, Answer, KmIda, Inicio, Intermedio).
 
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%--------------------------------------------------------------------
+% aestrelaEnd : ListaCaminhos,ListaAuxiliar,Valor                     |
+% Esta função procura todos os caminhos obtidos com o algoritmo de    |
+% pesquisa aestrela, devolvendo o primeiro que apresente a completude |
+% do caminho pretendido.                                              |
+% usage : aestrelaEnd(List,VariavelAux,Valor)                         |
+%%--------------------------------------------------------------------
 
 aestrelaEnd( [A/C | _], Aaux, C) :-
-
   getList(A/C, Aaux),
   member((escolaEngenharia1, uni_centro), Aaux), !.
 
@@ -710,8 +699,10 @@ aestrelaEnd([_| R], Answer, C) :-
 
 
 
-aestrelaEndAux( [A/C | _], Aaux, C, Inicio, PontoEntrega) :-
 
+
+
+aestrelaEndAux( [A/C | _], Aaux, C, Inicio, PontoEntrega) :-
   getList(A/C, Aaux),
   member(PontoEntrega, Aaux),
   member(Inicio, Aaux), !.
@@ -720,9 +711,11 @@ aestrelaEndAux([_|R], Answer, C, Inicio, PontoEntrega) :-
   aestrelaEndAux(R, Answer, C, Inicio, PontoEntrega).
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%-------------------------------------------------------------------
+% resolve_aestrela : PontoInicial, PontoEntrega, Caminho/Custo       |
+% Utiliza o algoritmo aestrela para encontrar um caminho.            |
+% usage : resolve_aestrela(NodoInicial, PontoEntrega, Caminho/Custo) |
+%%-------------------------------------------------------------------
 
 resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
   aestrela([[Nodo]/0/0], InvCaminho/Custo/_, PontoEntrega),
@@ -730,9 +723,11 @@ resolve_aestrela(Nodo, PontoEntrega, Caminho/Custo) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%----------------------------------------------------
+% aestrela : CaminhosPossiveis, Caminho, PontoEntrega |
+% Algoritmo de pesquisa "A*".                         |
+% usage : aestrela(List,Caminho,PontoEntrega)         |
+%%----------------------------------------------------
 
 
 aestrela(Caminhos, Caminho, PontoEntrega) :-
@@ -745,12 +740,31 @@ aestrela(Caminhos, SolucaoCaminho,_) :-
   expande_aestrela(MelhorCaminho, ExpCaminhos),
   append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
   aestrela(NovoCaminhos, SolucaoCaminho,_).
+  
+  
+  
+  
+  
+aEstrelaList(PontoPartida,[], Cam, Dist) :-  
+  get_AEstrela2(PontoPartida, (escolaEngenharia1, uni_centro), Cam1, Dist),
+  reverse(Cam1, Cam).
+
+
+aEstrelaList(Inicio, [Dest | Resto], Cam, Dist) :-  
+  get_AEstrela2(Inicio, Dest, Cam1, Dist1),
+  reverse(Cam1, Cam1Final),
+  aEstrelaList(Dest,Resto,Cam2,Dist2),
+  tail(Cam2,Cam2Final),
+  append(Cam1Final,Cam2Final,Cam),
+  Dist is Dist1 + Dist2.
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%------------------------------------------------------
+% obtem_melhor : ListaCaminhos, Caminho                 |
+% Obtem o melhor caminho baseando-se no valor do custo. |
+% usage : obtem_melhor(ListaCaminhos,Caminho)           |
+%%------------------------------------------------------
 
 obtem_melhor([Caminho], Caminho) :- !.
 obtem_melhor([Caminho1/Custo1/Est1,_/Custo2/Est2|Caminhos], MelhorCaminho) :- 
@@ -762,18 +776,24 @@ obtem_melhor([_|Caminhos], MelhorCaminho) :-
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%---------------------------------------------------
+% expande_aestrela : Caminho,ListaCaminhos           |
+% Cria uma lista com todos os caminhos adjacentes ao |
+% ponto em que nos encontramos.                      |
+% usage : expande_aestrela(Caminho,ListaCaminhos)    |
+%%---------------------------------------------------
 
 expande_aestrela(Caminho, ExpCaminhos) :-
   findall(NovoCaminho, adjacenteAEsterla(Caminho,NovoCaminho), ExpCaminhos).
 
 
 
-%%----------------------------------------------
-%
-%%----------------------------------------------
+%%--------------------------------------------------
+% adjacenteAEsterla : Caminho,NovoCaminho           |
+& Determina as caracteristicas do caminho adjacente |
+% ao nodo em que nos encontramos.                   |
+% usage : adjacenteAEsterla(Caminho,NovoCaminho)    |
+%%--------------------------------------------------
 
 adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est) :-
   connected(Nodo, ProxNodo, PassoCusto),
