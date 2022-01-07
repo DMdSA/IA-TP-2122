@@ -646,16 +646,6 @@ adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/E
 %----- "A*" --------------------------------------------------------------------------------------
 
 
-
-circuitoAEstrelaL([PackageID | Resto],Caminho,Km) :-
-  
-  list_addresses([PackageID | Resto],List),
-  aEstrelaList((escolaEngenharia1, uni_centro), List, Caminho, Km).
-
-
-
-
-
 %%-------------------------------------------------------------------
 % get_AEstrela : Inicio, Answer, Km                                  |
 % Devolve o resultado de uma pesquisa aestrela desde um estado       |
