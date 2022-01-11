@@ -1,5 +1,4 @@
 :- set_prolog_flag(encoding, utf8) .
-:- consult('Invariants.pl').
 :- dynamic transport/4 .
 :- dynamic address/2 .
 :- dynamic client/2 .
@@ -136,8 +135,8 @@ record(1000003, 10002, 1, date(13, 11, 2021, 11), 'Bicycle', 1).
 package(1000004, 1, 5, 10, address('complexoPedagogico1', 'uni_este'), date(13, 11, 2021, 20), 24).
 record(1000004, 10003, 3, date(15, 11, 2021, 10), 'Bicycle', 3).
 
-package(1000005, 0.988, 20, 876, address('servicosTecnicos', 'uni_este'), date(17,11,2021, 12), 72). 
-record(1000005, 10004, 3, date(18, 11, 2021, 19),'Car', 4).
+package(1000005, 0.988, 20, 876, address('servicosTecnicos', 'uni_este'), date(10,11,2021, 12), 72). 
+record(1000005, 10004, 3, date(11, 11, 2021, 19),'Car', 4).
 
 package(1000006, 13, 102, 2.099, address('bioSustentabilidade', 'uni_oeste'), date(11,11,2021, 9), 12).
 record(1000006, 10005, 1, date(11, 11, 2021, 15), 'Bicycle', 5).
@@ -151,8 +150,8 @@ record(1000008, 10007, 4, date(04, 10, 2021, 8), 'Car', 3).
 package(1000009, 88, 122, 200, address('escolaPsicologia', 'uni_oeste'), date(03, 10, 2021, 21), 48).
 record(1000009, 10008, 4, date(18, 10, 2021, 12), 'Car', 1).
 
-package(10000010, 28, 2, 67, address('cienciasSociais', 'uni_oeste'), date(23, 12, 2021, 15), 24).
-record(10000010, 10020, 2, date(24, 12, 2021, 17), 'Car', 5).
+package(1000010, 28, 2, 67, address('cienciasSociais', 'uni_oeste'), date(23, 12, 2021, 15), 24).
+record(1000010, 10020, 2, date(24, 12, 2021, 17), 'Car', 5).
 
 package(1000011, 2300, 150, 120 , address('biblioteca', 'uni_sul'), date(13, 12, 2021, 15), 12).
 record(1000011, 10018, 4, date(16, 12, 2021, 17), 'Car', 2).
@@ -163,7 +162,7 @@ record(1000012, 10003, 3, date(3, 9, 2021, 17), 'Car', 5).
 package(1000013, 5.6, 1, 2, address('medicina','olimpo'), date(2, 7, 2021, 15), 12).
 record(1000013, 10016, 1, date(2,7,2021, 17), 'Motorcycle', 4).
 
-package(1000014, 56, 10, 3, address('complexoDesportivo','uni_este'), date(23, 7, 2021, 15), 48).
+package(1000014, 56, 10, 3, address('medicina','olimpo'), date(23, 7, 2021, 15), 48).
 record(1000014, 10002, 4, date(24,7,2021, 17), 'Car', 2).
 
 package(1000015, 600, 0.2, 0.1, address('educacao','uni_oeste'), date(30, 9, 2021, 15), 12).
@@ -272,7 +271,7 @@ estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000000], dfs).
 
 
 %%- BFS, 7.69 km/h, hour(1, 18, 1), 10/20 km
-estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000001], bfs).
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000001], dfs).
 
 
 %%- DFS, 28.5 km/h, 0.350877 Horas, 10/20 km
@@ -280,27 +279,27 @@ estafeta(1, transport('Motorcycle', 20, 35, 0.5, 1), [1000006], dfs).
 
 
 %%- IDS, 6.5 km/h, 1.3846 horas, 9/18 km 
-% estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000003], ids).
+estafeta(1, transport('Bicycle', 5, 10, 0.7, 0), [1000003], ids).
 
 
-%%- IDS, 8.5216 km/h, 0.46939 horas, 4/8 km
-estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000007], ids).
+%%- greedy, 8.5216 km/h, hour(0, 28, 9), 4/8 km
+estafeta(1, transport('Bicycle', 3, 10, 0.7, 0), [1000007], greedy).
 
 
 %%- IDS, 32.2 km/h, 0.37267 horas, 12/24 km
-estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000013], ids).
+estafeta(1, transport('Motorcycle', 12, 35, 0.5, 1), [1000013], dfs).
 
 
-%%- BFS, 22.2 km/h, 0.36036 horas, 8/16 km
-estafeta(2, transport('Car', 32, 25, 0.1, 2), [10000010], bfs).
+%%- aEstrela, 22.2 km/h,  hour(0, 32, 25), 12/24 km
+estafeta(2, transport('Car', 32, 25, 0.1, 2), [1000010], astar).
 
 
 %%- DFS, 54.762 km/h, 0.091304 horas, 5/10 km
-% estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000002], dfs).
+estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000002], dfs).
 
 
 %%- IDS, 12.999 km/h, 0.69230 horas, 9/18 km
-% estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000015],ids).
+estafeta(2, transport('Carrinha', 600, 55, 0.07, 3), [1000015],ids).
 
 
 %%- DFS, 20.5 km/h, 0.341463 horas, 7/14 km
@@ -320,11 +319,11 @@ estafeta(3, transport('Car', 100, 25, 0.1, 2),[1000012], ids).
 
 
 %%- DFS, 16.2 km/h, hour(0,7,24), 2/4 km
-% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008], dfs).
+estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000008], dfs).
 
 
 %%- BFS, 1 km/h, 6 horas, 6/12 km
-% estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011], bfs).
+estafeta(4, transport('Car', 100, 25, 0.1, 2), [1000011], bfs).
 
 
 %%- DFS, 19.4 km/h, hour(0, 27, 50), 9/18 km
@@ -379,45 +378,6 @@ nulo(estafetaImpossivel).
     ).
 
 */
-
-
-
-
-/*
-
-                                                        \\ "GUIDE" //
-
-Como testar os estafetas - caminhos - etc ?
-
-
-+ melhor caminho : melhorSolucaoDFS( (rua, freguesia), Caminho, Custo).
-            ""      ""  BFS     ""          ""
-            ""      ""  IDS     ""          ""
-
-
-+ caminhos possiveis : circuitoDFS( (rua, freguesia), Caminho, Custo).
-
-
-+ melhor caminho com escolha + ecologica : indicadorProdutividadeDFS(packageid, (rua, freguesia), EcoTransport, Caminho, Km).
-
-
-+ Lista de transportes associados À velocidade média e ao tempo, em horas, :
-  Dado um peso de um package e a distancia do caminho que vai percorrer, devolve essa lista
-
-    getAllTransportsInfo(pesoDoPackage, KM, List).
-
-
-+ Lista com todos os transportes associados à media da velocidade e ao tempo que durou a viagem, mas que respeitam os limites
-    de peso, velocidade, etc (indicadores de produtividade)
-
-    getAllPossibleTransports(packageid, KM, List). 
-
-*/
-
-
-
-
-
 
 
 

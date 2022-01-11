@@ -7,9 +7,6 @@
 
 % :- style_check(-singleton).
 :- set_prolog_flag(encoding, utf8).
-:- consult('data_base.pl').
-:- consult('Util.pl').
-:- consult('IndicadoresProdutividade.pl').
 
 
 g( grafo(
@@ -257,9 +254,10 @@ dfsl(LastDest,[Dest | Resto], Caminho, Kms) :-
 
 
 
-%%-
-% comments
-%%-
+%%-----------------------------------------------------------------------------
+% Calcula o melhor circuito com DFS de uma lista de packageIDs                 |
+% melhorSolucaoDFSL : Inicio, Destinos, Caminho, Distancia                     |
+%%-----------------------------------------------------------------------------
 
 melhorSolucaoDFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
   findall((Caminho, Custo),
@@ -278,7 +276,7 @@ melhorSolucaoDFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
  
 
 %%-----------------------------------------------------------------------------
-% BFS2 : a partir de um destino, procura um caminho por breadth first search a |
+% bfs2 : a partir de um destino, procura um caminho por breadth first search a |
 % partir de um ponto inicial pré-definido (no corpo da regra)                  |
 %------------------------------------------------------------------------------
 
@@ -320,12 +318,12 @@ distance([Inicio, Next | Resto], Km) :-
 
 
 
-%-----"DFS com lista de packages"----------------------------
+%-----"BFS com lista de packages"----------------------------
 
 %%------------------------------------------------------------------------------
 % Calcula todos os caminhos que passam pela lista de destinos com o metodo bfs  |
 % bfsl_aux : inicio, [destinos], Caminho, Km                                    |
-% 
+% usage : bfsl_aux((escolaEngenharia1,uni_centro),[packageIDs],Cam,Km).         |
 %%------------------------------------------------------------------------------
 
 bfsl_aux(Inicio,[],Cam,Km) :-
@@ -334,8 +332,6 @@ bfsl_aux(Inicio,[],Cam,Km) :-
 
 
 bfsl_aux(Inicio,[Dest | Resto], Cam, Km) :-
-  
-  \+member(Dest,Cam),
 
   bfs2(Dest,[[Inicio]],CamAux),
   distance(CamAux,KmAux),
@@ -346,17 +342,14 @@ bfsl_aux(Inicio,[Dest | Resto], Cam, Km) :-
   append(CamAux,Cam2,Cam),
   Km is KmAux + KmAux1.
 
-bfsl_aux(_,[Dest | Resto], Cam, Km) :-
-  
-  bfsl_aux(Dest,Resto,Cam,Km).
 
 
 
-
-%%---------------------------
-%
-%
-%%---------------------------
+%%------------------------------------------------------------------------------
+% Calcula o melhor caminho de uma lista de packages com o metodo bfs            |
+% melhorSolucaoBFSL : [packageIDs], Caminho, Km                                 |
+% usage : melhorSolucaoBFSL([packageIDs],Cam,Km).                               |
+%%------------------------------------------------------------------------------
 
 melhorSolucaoBFSL([PackageID | Resto],MelhorCaminho,MelhorCusto) :-
 findall((Caminho, Custo),
@@ -367,25 +360,7 @@ findall((Caminho, Custo),
   menorPL(List, (MelhorCaminho,MelhorCusto)).
 
 
-
-
-
-
   %----- "Iterative Deepening Search" -----------------------------------------------------------------------------
-
-/*
-
-Limitations of this approach :
-- Bratko´s implementation is quite elegant, and it will return a solution if one exists.
-- Returns all alternative solutions on backtracking.
-- However, if there are no solutions (or no more solutions on backtracking), search
-does not terminate, even if the state space is finite.
-- Can´t be used to exhaustively enumerate all solutions (e.g., with all solutions
-  predicates).
-- Brantko sees the nodes more as States, than an actual node.
-
-*/
-
 
 
 %%-------------------------------------------------------------------------
@@ -408,9 +383,11 @@ path(Inicio, Fim, Custo, [Fim | Path]) :-
   Custo is C1+C2.
 
 
-%%---------------------
-%
-%%----------------------
+%%------------------------------------------------------------------------------
+% Calcula todos os caminhos que passam pela lista de destinos com o metodo ids  |
+% idslAux : inicio, [destinos], Caminho, Km                                     |
+% usage : bfsl_aux((escolaEngenharia1,uni_centro),[packageIDs],Cam,Km).         |
+%%------------------------------------------------------------------------------
 
 idslAux(PontoPartida,[],Cam,Dist) :-
   
@@ -431,45 +408,6 @@ idslAux(PontoPartida,[Dest | Resto],Cam,Dist) :-
   append(Cam1Aux,Cam2Final,Cam),
   
   Dist is Dist1 + Dist2.
-
-
-
-
-
-%%---------------------
-%
-%%---------------------
-
-melhorSolucaoIDSL([PontoEntrega | R], MelhorCaminho, MelhorCusto) :-
-
-  circuitoIDSL([PontoEntrega | R], MelhorCaminho, MelhorCusto),
-  !.
-
-
-
-
-
-
-
-
-/*
------- Depth limited Search (teste)
-
-dls(Last, Last, [Last], D):-
-
-  D >= 0.
-
-dls(First, Last, [First | Resto], D) :-
-
-  D > 0,
-  connected(First, Algo, _),
-  D1 is D - 1,
-  dls(Algo, Last, Resto, D1).
-
-*/
-
-
-
 
 
 %----- "Pesquisas Informadas" -----------------------------------------------------------------------------
@@ -501,10 +439,10 @@ calculaEstima((Rua1,Freguesia1) , (Rua2,Freguesia2) , ValorEstimado ):-
 %----- "Greedy Search" -----------------------------------------------------------------------------
 
 %%-------------------------------------------------------------------------
-% circuito_gulosa : [PackagedID]                                            |
+% circuito_gulosa : [PackagedID]                                           |
 % ex: circuito_gulosa([1000000, 1000001], Caminho, Km).                    |
-% Devolve o resultado de uma pesquisa gulosa a partir de uma lista de         |
-% packagedID.                                                                 |
+% Devolve o resultado de uma pesquisa gulosa a partir de uma lista de      |
+% packagedID.                                                              |
 %%-------------------------------------------------------------------------
 circuito_gulosa([PackageID | Resto], Caminho, Km) :-
     list_addresses([PackageID | Resto], List),
@@ -616,19 +554,9 @@ agulosa(Caminhos, SolucaoCaminho, _) :-
   agulosa(NovosCaminhos, SolucaoCaminho, _).
 
 
-%%---------------------------------------------------------
-% Agulosa Auxiliar
-% Seleciona : MelhorCaminho, Caminhos, OutrosCaminhos
-% ??
-%%---------------------------------------------------------
 seleciona(E, [E|Xs], Xs).
 seleciona(E, [X|Xs], [X|Ys]) :- seleciona(E, Xs, Ys).
 
-
-%%-------------------------------------------------
-% Obtem_Melhor_Gulosa : Caminhos, Caminho
-% ??
-%%-------------------------------------------------
 
 obtem_melhor_gulosa([Caminho], Caminho) :- !.
 
@@ -643,21 +571,13 @@ obtem_melhor_gulosa([_ | Caminhos], MelhorCaminho) :-
   obtem_melhor_gulosa(Caminhos, MelhorCaminho).
 
 
-%%--------------------------------------------------------
-% Expande_Gulosa : Caminho, CaminhosExpandidos
-% ??
-%%--------------------------------------------------------
+
 
 expande_gulosa(Caminho, ExpCaminhos) :-
 
   findall(NovoCaminho, adjacenteGulosa(Caminho, NovoCaminho), ExpCaminhos).
 
 
-%%------------------------------------------------------------
-% Expande_Gulosa Auxiliar
-% AdjacenteGulosa : Caminho, NovoCaminho
-% ???
-%%------------------------------------------------------------
 
 adjacenteGulosa([Nodo | Caminho]/Custo/_, [ProxNodo, Nodo | Caminho]/NovoCusto/Est) :-
 
@@ -690,10 +610,6 @@ get_AEstrela(PontoEntrega, Answer, KmIda):-
   aestrelaEnd(List, Answer, KmIda).
 
 
-
-
-
-
 get_AEstrela2(Inicio, Intermedio, Answer, KmIda) :-
   findall(Caminho, resolve_aestrela(Intermedio, Inicio, Caminho), List),
   aestrelaEndAux(List, Answer, KmIda, Inicio, Intermedio).
@@ -715,10 +631,6 @@ aestrelaEnd( [A/C | _], Aaux, C) :-
 
 aestrelaEnd([_| R], Answer, C) :-
   aestrelaEnd(R, Answer, C).
-
-
-
-
 
 
 aestrelaEndAux( [A/C | _], Aaux, C, Inicio, PontoEntrega) :-
@@ -760,9 +672,7 @@ aestrela(Caminhos, SolucaoCaminho,_) :-
   append(OutrosCaminhos, ExpCaminhos, NovoCaminhos),
   aestrela(NovoCaminhos, SolucaoCaminho,_).
   
-  
-  
-  
+
   
 aEstrelaList(PontoPartida,[], Cam, Dist) :-  
   get_AEstrela2(PontoPartida, (escolaEngenharia1, uni_centro), Cam1, Dist),
@@ -818,12 +728,6 @@ adjacenteAEsterla([Nodo|Caminho]/Custo/_, [ProxNodo,Nodo|Caminho]/NovoCusto/Est)
   \+member(ProxNodo, Caminho),
   NovoCusto is Custo + PassoCusto,
   calculaEstima( ProxNodo , Nodo , Est ).
-
-
-
-
-
-
 
 
 %%---------------------------------------------------------------------------------------------

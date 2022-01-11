@@ -12,6 +12,10 @@ cls :- write('\e[H\e[2J').
 :- consult('Invariants.pl').
 :- consult('texts.pl').
 :- consult('Util.pl').
+:- consult('fase2.pl').
+:- consult('grafo.pl').
+:- consult('IndicadoresProdutividade.pl').
+
 
 :- discontiguous q5/3 .
 :- discontiguous q4/2 .
@@ -21,18 +25,18 @@ cls :- write('\e[H\e[2J').
 
 newClient(ID, NAME) :- evolucao(client(ID,NAME)).
 newAddress(RUA, FREGUESIA) :- evolucao(address(RUA, FREGUESIA)).
-newEstafeta(ID, TRANSPORT, LIST) :- evolucao(estafeta(ID, TRANSPORT, LIST, METOD)).
+newEstafeta(ID, TRANSPORT, LIST, METOD) :- evolucao(estafeta(ID, TRANSPORT, LIST, METOD)).
 newRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- evolucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 newPackage(ID, W, V, P, ADD, DATE, HOURS) :- evolucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-newTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
+newTransport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE) :- evolucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
 
 
 remClient(ID, NAME) :- involucao(client(ID,NAME)).
 remAddress(RUA, FREGUESIA) :- involucao(address(RUA, FREGUESIA)).
-remEstafeta(ID, TRANSPORT, LIST) :- involucao(estafeta(ID, TRANSPORT, LIST, METOD)).
+remEstafeta(ID, TRANSPORT, LIST, METOD) :- involucao(estafeta(ID, TRANSPORT, LIST, METOD)).
 remRecord(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE) :- involucao(record(PKGID, CID, EID, DDATE, TRANSPORTNAME, RATE)).
 remPackage(ID, W, V, P, ADD, DATE, HOURS) :- involucao(package(ID, W, V, P, ADD, DATE, HOURS)).
-remTransport(NAME, MAXWEIGHT, AVGSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
+remTransport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE) :- involucao(transport(NAME, MAXWEIGHT, AVGSPEED, LOSTSPEED, ECOVALUE)).
 
 /*
 ---------------------
@@ -40,14 +44,25 @@ Query1,  Estafeta que usou (+) vezes um meio de transporte (+) ecológico.
 ---------------------
 */
 
-
-% V1 -> q1 : EstafetaID, Transport(_,_,_,_,_), Count -> {V,F}
-% ---------------------------------------------------------
-
-q1(ID, Meio, Answer) :- 
+group([A], [A]).
+group([(E, N1), (E,N2) | Resto], List) :-
         
-        findall((ID,N), (estafeta(ID,Meio,Pkgs,_), length(Pkgs,N)),X),
-        max_couple(X, Answer), writeq1(Answer).
+        E =:= E,
+        N3 is N1+N2,
+        group([(E,N3) | Resto], List).
+
+group([(E,N1),(F,N2) | Resto], [(E,N1) | List]) :-
+
+        E =\= F,
+        group([(F,N2) | Resto], List).
+
+
+
+q1(ID, transport(Name,_,_,_,_), Answer) :- 
+        
+        findall((ID,1), (estafeta(ID,transport(Name,_,_,_,_),_,_)),X),
+        group(X, Group), write(Group),
+        max_couple(Group, Answer), writeq1(Answer).
 
 
 
@@ -56,10 +71,10 @@ q1(ID, Meio, Answer) :-
 
 q1(ID, M, A) :-
         
-        transport(M,_,_,_,_),!,
-        findall((ID,N), (estafeta(ID,transport(M,_,_,_,_),Pkgs,_), length(Pkgs,N)), X),
-        max_couple(X, A), writeq1(A).
-
+        transport(M,_,_,_,_), 
+        findall((ID,1), (estafeta(ID,transport(M,_,_,_,_),_,_)),X),
+        group(X, Group), write(Group),
+        max_couple(Group, A), writeq1(A), !. 
 
 
 % writeq1 : Escreve a informação relativa a query1.
@@ -551,7 +566,7 @@ repara_date(DateI,Date):-
 writeq9(T, E, N):-
         write("Total:"), write(T),nl,
         write("Total entregues:"), write(E),nl,
-        write("Total não entregues:"), write(N),nl,nl.
+        write("Total nao entregues:"), write(N),nl,nl.
 
  
 

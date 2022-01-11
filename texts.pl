@@ -34,25 +34,26 @@ query_help(4) :-nl,
 	write("#> q4(Date, Value)"),nl,
 	write("#> q4(Month, Year, Value)"),nl,
 	write("#> q4(Year, Value)"),nl,
-	write("#> ex: q4(date(18,11,2021,_), V)."),nl,
-	write("#> ex: q4(11, 2021, V)."),nl,nl.
+	write("#> ex: q4(date(11,11,2021,_), V)."),nl,
+	write("#> ex: q4(11, 2021, V)."),nl,
+	write("#> ex: q4(2021, V)."),nl,nl.
 
 query_help(5) :-nl,
 	write("#> q5(Address, Ndeliveries, IDS)"),nl,
 	write("#> q5(Freguesia, N, IDS)"),nl,
-	write("#> ex: q5(\'Cabreiros\'),N, IDS)."),nl,
-	write("#> ex: q5(address(\'Rua da Escola\',\'Crespos\'),N, IDS)."),nl,nl.
+	write("#> ex: q5((\'uni_norte\'),N, IDS)."),nl,
+	write("#> ex: q5(address(\'medicina\',\'olimpo\'),N, IDS)."),nl,nl.
 
 query_help(6) :-nl,
 	write("#> q6(Estafeta, Value)"),nl,
 	write("#> q6(Client, Estafeta, Value)"),nl,
 	write("#> ex: q6(1, X)."),nl,
-	write("#> ex: q6(client('Joel Araújo',_),1,X)."),nl,nl.
+	write("#> ex: q6(client(_,'Joel Araújo'),1,X)."),nl,nl.
 
 query_help(7) :-nl,
         write("#> q7(Date, Value)"),nl,
         write("#> q7(Date, Date, Value)"),nl,
-        write("#> ex: q7(date(18,11,2021,_),X)."),nl,
+        write("#> ex: q7(date(11,11,2021,_),X)."),nl,
         write("#> ex: q7(date(3,10,2021,12),date(17,11,2021,12),X)."),nl,nl.
 
 query_help(8) :-nl,
@@ -68,8 +69,8 @@ query_help(9) :-nl,
 query_help(10) :-nl,
         write("#> q10(Estafeta, Data, Weight)"),nl,
         write("#> q10(Date, Answer)"),nl,
-        write("#> ex: q10,(1, date(18,11,2021,12), P)."),nl,
-        write("#> ex: q10(date(18,11,2021,12), X)."), nl,nl.
+        write("#> ex: q10(3, date(11,11,2021,12), P)."),nl,
+        write("#> ex: q10(date(11,11,2021,12), X)."), nl,nl.
 
 queries() :-
 	nl,

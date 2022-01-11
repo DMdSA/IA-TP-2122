@@ -6,13 +6,13 @@
 
 /*
  %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
-| 										  |
+| 										                    |
 | 2 maneiras de medir o tempo de execução:|
-| 										  |
-| time( metodo(arg1, arg2) ).		  	  |
-| 										  |
+| 										                    |
+| time( metodo(arg1, arg2) ).		  	      |
+| 										                    |
 | call_time( metodo(arg1,arg2) , Dict).	  |
-| 										  |
+| 										                    |
  %-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%----------
 */
 
@@ -191,7 +191,7 @@ validate_date(date(D,M,Y,H)) :-
 
 
 
-% - n.o.t. u.s.e.d.
+
 %%----------------------------------------------------------------------
 % Dado um número, articula-o na parte das unidades e das casas decimais |
 % usage : getDecimalPart(1.234, U, D).                                  |
@@ -204,7 +204,6 @@ getDecimalPart(Number, Unity, Decimal) :-
     Decimal is Number - Unity.
 
 
-% - n.o.t. u.s.e.d.
 %%---------------------------------
 % Hour : Hours, Minutes, Seconds   |
 %%---------------------------------
@@ -218,7 +217,6 @@ hour(A,B,C) :-
 
 
 
-% - n.o.t. u.s.e.d.
 %%------------------------------------------------------------------
 % Converte um número na sua representação em Horas:Minutos:Segundos |
 % (Não respeita os limites do horário de um dia)                    |
